@@ -56,7 +56,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     'minewarts-production.up.railway.app',
-    '.railway.app',  # همه ساب‌دامین‌های Railway
+    '.railway.app',
 ]
 
 # اضافه کردن میزبان‌های اضافی از محیط
@@ -65,7 +65,7 @@ if extra_hosts:
     ALLOWED_HOSTS.extend([h.strip() for h in extra_hosts.split(',') if h.strip()])
 
 # ================================================================
-# CSRF_TRUSTED_ORIGINS - اصلاح شده برای Railway
+# CSRF_TRUSTED_ORIGINS - برای Railway
 # ================================================================
 CSRF_TRUSTED_ORIGINS = [
     'https://minewarts-production.up.railway.app',
@@ -74,17 +74,9 @@ CSRF_TRUSTED_ORIGINS = [
     'http://127.0.0.1:8000',
 ]
 
-# اضافه کردن از محیط
 extra_origins = os.environ.get('CSRF_TRUSTED_ORIGINS', '')
 if extra_origins:
     CSRF_TRUSTED_ORIGINS.extend([h.strip() for h in extra_origins.split(',') if h.strip()])
-
-# ================================================================
-# CORS - برای Railway
-# ================================================================
-CORS_ALLOWED_ORIGINS = CSRF_TRUSTED_ORIGINS.copy()
-CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_ALL_ORIGINS = DEBUG
 
 # ================================================================
 # APPS
@@ -99,7 +91,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'whitenoise.runserver_nostatic',
-    'corsheaders',  # اضافه شد
     'shop.apps.ShopConfig',
     'cart',
     'orders',
@@ -107,7 +98,9 @@ INSTALLED_APPS = [
     'myshop.server',
 ]
 
-# فقط در حالت DEBUG به INSTALLED_APPS اضافه شود
+# ================================================================
+# DEBUG TOOLBAR - فقط در حالت DEBUG
+# ================================================================
 if DEBUG:
     try:
         import debug_toolbar
@@ -116,10 +109,9 @@ if DEBUG:
         pass
 
 # ================================================================
-# MIDDLEWARE - بهینه شده
+# MIDDLEWARE
 # ================================================================
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',  # باید اول باشد
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -135,12 +127,17 @@ MIDDLEWARE = [
     'myshop.security_middleware.PerformanceMiddleware',
 ]
 
-# فقط در حالت DEBUG به MIDDLEWARE اضافه شود
+# ================================================================
+# DEBUG TOOLBAR MIDDLEWARE - فقط در DEBUG
+# ================================================================
 if DEBUG:
     try:
         import debug_toolbar
-        security_index = MIDDLEWARE.index('django.middleware.security.SecurityMiddleware')
-        MIDDLEWARE.insert(security_index + 1, 'debug_toolbar.middleware.DebugToolbarMiddleware')
+        MIDDLEWARE.insert(
+            MIDDLEWARE.index('django.middleware.security.SecurityMiddleware') + 1,
+            'debug_toolbar.middleware.DebugToolbarMiddleware'
+        )
+        INTERNAL_IPS = ['127.0.0.1', 'localhost']
     except ImportError:
         pass
 
@@ -171,7 +168,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'myshop.wsgi.application'
 
 # ================================================================
-# DATABASE - پشتیبانی از PostgreSQL در Railway و SQLite در لوکال
+# DATABASE - PostgreSQL در Railway / SQLite در لوکال
 # ================================================================
 if os.environ.get('DATABASE_URL'):
     DATABASES = {
@@ -179,12 +176,14 @@ if os.environ.get('DATABASE_URL'):
             default=os.environ.get('DATABASE_URL'),
             conn_max_age=600,
             conn_health_checks=True,
+            ssl_require=True
         )
     }
     
     DATABASES['default']['OPTIONS'] = {
         'connect_timeout': 10,
         'options': '-c statement_timeout=30000ms',
+        'sslmode': 'require',
     }
 else:
     DATABASES = {
@@ -227,7 +226,7 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 # ================================================================
-# SESSION - بهینه شده برای Production
+# SESSION
 # ================================================================
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 7 * 2  # 2 هفته
 SESSION_COOKIE_HTTPONLY = True
@@ -239,7 +238,7 @@ SESSION_SAVE_EVERY_REQUEST = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
 # ================================================================
-# CSRF - بهینه شده برای Production
+# CSRF
 # ================================================================
 CSRF_COOKIE_AGE = 60 * 60 * 24 * 7  # 1 هفته
 CSRF_COOKIE_HTTPONLY = True
@@ -247,11 +246,10 @@ CSRF_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_NAME = 'csrftoken'
 CSRF_HEADER_NAME = 'HTTP_X_CSRFTOKEN'
-CSRF_USE_SESSIONS = False  # تغییر به False برای عملکرد بهتر
-CSRF_FAILURE_VIEW = 'django.views.csrf.csrf_failure'
+CSRF_USE_SESSIONS = False
 
 # ================================================================
-# SECURITY - بهینه شده
+# SECURITY
 # ================================================================
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
@@ -261,19 +259,18 @@ SECURE_CROSS_ORIGIN_EMBEDDER_POLICY = 'require-corp'
 SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
 
 # ================================================================
-# PRODUCTION SECURITY - فعال برای Railway
+# PRODUCTION SECURITY
 # ================================================================
 if not DEBUG:
     SECURE_SSL_REDIRECT = True
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    SECURE_HSTS_SECONDS = 31536000  # 1 سال
+    SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_SSL_HOST = 'minewarts-production.up.railway.app'
 else:
-    # در حالت DEBUG، SSL را غیرفعال کنید
     SECURE_SSL_REDIRECT = False
     SECURE_PROXY_SSL_HEADER = None
     SECURE_HSTS_SECONDS = 0
@@ -295,14 +292,14 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
 EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 465))
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'minewarts.team@gmail.com')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'suplbjkvfpbbzqjt')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'False').lower() == 'true'
 EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'True').lower() == 'true'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
 
 # ================================================================
-# STATIC / MEDIA - تنظیمات برای Railway
+# STATIC / MEDIA
 # ================================================================
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
@@ -311,7 +308,6 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# استفاده از WhiteNoise برای سرویس فایل‌های استاتیک در Production
 if not DEBUG:
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
@@ -334,7 +330,7 @@ else:
     ZARINPAL_STARTPAY_URL = 'https://www.zarinpal.com/pg/StartPay/'
 
 # ================================================================
-# MINECRAFT RCON (Rank provisioning)
+# MINECRAFT RCON
 # ================================================================
 MINECRAFT_RCON_HOST = os.environ.get('MINECRAFT_RCON_HOST', '127.0.0.1')
 MINECRAFT_RCON_PORT = int(os.environ.get('MINECRAFT_RCON_PORT', '25575'))
@@ -344,7 +340,7 @@ RANK_MAPPING_PATH = BASE_DIR / 'config' / 'rank_mapping.json'
 RANK_MAX_RETRIES = int(os.environ.get('RANK_MAX_RETRIES', '20'))
 
 # ================================================================
-# SECURITY HEADERS - CSP
+# CSP - Content Security Policy
 # ================================================================
 CSP_EXTRA_DOMAINS = [
     'https://cdn.jsdelivr.net',
@@ -358,7 +354,7 @@ CSP_API_DOMAINS = [
 ]
 
 CSP_WEBSOCKET_DOMAINS = []
-CSP_UNSAFE_INLINE = DEBUG
+CSP_UNSAFE_INLINE = True  # برای inline styles و scripts در production
 
 # ================================================================
 # RATE LIMIT
@@ -553,32 +549,3 @@ SECURITY_HEADERS_EXEMPT = [
 # ================================================================
 # END OF SETTINGS
 # ================================================================
-# ================================================================
-# در انتهای settings.py این را اضافه کنید
-# ================================================================
-
-# DEBUG TOOLBAR - فقط در محیط توسعه
-if DEBUG:
-    try:
-        import debug_toolbar
-        INSTALLED_APPS.append('debug_toolbar')
-        MIDDLEWARE.insert(
-            MIDDLEWARE.index('django.middleware.security.SecurityMiddleware') + 1,
-            'debug_toolbar.middleware.DebugToolbarMiddleware'
-        )
-        INTERNAL_IPS = ['127.0.0.1', 'localhost']
-    except ImportError:
-        pass
-
-# CORS - فقط در محیط توسعه
-if DEBUG:
-    try:
-        import corsheaders
-        INSTALLED_APPS.append('corsheaders')
-        MIDDLEWARE.insert(
-            MIDDLEWARE.index('django.middleware.security.SecurityMiddleware') + 1,
-            'corsheaders.middleware.CorsMiddleware'
-        )
-        CORS_ALLOW_ALL_ORIGINS = True
-    except ImportError:
-        pass

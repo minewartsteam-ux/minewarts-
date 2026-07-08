@@ -553,3 +553,32 @@ SECURITY_HEADERS_EXEMPT = [
 # ================================================================
 # END OF SETTINGS
 # ================================================================
+# ================================================================
+# در انتهای settings.py این را اضافه کنید
+# ================================================================
+
+# DEBUG TOOLBAR - فقط در محیط توسعه
+if DEBUG:
+    try:
+        import debug_toolbar
+        INSTALLED_APPS.append('debug_toolbar')
+        MIDDLEWARE.insert(
+            MIDDLEWARE.index('django.middleware.security.SecurityMiddleware') + 1,
+            'debug_toolbar.middleware.DebugToolbarMiddleware'
+        )
+        INTERNAL_IPS = ['127.0.0.1', 'localhost']
+    except ImportError:
+        pass
+
+# CORS - فقط در محیط توسعه
+if DEBUG:
+    try:
+        import corsheaders
+        INSTALLED_APPS.append('corsheaders')
+        MIDDLEWARE.insert(
+            MIDDLEWARE.index('django.middleware.security.SecurityMiddleware') + 1,
+            'corsheaders.middleware.CorsMiddleware'
+        )
+        CORS_ALLOW_ALL_ORIGINS = True
+    except ImportError:
+        pass

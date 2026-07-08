@@ -47,19 +47,44 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-your-secret-ke
 SITE_NAME = os.environ.get('SITE_NAME', 'Mine Warts')
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'no-reply@minewarts.com')
 
-DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() == 'true'
+DEBUG = os.environ.get('DJANGO_DEBUG', 'False').lower() == 'true'
 
 # ================================================================
-# ALLOWED_HOSTS
+# ALLOWED_HOSTS - بهینه شده برای Railway
 # ================================================================
-if DEBUG:
-    ALLOWED_HOSTS = ['*']
-else:
-    allowed_hosts = os.environ.get('DJANGO_ALLOWED_HOSTS', '')
-    if allowed_hosts:
-        ALLOWED_HOSTS = [h.strip() for h in allowed_hosts.split(',') if h.strip()]
-    else:
-        ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'minewarts-production.up.railway.app',
+    '.railway.app',  # همه ساب‌دامین‌های Railway
+]
+
+# اضافه کردن میزبان‌های اضافی از محیط
+extra_hosts = os.environ.get('DJANGO_ALLOWED_HOSTS', '')
+if extra_hosts:
+    ALLOWED_HOSTS.extend([h.strip() for h in extra_hosts.split(',') if h.strip()])
+
+# ================================================================
+# CSRF_TRUSTED_ORIGINS - اصلاح شده برای Railway
+# ================================================================
+CSRF_TRUSTED_ORIGINS = [
+    'https://minewarts-production.up.railway.app',
+    'https://*.railway.app',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+]
+
+# اضافه کردن از محیط
+extra_origins = os.environ.get('CSRF_TRUSTED_ORIGINS', '')
+if extra_origins:
+    CSRF_TRUSTED_ORIGINS.extend([h.strip() for h in extra_origins.split(',') if h.strip()])
+
+# ================================================================
+# CORS - برای Railway
+# ================================================================
+CORS_ALLOWED_ORIGINS = CSRF_TRUSTED_ORIGINS.copy()
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = DEBUG
 
 # ================================================================
 # APPS
@@ -73,7 +98,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-    'whitenoise.runserver_nostatic',  # برای سرویس استاتیک فایل‌ها
+    'whitenoise.runserver_nostatic',
+    'corsheaders',  # اضافه شد
     'shop.apps.ShopConfig',
     'cart',
     'orders',
@@ -90,11 +116,12 @@ if DEBUG:
         pass
 
 # ================================================================
-# MIDDLEWARE
+# MIDDLEWARE - بهینه شده
 # ================================================================
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # باید اول باشد
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # برای سرویس استاتیک فایل‌ها
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -112,7 +139,6 @@ MIDDLEWARE = [
 if DEBUG:
     try:
         import debug_toolbar
-        # اضافه کردن بعد از SecurityMiddleware و قبل از SessionMiddleware
         security_index = MIDDLEWARE.index('django.middleware.security.SecurityMiddleware')
         MIDDLEWARE.insert(security_index + 1, 'debug_toolbar.middleware.DebugToolbarMiddleware')
     except ImportError:
@@ -148,7 +174,6 @@ WSGI_APPLICATION = 'myshop.wsgi.application'
 # DATABASE - پشتیبانی از PostgreSQL در Railway و SQLite در لوکال
 # ================================================================
 if os.environ.get('DATABASE_URL'):
-   
     DATABASES = {
         'default': dj_database_url.config(
             default=os.environ.get('DATABASE_URL'),
@@ -156,13 +181,12 @@ if os.environ.get('DATABASE_URL'):
             conn_health_checks=True,
         )
     }
-   
+    
     DATABASES['default']['OPTIONS'] = {
         'connect_timeout': 10,
         'options': '-c statement_timeout=30000ms',
     }
 else:
-  
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -203,32 +227,31 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 # ================================================================
-# SESSION
+# SESSION - بهینه شده برای Production
 # ================================================================
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 7 * 2  # 2 هفته
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_SECURE = not DEBUG
-SESSION_COOKIE_NAME = 'sessionid_secure'
+SESSION_COOKIE_NAME = 'sessionid'
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_SAVE_EVERY_REQUEST = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
 # ================================================================
-# CSRF
+# CSRF - بهینه شده برای Production
 # ================================================================
 CSRF_COOKIE_AGE = 60 * 60 * 24 * 7  # 1 هفته
 CSRF_COOKIE_HTTPONLY = True
 CSRF_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SECURE = not DEBUG
-CSRF_COOKIE_NAME = 'csrftoken_secure'
+CSRF_COOKIE_NAME = 'csrftoken'
 CSRF_HEADER_NAME = 'HTTP_X_CSRFTOKEN'
-CSRF_USE_SESSIONS = True
+CSRF_USE_SESSIONS = False  # تغییر به False برای عملکرد بهتر
 CSRF_FAILURE_VIEW = 'django.views.csrf.csrf_failure'
-CSRF_TRUSTED_ORIGINS = []
 
 # ================================================================
-# SECURITY
+# SECURITY - بهینه شده
 # ================================================================
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
@@ -248,10 +271,14 @@ if not DEBUG:
     SECURE_HSTS_PRELOAD = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    
-    # اعتبارسنجی ALLOWED_HOSTS
-    if ALLOWED_HOSTS == ['*'] or not ALLOWED_HOSTS:
-        raise ValueError("❌ ALLOWED_HOSTS cannot be empty or '*' in production!")
+    SECURE_SSL_HOST = 'minewarts-production.up.railway.app'
+else:
+    # در حالت DEBUG، SSL را غیرفعال کنید
+    SECURE_SSL_REDIRECT = False
+    SECURE_PROXY_SSL_HEADER = None
+    SECURE_HSTS_SECONDS = 0
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+    SECURE_HSTS_PRELOAD = False
 
 # ================================================================
 # INTERNATIONALIZATION
@@ -265,12 +292,12 @@ USE_TZ = True
 # EMAIL
 # ================================================================
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 465
-EMAIL_HOST_USER = 'minewarts.team@gmail.com'
-EMAIL_HOST_PASSWORD = 'suplbjkvfpbbzqjt'
-EMAIL_USE_TLS = False
-EMAIL_USE_SSL = True
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 465))
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'minewarts.team@gmail.com')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'suplbjkvfpbbzqjt')
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'False').lower() == 'true'
+EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'True').lower() == 'true'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
 
@@ -294,13 +321,8 @@ CART_SESSION_ID = 'cart'
 # ================================================================
 # ZARINPAL
 # ================================================================
-
-# ✅ مرچنت آیدی صحیح برای سندباکس
-ZARINPAL_MERCHANT_ID = "00000000-0000-0000-0000-000000000000"  # ← این مقدار صحیح است
-# یا از محیط بخوانید:
-# ZARINPAL_MERCHANT_ID = os.environ.get('ZARINPAL_MERCHANT_ID', '00000000-0000-0000-0000-000000000000')
-
-ZARINPAL_SANDBOX = True  # ← برای تست در محیط سندباکس
+ZARINPAL_MERCHANT_ID = os.environ.get('ZARINPAL_MERCHANT_ID', '00000000-0000-0000-0000-000000000000')
+ZARINPAL_SANDBOX = os.environ.get('ZARINPAL_SANDBOX', 'True').lower() == 'true'
 
 if ZARINPAL_SANDBOX:
     ZARINPAL_REQUEST_URL = 'https://sandbox.zarinpal.com/pg/v4/payment/request.json'
@@ -336,7 +358,6 @@ CSP_API_DOMAINS = [
 ]
 
 CSP_WEBSOCKET_DOMAINS = []
-
 CSP_UNSAFE_INLINE = DEBUG
 
 # ================================================================

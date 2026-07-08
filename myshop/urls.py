@@ -15,11 +15,25 @@ urlpatterns = [
     path('orders/', include('orders.urls')),
     path('', include('shop.urls')),
     
-    # Server app - ✅ مسیر کامل را مشخص کنید
+    # Server app
     path('server/', include('myshop.server.urls', namespace='server')),
-    path('__debug__/', include('debug_toolbar.urls')),
 ]
 
+# ================================================================
+# DEBUG TOOLBAR - فقط در حالت DEBUG
+# ================================================================
+if settings.DEBUG:
+    try:
+        import debug_toolbar
+        urlpatterns += [
+            path('__debug__/', include(debug_toolbar.urls)),
+        ]
+    except ImportError:
+        pass
+
+# ================================================================
+# سرویس فایل‌های Media و Static در DEBUG
+# ================================================================
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

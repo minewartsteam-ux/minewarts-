@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+{% block title %}تیکت #{{ ticket.id }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .chat-container {
+        max-height: 450px;
+        overflow-y: auto;
+        padding: 15px;
+        background: rgba(0,0,0,0.2);
+        border-radius: 14px;
+        margin-bottom: 20px;
+        scroll-behavior: smooth;
+    }
+    .chat-container::-webkit-scrollbar {
+        width: 5px;
+    }
+    .chat-container::-webkit-scrollbar-thumb {
+        background: var(--primary-color);
+        border-radius: 10px;
+    }
+    .msg {
+        max-width: 75%;
+        padding: 12px 18px;
+        border-radius: 18px;
+        margin-bottom: 12px;
+        word-wrap: break-word;
+        position: relative;
+        animation: fadeIn 0.3s ease;
+    }
+    .msg-user {
+        background: linear-gradient(135deg, #4CAF50, #66BB6A);
+        color: #fff;
+        align-self: flex-end;
+        border-bottom-right-radius: 4px;
+        margin-right: auto;
+    }
+    .msg-staff {
+        background: linear-gradient(135deg, #1976D2, #42A5F5);
+        color: #fff;
+        align-self: flex-start;
+        border-bottom-left-radius: 4px;
+        margin-left: auto;
+    }
+    .msg-meta {
+        font-size: 0.7rem;
+        opacity: 0.7;
+        margin-top: 4px;
+        text-align: left;
+    }
+    .msg-sender {
+        font-weight: 600;
+        font-size: 0.8rem;
+        margin-bottom: 3px;
+        opacity: 0.9;
+    }
+    .ticket-status-badge {
+        padding: 5px 18px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .form-control {
+        background: rgba(255,255,255,0.05) !important;
+        border: 1px solid rgba(255,255,255,0.1) !important;
+        color: var(--text-light) !important;
+        border-radius: 12px !important;
+    }
+    .form-control:focus {
+        border-color: var(--primary-color) !important;
+        box-shadow: 0 0 0 3px rgba(76,175,80,0.15) !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 900px; margin-top: 40px;">
+    <div class="glass-card" style="padding: 25px 20px;">
+        <!-- هدر تیکت -->
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 border-bottom border-secondary border-opacity-10 pb-3 mb-4">
+            <div>
+                <h2 style="color: var(--text-light); font-size: 1.5rem; font-weight: 700; margin: 0;">
+                    🎫 #{{ ticket.id }} - {{ ticket.subject }}
+                </h2>
+                <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 2px;">
+                    ایجاد: {{ ticket.created|date:"Y/m/d H:i" }}
+                </div>
+            </div>
+            <div>
+                {% if ticket.status == 'new' %}
+                    <span class="ticket-status-badge" style="background: #17a2b8; color: #fff;">🆕 جدید</span>
+                {% elif ticket.status == 'pending_user' %}
+                    <span class="ticket-status-badge" style="background: #ffc107; color: #212529;">⏳ منتظر پاسخ شما</span>
+                {% elif ticket.status == 'pending_admin' %}
+                    <span class="ticket-status-badge" style="background: #fd7e14; color: #fff;">⏳ در انتظار ادمین</span>
+                {% elif ticket.status == 'in_progress' %}
+                    <span class="ticket-status-badge" style="background: #007bff; color: #fff;">🔄 در حال بررسی</span>
+                {% elif ticket.status == 'answered' %}
+                    <span class="ticket-status-badge" style="background: #28a745; color: #fff;">✅ پاسخ داده شده</span>
+                {% elif ticket.status == 'closed' %}
+                    <span class="ticket-status-badge" style="background: #6c757d; color: #fff;">🔒 بسته شده</span>
+                {% elif ticket.status == 'reopened' %}
+                    <span class="ticket-status-badge" style="background: #20c997; color: #fff;">🔓 دوباره باز</span>
+                {% elif ticket.status == 'escalated' %}
+                    <span class="ticket-status-badge" style="background: #e83e8c; color: #fff;">⬆️ ارجاع داده شده</span>
+                {% elif ticket.status == 'resolved' %}
+                    <span class="ticket-status-badge" style="background: #17a2b8; color: #fff;">🎯 حل شده</span>
+                {% elif ticket.status == 'spam' %}
+                    <span class="ticket-status-badge" style="background: #dc3545; color: #fff;">🚫 اسپم</span>
+                {% else %}
+                    <span class="ticket-status-badge" style="background: #6c757d; color: #fff;">{{ ticket.get_status_display }}</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- نمایش پیام‌ها -->
+        <div class="chat-container d-flex flex-column">
+            {% for msg in messages %}
+                {% if msg.is_staff %}
+                    <div class="msg msg-staff">
+                        <div class="msg-sender">🛡️ پشتیبانی</div>
+                        <div style="white-space: pre-wrap;">{{ msg.message }}</div>
+                        <div class="msg-meta">{{ msg.created|date:"Y/m/d H:i" }}</div>
+                    </div>
+                {% else %}
+                    <div class="msg msg-user">
+                        <div class="msg-sender">👤 شما</div>
+                        <div style="white-space: pre-wrap;">{{ msg.message }}</div>
+                        <div class="msg-meta">{{ msg.created|date:"Y/m/d H:i" }}</div>
+                    </div>
+                {% endif %}
+            {% empty %}
+                <div class="text-center text-muted py-4">هنوز پیامی ارسال نشده است.</div>
+            {% endfor %}
+        </div>
+
+        <!-- فرم ارسال پیام -->
+        {% if ticket.status == 'closed' or ticket.status == 'spam' or ticket.status == 'resolved' %}
+            <div class="alert alert-info" style="border-radius: 12px; background: rgba(108,117,125,0.1); border-color: rgba(108,117,125,0.2); color: var(--text-muted);">
+                <strong>ℹ️</strong> این تیکت {% if ticket.status == 'closed' %}بسته شده{% elif ticket.status == 'spam' %}اسپم تشخیص داده شده{% else %}حل شده{% endif %} است.
+                {% if ticket.status == 'closed' or ticket.status == 'resolved' %}
+                    اگر سوال جدیدی دارید، لطفاً یک تیکت جدید ایجاد کنید.
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <form method="post" {% if ticket.status == 'closed' or ticket.status == 'spam' or ticket.status == 'resolved' %}style="opacity: 0.5; pointer-events: none;"{% endif %}>
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label" style="color: var(--text-light); font-weight: 600;">متن پیام جدید</label>
+                {{ form.message }}
+                {% if form.message.errors %}
+                    <div class="text-danger small mt-1">{{ form.message.errors.0 }}</div>
+                {% endif %}
+            </div>
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <a href="{% url 'accounts:ticket_list' %}" class="btn btn-outline-secondary" style="border-radius: 50px; padding: 8px 24px;">↩ بازگشت</a>
+                {% if ticket.status != 'closed' and ticket.status != 'spam' and ticket.status != 'resolved' %}
+                    <button type="submit" class="btn btn-primary" style="border-radius: 50px; padding: 8px 28px; font-weight: 600;">
+                        📩 ارسال پیام
+                    </button>
+                {% else %}
+                    <a href="{% url 'accounts:ticket_create' %}" class="btn btn-primary" style="border-radius: 50px; padding: 8px 28px; font-weight: 600; background: linear-gradient(135deg, #03A9F4, #29B6F6); border: none;">
+                        ➕ تیکت جدید
+                    </a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

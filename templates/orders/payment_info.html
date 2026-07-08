@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}راهنمای تنظیم پرداخت واقعی{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 900px; margin: 40px auto; padding: 20px;">
+    <div style="background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(3, 169, 244, 0.1)); border: 2px solid var(--primary-color); border-radius: 20px; padding: 40px;">
+        <h1 style="color: var(--primary-color); text-align: center; margin-bottom: 30px;">💳 راهنمای تنظیم پرداخت واقعی</h1>
+        
+        <div style="background: rgba(30, 30, 30, 0.9); border-radius: 15px; padding: 30px; margin-bottom: 20px;">
+            <h2 style="color: var(--primary-color); margin-bottom: 20px;">📋 مراحل تنظیم</h2>
+            
+            <div style="margin-bottom: 25px;">
+                <h3 style="color: var(--text-light); margin-bottom: 10px;">1️⃣ دریافت Merchant ID</h3>
+                <p style="color: var(--text-muted); line-height: 1.8;">
+                    به سایت <a href="https://www.zarinpal.com" target="_blank" style="color: var(--primary-color);">زرین‌پال</a> بروید و Merchant ID واقعی خود را دریافت کنید.
+                </p>
+            </div>
+            
+            <div style="margin-bottom: 25px;">
+                <h3 style="color: var(--text-light); margin-bottom: 10px;">2️⃣ تنظیم متغیرهای محیطی</h3>
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 15px; border-radius: 10px; margin-top: 10px;">
+                    <code style="color: var(--primary-color); font-size: 0.9rem;">
+                        ZARINPAL_MERCHANT_ID=your-real-merchant-id<br>
+                        ZARINPAL_SANDBOX=False
+                    </code>
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 25px;">
+                <h3 style="color: var(--text-light); margin-bottom: 10px;">3️⃣ تنظیم Callback URL</h3>
+                <p style="color: var(--text-muted); line-height: 1.8;">
+                    در پنل زرین‌پال، Callback URL را تنظیم کنید:
+                </p>
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 15px; border-radius: 10px; margin-top: 10px;">
+                    <code style="color: var(--primary-color); font-size: 0.9rem;">
+                        https://yourdomain.com/orders/payment/callback/
+                    </code>
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 25px;">
+                <h3 style="color: var(--text-light); margin-bottom: 10px;">🔒 امنیت</h3>
+                <ul style="color: var(--text-muted); line-height: 2; padding-right: 20px;">
+                    <li>✅ تمام ارتباطات از طریق HTTPS</li>
+                    <li>✅ بررسی SSL Certificate</li>
+                    <li>✅ رمزنگاری تمام داده‌ها</li>
+                    <li>✅ محافظت در برابر CSRF</li>
+                    <li>✅ اعتبارسنجی کامل ورودی‌ها</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="{% url 'shop:product_list' %}" style="background: linear-gradient(45deg, var(--primary-color), #66BB6A); color: white; padding: 15px 40px; border-radius: 50px; text-decoration: none; font-weight: bold; display: inline-block;">
+                بازگشت به فروشگاه
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+

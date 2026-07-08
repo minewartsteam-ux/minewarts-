@@ -1,0 +1,432 @@
+2026-06-23 00:23:11,046 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-23 00:30:18,745 - INFO - autoreload - F:\sf\shop site\accounts\admin.py changed, reloading.
+2026-06-23 00:30:19,221 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-23 00:30:24,447 - INFO - autoreload - F:\sf\shop site\accounts\admin.py changed, reloading.
+2026-06-23 00:30:24,820 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-23 00:30:28,015 - INFO - autoreload - F:\sf\shop site\accounts\admin.py changed, reloading.
+2026-06-23 00:30:28,387 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-23 00:30:29,567 - INFO - autoreload - F:\sf\shop site\accounts\admin.py changed, reloading.
+2026-06-23 00:30:29,922 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-23 00:30:40,172 - INFO - autoreload - F:\sf\shop site\accounts\admin.py changed, reloading.
+2026-06-23 00:30:40,608 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-23 00:33:57,826 - INFO - autoreload - F:\sf\shop site\accounts\models.py changed, reloading.
+2026-06-23 00:33:58,397 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-23 00:35:04,982 - INFO - autoreload - F:\sf\shop site\accounts\views.py changed, reloading.
+2026-06-23 00:35:05,407 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-23 00:39:01,125 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-23 00:41:43,406 - INFO - autoreload - F:\sf\shop site\accounts\admin.py changed, reloading.
+2026-06-23 00:41:43,920 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-23 13:25:34,198 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-23 13:28:23,020 - INFO - autoreload - F:\sf\shop site\accounts\models.py changed, reloading.
+2026-06-23 13:28:23,539 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-23 13:31:13,909 - INFO - autoreload - F:\sf\shop site\accounts\admin.py changed, reloading.
+2026-06-23 13:31:14,309 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-23 13:31:26,574 - INFO - autoreload - F:\sf\shop site\accounts\admin.py changed, reloading.
+2026-06-23 13:31:27,003 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-23 13:32:21,220 - INFO - autoreload - F:\sf\shop site\accounts\views.py changed, reloading.
+2026-06-23 13:32:21,591 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-23 13:33:39,983 - INFO - autoreload - F:\sf\shop site\accounts\views.py changed, reloading.
+2026-06-23 13:33:40,360 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-23 13:33:43,520 - INFO - autoreload - F:\sf\shop site\accounts\views.py changed, reloading.
+2026-06-23 13:33:43,920 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-23 13:34:13,446 - INFO - autoreload - F:\sf\shop site\accounts\views.py changed, reloading.
+2026-06-23 13:34:13,826 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-23 13:36:40,440 - INFO - autoreload - F:\sf\shop site\accounts\views.py changed, reloading.
+2026-06-23 13:36:40,885 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-23 13:37:46,588 - INFO - autoreload - F:\sf\shop site\accounts\models.py changed, reloading.
+2026-06-23 13:37:47,044 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-23 13:38:15,825 - INFO - autoreload - F:\sf\shop site\accounts\views.py changed, reloading.
+2026-06-23 13:38:16,198 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-23 14:07:26,658 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-23 14:08:04,500 - INFO - autoreload - F:\sf\shop site\myshop\settings.py changed, reloading.
+2026-06-23 14:08:04,918 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-23 14:08:09,270 - INFO - autoreload - F:\sf\shop site\myshop\settings.py changed, reloading.
+2026-06-23 14:08:09,703 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-23 14:11:25,407 - INFO - autoreload - F:\sf\shop site\myshop\settings.py changed, reloading.
+2026-06-23 14:11:25,860 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-23 14:11:31,257 - INFO - autoreload - F:\sf\shop site\myshop\settings.py changed, reloading.
+2026-06-23 14:11:31,704 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-23 16:31:26,572 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-23 16:56:53,729 - INFO - payment_gateway - درخواست پرداخت ارسال شد: {'merchant_id': '00000000-0000-0000-0000-000000000000', 'amount': 12320000, 'description': 'خرید 1232 وارت کوین', 'callback_url': 'http://192.168.1.5:8000/orders/payment/wart-coin/callback/23/', 'email': 'minewarts.team@gmail.com'}
+2026-06-23 16:56:53,732 - INFO - payment_gateway - پاسخ درگاه: {'data': {'authority': 'S00000000000000000000000000000y57xq7', 'fee': 150000, 'fee_type': 'Merchant', 'code': 100, 'message': 'Success'}, 'errors': []}
+2026-06-23 16:57:03,450 - INFO - payment_gateway - بررسی پرداخت: {'merchant_id': '00000000-0000-0000-0000-000000000000', 'amount': 12320000, 'authority': 'S00000000000000000000000000000y57xq7'}
+2026-06-23 16:57:03,451 - INFO - payment_gateway - پاسخ درگاه: {'data': {'wages': None, 'code': 100, 'message': 'Paid', 'card_hash': '0866A6EAEA5CB085E4CF6EF19296BF19647552DD5F96F1E530DB3AE61837EFE7', 'card_pan': '999999******9999', 'ref_id': 118915101, 'fee_type': 'Merchant', 'fee': 150000, 'shaparak_fee': 1200, 'order_id': None}, 'errors': []}
+2026-06-23 16:59:10,586 - INFO - payment_gateway - درخواست پرداخت ارسال شد: {'merchant_id': '00000000-0000-0000-0000-000000000000', 'amount': 11230000, 'description': 'خرید 1123 وارت کوین', 'callback_url': 'http://192.168.1.5:8000/orders/payment/wart-coin/callback/24/', 'email': 'armin.9090niknam@gmail.com'}
+2026-06-23 16:59:10,587 - INFO - payment_gateway - پاسخ درگاه: {'data': {'authority': 'S00000000000000000000000000000pyq7lj', 'fee': 150000, 'fee_type': 'Merchant', 'code': 100, 'message': 'Success'}, 'errors': []}
+2026-06-23 16:59:49,079 - INFO - payment_gateway - بررسی پرداخت: {'merchant_id': '00000000-0000-0000-0000-000000000000', 'amount': 11230000, 'authority': 'S00000000000000000000000000000pyq7lj'}
+2026-06-23 16:59:49,080 - INFO - payment_gateway - پاسخ درگاه: {'data': {'wages': None, 'code': 100, 'message': 'Paid', 'card_hash': '0866A6EAEA5CB085E4CF6EF19296BF19647552DD5F96F1E530DB3AE61837EFE7', 'card_pan': '999999******9999', 'ref_id': 118928201, 'fee_type': 'Merchant', 'fee': 150000, 'shaparak_fee': 1200, 'order_id': None}, 'errors': []}
+2026-06-23 17:09:20,289 - INFO - payment_gateway - درخواست پرداخت ارسال شد: {'merchant_id': '00000000-0000-0000-0000-000000000000', 'amount': 180000, 'description': 'خرید 12 وارت کوین', 'callback_url': 'http://192.168.1.5:8000/orders/payment/wart-coin/callback/25/', 'email': 'minewarts.team@gmail.com'}
+2026-06-23 17:09:20,291 - INFO - payment_gateway - پاسخ درگاه: {'data': {'authority': 'S000000000000000000000000000001qn3jw', 'fee': 5400, 'fee_type': 'Merchant', 'code': 100, 'message': 'Success'}, 'errors': []}
+2026-06-23 17:09:40,704 - INFO - payment_gateway - بررسی پرداخت: {'merchant_id': '00000000-0000-0000-0000-000000000000', 'amount': 180000, 'authority': 'S000000000000000000000000000001qn3jw'}
+2026-06-23 17:09:40,705 - INFO - payment_gateway - پاسخ درگاه: {'data': {'wages': None, 'code': 100, 'message': 'Paid', 'card_hash': '0866A6EAEA5CB085E4CF6EF19296BF19647552DD5F96F1E530DB3AE61837EFE7', 'card_pan': '999999******9999', 'ref_id': 118968501, 'fee_type': 'Merchant', 'fee': 5400, 'shaparak_fee': 1200, 'order_id': None}, 'errors': []}
+2026-06-23 17:13:00,513 - INFO - payment_gateway - درخواست پرداخت ارسال شد: {'merchant_id': '00000000-0000-0000-0000-000000000000', 'amount': 1845000, 'description': 'خرید 123 وارت کوین', 'callback_url': 'http://192.168.1.5:8000/orders/payment/wart-coin/callback/26/', 'email': 'minewarts.team@gmail.com'}
+2026-06-23 17:13:00,513 - INFO - payment_gateway - پاسخ درگاه: {'data': {'authority': 'S00000000000000000000000000000rvlelo', 'fee': 55350, 'fee_type': 'Merchant', 'code': 100, 'message': 'Success'}, 'errors': []}
+2026-06-23 17:13:06,077 - INFO - payment_gateway - بررسی پرداخت: {'merchant_id': '00000000-0000-0000-0000-000000000000', 'amount': 1845000, 'authority': 'S00000000000000000000000000000rvlelo'}
+2026-06-23 17:13:06,078 - INFO - payment_gateway - پاسخ درگاه: {'data': {'wages': None, 'code': 100, 'message': 'Paid', 'card_hash': '0866A6EAEA5CB085E4CF6EF19296BF19647552DD5F96F1E530DB3AE61837EFE7', 'card_pan': '999999******9999', 'ref_id': 118984701, 'fee_type': 'Merchant', 'fee': 55350, 'shaparak_fee': 1200, 'order_id': None}, 'errors': []}
+2026-06-23 17:19:22,982 - INFO - autoreload - F:\sf\shop site\accounts\signals.py changed, reloading.
+2026-06-23 17:19:23,535 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-23 17:19:30,997 - INFO - autoreload - F:\sf\shop site\accounts\apps.py changed, reloading.
+2026-06-23 17:19:31,483 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-23 17:20:32,951 - INFO - autoreload - F:\sf\shop site\accounts\views.py changed, reloading.
+2026-06-23 17:20:33,431 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-23 17:20:40,613 - INFO - autoreload - F:\sf\shop site\accounts\views.py changed, reloading.
+2026-06-23 17:20:40,991 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-23 17:22:06,559 - INFO - autoreload - F:\sf\shop site\accounts\views.py changed, reloading.
+2026-06-23 17:22:06,976 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-23 23:07:41,677 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-28 12:19:34,858 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 13:37:58,465 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 13:39:33,860 - INFO - payment_gateway - درخواست پرداخت ارسال شد: {'merchant_id': '00000000-0000-0000-0000-000000000000', 'amount': 1845000, 'description': 'خرید 123 وارت کوین', 'callback_url': 'http://127.0.0.1:8000/orders/payment/wart-coin/callback/27/', 'email': 'minewarts.team@gmail.com'}
+2026-06-30 13:39:33,863 - INFO - payment_gateway - پاسخ درگاه: {'data': {'authority': 'S00000000000000000000000000000lrznmm', 'fee': 55350, 'fee_type': 'Merchant', 'code': 100, 'message': 'Success'}, 'errors': []}
+2026-06-30 13:39:40,545 - INFO - payment_gateway - بررسی پرداخت: {'merchant_id': '00000000-0000-0000-0000-000000000000', 'amount': 1845000, 'authority': 'S00000000000000000000000000000lrznmm'}
+2026-06-30 13:39:40,545 - INFO - payment_gateway - پاسخ درگاه: {'data': {'wages': None, 'code': 100, 'message': 'Paid', 'card_hash': '0866A6EAEA5CB085E4CF6EF19296BF19647552DD5F96F1E530DB3AE61837EFE7', 'card_pan': '999999******9999', 'ref_id': 153809101, 'fee_type': 'Merchant', 'fee': 55350, 'shaparak_fee': 1200, 'order_id': None}, 'errors': []}
+2026-06-30 13:55:45,611 - INFO - autoreload - F:\sf\shop site\shop\models.py changed, reloading.
+2026-06-30 13:55:46,629 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 13:55:53,509 - INFO - autoreload - F:\sf\shop site\orders\models.py changed, reloading.
+2026-06-30 13:55:54,140 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 13:56:07,770 - INFO - autoreload - F:\sf\shop site\orders\minecraft_service.py changed, reloading.
+2026-06-30 13:56:08,323 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 13:56:11,034 - INFO - autoreload - F:\sf\shop site\orders\views.py changed, reloading.
+2026-06-30 13:56:11,776 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 13:56:17,366 - INFO - autoreload - F:\sf\shop site\orders\minecraft_service.py changed, reloading.
+2026-06-30 13:56:18,084 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 13:56:23,705 - INFO - autoreload - F:\sf\shop site\shop\admin.py changed, reloading.
+2026-06-30 13:56:24,479 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 13:56:27,926 - INFO - autoreload - F:\sf\shop site\orders\admin.py changed, reloading.
+2026-06-30 13:56:28,595 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 14:18:11,780 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 14:42:09,537 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 14:53:31,307 - INFO - autoreload - F:\sf\shop site\shop\views.py changed, reloading.
+2026-06-30 14:53:31,882 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 14:54:08,304 - INFO - autoreload - F:\sf\shop site\myshop\urls.py changed, reloading.
+2026-06-30 14:54:08,787 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 14:55:15,003 - INFO - autoreload - F:\sf\shop site\myshop\urls.py changed, reloading.
+2026-06-30 14:55:15,484 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 14:55:26,190 - INFO - autoreload - F:\sf\shop site\shop\urls.py changed, reloading.
+2026-06-30 14:55:26,662 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 14:55:47,300 - INFO - autoreload - F:\sf\shop site\shop\urls.py changed, reloading.
+2026-06-30 14:55:47,784 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 14:55:51,196 - INFO - autoreload - F:\sf\shop site\myshop\urls.py changed, reloading.
+2026-06-30 14:55:51,645 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 15:09:08,954 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 17:47:05,032 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 17:47:52,567 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 17:47:57,794 - ERROR - log - Invalid HTTP_HOST header: '192.168.1.7:8000'. You may need to add '192.168.1.7' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\PC-Kosar\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\PC-Kosar\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\utils\deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+  File "C:\Users\PC-Kosar\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\PC-Kosar\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\http\request.py", line 205, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '192.168.1.7:8000'. You may need to add '192.168.1.7' to ALLOWED_HOSTS.
+2026-06-30 17:47:57,945 - ERROR - log - Invalid HTTP_HOST header: '192.168.1.7:8000'. You may need to add '192.168.1.7' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\PC-Kosar\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\PC-Kosar\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\utils\deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+  File "C:\Users\PC-Kosar\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\PC-Kosar\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\http\request.py", line 205, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '192.168.1.7:8000'. You may need to add '192.168.1.7' to ALLOWED_HOSTS.
+2026-06-30 17:48:14,388 - ERROR - log - Invalid HTTP_HOST header: '192.168.1.7:8000'. You may need to add '192.168.1.7' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\PC-Kosar\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\PC-Kosar\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\utils\deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+  File "C:\Users\PC-Kosar\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\PC-Kosar\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\http\request.py", line 205, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '192.168.1.7:8000'. You may need to add '192.168.1.7' to ALLOWED_HOSTS.
+2026-06-30 17:48:17,284 - INFO - autoreload - F:\sf\shop site\myshop\settings.py changed, reloading.
+2026-06-30 17:48:18,325 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 17:48:18,617 - ERROR - log - Invalid HTTP_HOST header: '192.168.1.7:8000'. You may need to add '192.168.1.7' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\PC-Kosar\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\PC-Kosar\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\utils\deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+  File "C:\Users\PC-Kosar\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\PC-Kosar\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\http\request.py", line 205, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '192.168.1.7:8000'. You may need to add '192.168.1.7' to ALLOWED_HOSTS.
+2026-06-30 17:48:32,852 - INFO - autoreload - F:\sf\shop site\myshop\settings.py changed, reloading.
+2026-06-30 17:48:33,409 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 17:53:00,971 - INFO - autoreload - F:\sf\shop site\myshop\urls.py changed, reloading.
+2026-06-30 17:53:01,511 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 17:54:01,797 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 17:54:24,304 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 18:09:54,726 - INFO - autoreload - F:\sf\shop site\orders\admin.py changed, reloading.
+2026-06-30 18:09:55,306 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 18:19:27,966 - INFO - autoreload - F:\sf\shop site\myshop\urls.py changed, reloading.
+2026-06-30 18:19:28,555 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 18:20:23,747 - INFO - autoreload - F:\sf\shop site\myshop\server\urls.py changed, reloading.
+2026-06-30 18:20:24,295 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 18:21:36,860 - INFO - autoreload - F:\sf\shop site\myshop\server\urls.py changed, reloading.
+2026-06-30 18:21:37,378 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 18:24:06,720 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 18:25:12,503 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 18:26:21,530 - INFO - autoreload - F:\sf\shop site\myshop\urls.py changed, reloading.
+2026-06-30 18:26:22,135 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 18:26:45,667 - INFO - autoreload - F:\sf\shop site\myshop\settings.py changed, reloading.
+2026-06-30 18:26:46,099 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 18:29:01,494 - INFO - autoreload - F:\sf\shop site\myshop\settings.py changed, reloading.
+2026-06-30 18:29:01,905 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 18:29:04,105 - INFO - autoreload - F:\sf\shop site\myshop\settings.py changed, reloading.
+2026-06-30 18:29:04,523 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 18:30:02,417 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 18:30:36,547 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 18:31:29,154 - INFO - autoreload - F:\sf\shop site\myshop\settings.py changed, reloading.
+2026-06-30 18:31:29,549 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 18:33:11,434 - INFO - autoreload - F:\sf\shop site\myshop\server\apps.py changed, reloading.
+2026-06-30 18:33:11,938 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 18:34:11,852 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 18:35:17,680 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 18:47:46,343 - INFO - payment_gateway - درخواست پرداخت ارسال شد: {'merchant_id': '00000000-0000-0000-0000-000000000000', 'amount': 1845000, 'description': 'خرید 123 وارت کوین', 'callback_url': 'http://192.168.1.7:8000/orders/payment/wart-coin/callback/28/', 'email': 'minewarts.team@gmail.com'}
+2026-06-30 18:47:46,346 - INFO - payment_gateway - پاسخ درگاه: {'data': {'authority': 'S000000000000000000000000000003n5d1q', 'fee': 55350, 'fee_type': 'Merchant', 'code': 100, 'message': 'Success'}, 'errors': []}
+2026-06-30 18:47:49,046 - INFO - payment_gateway - بررسی پرداخت: {'merchant_id': '00000000-0000-0000-0000-000000000000', 'amount': 1845000, 'authority': 'S000000000000000000000000000003n5d1q'}
+2026-06-30 18:47:49,047 - INFO - payment_gateway - پاسخ درگاه: {'data': {'wages': None, 'code': 100, 'message': 'Paid', 'card_hash': '0866A6EAEA5CB085E4CF6EF19296BF19647552DD5F96F1E530DB3AE61837EFE7', 'card_pan': '999999******9999', 'ref_id': 155334601, 'fee_type': 'Merchant', 'fee': 55350, 'shaparak_fee': 1200, 'order_id': None}, 'errors': []}
+2026-06-30 18:50:26,985 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 18:50:32,569 - ERROR - log - Invalid HTTP_HOST header: '127.168.1.7:8000'. You may need to add '127.168.1.7' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\PC-Kosar\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\PC-Kosar\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\utils\deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+  File "C:\Users\PC-Kosar\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\PC-Kosar\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\http\request.py", line 205, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.168.1.7:8000'. You may need to add '127.168.1.7' to ALLOWED_HOSTS.
+2026-06-30 18:50:32,773 - ERROR - log - Invalid HTTP_HOST header: '127.168.1.7:8000'. You may need to add '127.168.1.7' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\PC-Kosar\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\PC-Kosar\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\utils\deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+  File "C:\Users\PC-Kosar\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\PC-Kosar\AppData\Local\Programs\Python\Python314\Lib\site-packages\django\http\request.py", line 205, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.168.1.7:8000'. You may need to add '127.168.1.7' to ALLOWED_HOSTS.
+2026-06-30 18:51:08,989 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 18:54:17,941 - ERROR - service - Rank job 1 failed permanently: Rank bridge not configured. Set RANK_BRIDGE_URL and RANK_BRIDGE_HMAC_SECRET.
+2026-06-30 18:57:44,926 - ERROR - service - Rank job 2 failed permanently: Rank bridge not configured. Set RANK_BRIDGE_URL and RANK_BRIDGE_HMAC_SECRET.
+2026-06-30 19:03:23,786 - ERROR - service - Rank job 3 failed permanently: Rank bridge not configured. Set RANK_BRIDGE_URL and RANK_BRIDGE_HMAC_SECRET.
+2026-06-30 21:26:53,708 - INFO - autoreload - Watching for file changes with StatReloader
+2026-06-30 21:28:32,830 - ERROR - service - Rank job 4 failed permanently: Rank bridge not configured. Set RANK_BRIDGE_URL and RANK_BRIDGE_HMAC_SECRET.
+2026-06-30 21:30:52,809 - ERROR - service - Rank job 5 failed permanently: Rank bridge not configured. Set RANK_BRIDGE_URL and RANK_BRIDGE_HMAC_SECRET.
+2026-06-30 21:35:39,475 - ERROR - service - Rank job 6 failed permanently: Rank bridge not configured. Set RANK_BRIDGE_URL and RANK_BRIDGE_HMAC_SECRET.
+2026-06-30 21:52:02,860 - ERROR - service - Rank job 6 failed permanently: Rank bridge not configured. Set RANK_BRIDGE_URL and RANK_BRIDGE_HMAC_SECRET.
+2026-07-01 13:00:17,814 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-01 13:18:40,101 - INFO - payment_gateway - درخواست پرداخت ارسال شد: {'merchant_id': '00000000-0000-0000-0000-000000000000', 'amount': 12110000, 'description': 'خرید 1211 وارت کوین', 'callback_url': 'http://192.168.1.7:8000/orders/payment/wart-coin/callback/32/', 'email': 'minewarts.team@gmail.com'}
+2026-07-01 13:18:40,104 - INFO - payment_gateway - پاسخ درگاه: {'data': {'authority': 'S00000000000000000000000000000o6qrrn', 'fee': 150000, 'fee_type': 'Merchant', 'code': 100, 'message': 'Success'}, 'errors': []}
+2026-07-01 13:18:44,438 - INFO - payment_gateway - بررسی پرداخت: {'merchant_id': '00000000-0000-0000-0000-000000000000', 'amount': 12110000, 'authority': 'S00000000000000000000000000000o6qrrn'}
+2026-07-01 13:18:44,439 - INFO - payment_gateway - پاسخ درگاه: {'data': {'wages': None, 'code': 100, 'message': 'Paid', 'card_hash': '0866A6EAEA5CB085E4CF6EF19296BF19647552DD5F96F1E530DB3AE61837EFE7', 'card_pan': '999999******9999', 'ref_id': 158834201, 'fee_type': 'Merchant', 'fee': 150000, 'shaparak_fee': 1200, 'order_id': None}, 'errors': []}
+2026-07-01 13:19:04,898 - ERROR - service - Rank job 7 failed permanently: Rank bridge not configured. Set RANK_BRIDGE_URL and RANK_BRIDGE_HMAC_SECRET.
+2026-07-01 13:22:29,452 - ERROR - service - Rank job 8 failed permanently: Rank bridge not configured. Set RANK_BRIDGE_URL and RANK_BRIDGE_HMAC_SECRET.
+2026-07-01 13:25:27,257 - ERROR - service - Rank job 9 failed permanently: Rank bridge not configured. Set RANK_BRIDGE_URL and RANK_BRIDGE_HMAC_SECRET.
+2026-07-02 12:04:37,800 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 12:04:50,961 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 12:05:12,252 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 12:05:39,099 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 12:43:47,369 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 13:01:14,418 - INFO - autoreload - F:\sf\shop site\orders\rank_provisioning\service.py changed, reloading.
+2026-07-02 13:01:14,891 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 13:04:10,890 - INFO - autoreload - F:\sf\shop site\orders\views.py changed, reloading.
+2026-07-02 13:04:11,357 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 13:04:13,749 - INFO - autoreload - F:\sf\shop site\orders\views.py changed, reloading.
+2026-07-02 13:04:14,152 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 13:04:27,728 - INFO - autoreload - F:\sf\shop site\orders\views.py changed, reloading.
+2026-07-02 13:04:28,102 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 13:06:54,370 - INFO - autoreload - F:\sf\shop site\orders\views.py changed, reloading.
+2026-07-02 13:06:54,778 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 13:17:46,123 - INFO - autoreload - F:\sf\shop site\shop\admin.py changed, reloading.
+2026-07-02 13:17:46,564 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 13:19:24,526 - INFO - autoreload - F:\sf\shop site\shop\admin.py changed, reloading.
+2026-07-02 13:19:24,991 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 13:22:08,632 - INFO - autoreload - F:\sf\shop site\shop\admin.py changed, reloading.
+2026-07-02 13:22:09,095 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 13:22:11,285 - INFO - autoreload - F:\sf\shop site\shop\admin.py changed, reloading.
+2026-07-02 13:22:11,632 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 13:22:14,819 - INFO - autoreload - F:\sf\shop site\shop\admin.py changed, reloading.
+2026-07-02 13:22:15,167 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 13:22:17,354 - INFO - autoreload - F:\sf\shop site\shop\admin.py changed, reloading.
+2026-07-02 13:22:17,768 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 13:22:39,807 - INFO - autoreload - F:\sf\shop site\shop\admin.py changed, reloading.
+2026-07-02 13:22:40,340 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 13:24:46,441 - INFO - autoreload - F:\sf\shop site\shop\admin.py changed, reloading.
+2026-07-02 13:24:46,926 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 13:37:19,745 - INFO - autoreload - F:\sf\shop site\myshop\security_middleware.py changed, reloading.
+2026-07-02 13:37:20,234 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 13:38:32,932 - INFO - autoreload - F:\sf\shop site\myshop\settings.py changed, reloading.
+2026-07-02 13:38:33,404 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 13:40:21,755 - INFO - autoreload - F:\sf\shop site\myshop\settings.py changed, reloading.
+2026-07-02 13:40:22,379 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 13:41:45,000 - INFO - autoreload - F:\sf\shop site\myshop\settings.py changed, reloading.
+2026-07-02 13:41:45,442 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 13:41:49,644 - INFO - autoreload - F:\sf\shop site\myshop\settings.py changed, reloading.
+2026-07-02 13:41:50,033 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 13:42:19,478 - INFO - autoreload - F:\sf\shop site\myshop\settings.py changed, reloading.
+2026-07-02 13:42:19,879 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 13:43:20,954 - INFO - autoreload - F:\sf\shop site\myshop\settings.py changed, reloading.
+2026-07-02 13:43:21,956 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 13:43:54,348 - INFO - autoreload - F:\sf\shop site\myshop\settings.py changed, reloading.
+2026-07-02 13:43:54,804 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 13:44:13,373 - INFO - autoreload - F:\sf\shop site\myshop\settings.py changed, reloading.
+2026-07-02 13:44:36,922 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 13:59:03,847 - INFO - autoreload - F:\sf\shop site\myshop\settings.py changed, reloading.
+2026-07-02 13:59:04,791 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 13:59:42,142 - INFO - autoreload - F:\sf\shop site\myshop\settings.py changed, reloading.
+2026-07-02 13:59:42,788 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 14:03:18,792 - INFO - autoreload - F:\sf\shop site\myshop\settings.py changed, reloading.
+2026-07-02 14:03:19,441 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 14:03:57,982 - DEBUG - connectionpool - Starting new HTTPS connection (1): sandbox.zarinpal.com:443
+2026-07-02 14:03:58,504 - DEBUG - connectionpool - https://sandbox.zarinpal.com:443 "POST /pg/v4/payment/request.json HTTP/1.1" 422 None
+2026-07-02 14:03:58,507 - ERROR - payment_gateway - خطا در ارتباط با درگاه: Status Code 422
+2026-07-02 14:04:43,325 - DEBUG - connectionpool - Starting new HTTPS connection (1): sandbox.zarinpal.com:443
+2026-07-02 14:04:43,760 - DEBUG - connectionpool - https://sandbox.zarinpal.com:443 "POST /pg/v4/payment/request.json HTTP/1.1" 422 None
+2026-07-02 14:04:43,761 - ERROR - payment_gateway - خطا در ارتباط با درگاه: Status Code 422
+2026-07-02 14:05:22,655 - DEBUG - connectionpool - Starting new HTTPS connection (1): sandbox.zarinpal.com:443
+2026-07-02 14:05:23,152 - DEBUG - connectionpool - https://sandbox.zarinpal.com:443 "POST /pg/v4/payment/request.json HTTP/1.1" 422 None
+2026-07-02 14:05:23,153 - ERROR - payment_gateway - خطا در ارتباط با درگاه: Status Code 422
+2026-07-02 14:06:45,231 - INFO - autoreload - F:\sf\shop site\orders\payment_gateway.py changed, reloading.
+2026-07-02 14:06:45,794 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 14:06:49,165 - INFO - payment_gateway - 📤 ارسال درخواست به زرین‌پال:
+2026-07-02 14:06:49,166 - INFO - payment_gateway -    - Merchant ID: your-merchant-id
+2026-07-02 14:06:49,167 - INFO - payment_gateway -    - Amount (Rial): 1,845,000
+2026-07-02 14:06:49,168 - INFO - payment_gateway -    - Callback: http://192.168.1.5:8000/orders/payment/wart-coin/callback/33/
+2026-07-02 14:06:49,169 - DEBUG - connectionpool - Starting new HTTPS connection (1): sandbox.zarinpal.com:443
+2026-07-02 14:06:49,644 - DEBUG - connectionpool - https://sandbox.zarinpal.com:443 "POST /pg/v4/payment/request.json HTTP/1.1" 422 None
+2026-07-02 14:06:49,644 - INFO - payment_gateway - 📥 پاسخ زرین‌پال: Status 422
+2026-07-02 14:06:49,645 - INFO - payment_gateway -    - Response: {"data":{},"errors":{"message":"The merchant id must be at least 36 characters.","code":-9,"validations":[]}}...
+2026-07-02 14:06:49,645 - ERROR - payment_gateway - ❌ خطای HTTP: 422
+2026-07-02 14:06:49,645 - ERROR - payment_gateway -    - Response: {"data":{},"errors":{"message":"The merchant id must be at least 36 characters.","code":-9,"validations":[]}}
+2026-07-02 14:07:36,499 - INFO - autoreload - F:\sf\shop site\myshop\settings.py changed, reloading.
+2026-07-02 14:07:37,131 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 14:07:38,819 - INFO - payment_gateway - 📤 ارسال درخواست به زرین‌پال:
+2026-07-02 14:07:38,822 - INFO - payment_gateway -    - Merchant ID: 00000000-0000-0000-0000-000000000000
+2026-07-02 14:07:38,833 - INFO - payment_gateway -    - Amount (Rial): 1,845,000
+2026-07-02 14:07:38,833 - INFO - payment_gateway -    - Callback: http://192.168.1.5:8000/orders/payment/wart-coin/callback/33/
+2026-07-02 14:07:38,837 - DEBUG - connectionpool - Starting new HTTPS connection (1): sandbox.zarinpal.com:443
+2026-07-02 14:07:39,264 - DEBUG - connectionpool - https://sandbox.zarinpal.com:443 "POST /pg/v4/payment/request.json HTTP/1.1" 401 None
+2026-07-02 14:07:39,264 - INFO - payment_gateway - 📥 پاسخ زرین‌پال: Status 401
+2026-07-02 14:07:39,265 - INFO - payment_gateway -    - Response: {"data":{},"errors":{"message":"To many attempts, please try again later.","code":-12,"validations":[]}}...
+2026-07-02 14:07:39,265 - ERROR - payment_gateway - ❌ خطای HTTP: 401
+2026-07-02 14:07:39,265 - ERROR - payment_gateway -    - Response: {"data":{},"errors":{"message":"To many attempts, please try again later.","code":-12,"validations":[]}}
+2026-07-02 14:10:37,835 - INFO - payment_gateway - 📤 ارسال درخواست به زرین‌پال:
+2026-07-02 14:10:37,835 - INFO - payment_gateway -    - Merchant ID: 00000000-0000-0000-0000-000000000000
+2026-07-02 14:10:37,835 - INFO - payment_gateway -    - Amount (Rial): 180,000
+2026-07-02 14:10:37,836 - INFO - payment_gateway -    - Callback: http://192.168.1.5:8000/orders/payment/wart-coin/callback/37/
+2026-07-02 14:10:37,837 - DEBUG - connectionpool - Starting new HTTPS connection (1): sandbox.zarinpal.com:443
+2026-07-02 14:10:38,357 - DEBUG - connectionpool - https://sandbox.zarinpal.com:443 "POST /pg/v4/payment/request.json HTTP/1.1" 401 None
+2026-07-02 14:10:38,358 - INFO - payment_gateway - 📥 پاسخ زرین‌پال: Status 401
+2026-07-02 14:10:38,358 - INFO - payment_gateway -    - Response: {"data":{},"errors":{"message":"To many attempts, please try again later.","code":-12,"validations":[]}}...
+2026-07-02 14:10:38,359 - ERROR - payment_gateway - ❌ خطای HTTP: 401
+2026-07-02 14:10:38,359 - ERROR - payment_gateway -    - Response: {"data":{},"errors":{"message":"To many attempts, please try again later.","code":-12,"validations":[]}}
+2026-07-02 18:43:03,454 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 18:44:45,589 - INFO - payment_gateway - 📤 ارسال درخواست به زرین‌پال:
+2026-07-02 18:44:45,589 - INFO - payment_gateway -    - Merchant ID: 00000000-0000-0000-0000-000000000000
+2026-07-02 18:44:45,589 - INFO - payment_gateway -    - Amount (Rial): 111,280,000
+2026-07-02 18:44:45,589 - INFO - payment_gateway -    - Callback: http://192.168.1.5:8000/orders/payment/wart-coin/callback/38/
+2026-07-02 18:44:45,594 - DEBUG - connectionpool - Starting new HTTPS connection (1): sandbox.zarinpal.com:443
+2026-07-02 18:44:46,114 - DEBUG - connectionpool - https://sandbox.zarinpal.com:443 "POST /pg/v4/payment/request.json HTTP/1.1" 200 None
+2026-07-02 18:44:46,115 - INFO - payment_gateway - 📥 پاسخ زرین‌پال: Status 200
+2026-07-02 18:44:46,115 - INFO - payment_gateway -    - Response: {"data":{"authority":"S000000000000000000000000000007lzg2l","fee":150000,"fee_type":"Merchant","code":100,"message":"Success"},"errors":[]}...
+2026-07-02 18:44:50,497 - INFO - payment_gateway - 📤 تایید پرداخت: Authority=S000000000000000000000000000007lzg2l, Amount=111,280,000
+2026-07-02 18:44:50,498 - DEBUG - connectionpool - Starting new HTTPS connection (1): sandbox.zarinpal.com:443
+2026-07-02 18:44:51,003 - DEBUG - connectionpool - https://sandbox.zarinpal.com:443 "POST /pg/v4/payment/verify.json HTTP/1.1" 200 None
+2026-07-02 18:44:51,003 - INFO - payment_gateway - 📥 پاسخ تایید: Status 200
+2026-07-02 18:47:01,699 - INFO - autoreload - F:\sf\shop site\myshop\settings.py changed, reloading.
+2026-07-02 18:47:02,273 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 18:48:21,678 - DEBUG - PngImagePlugin - STREAM b'IHDR' 16 13
+2026-07-02 18:48:21,680 - DEBUG - PngImagePlugin - STREAM b'sRGB' 41 1
+2026-07-02 18:48:21,681 - DEBUG - PngImagePlugin - STREAM b'gAMA' 54 4
+2026-07-02 18:48:21,681 - DEBUG - PngImagePlugin - STREAM b'pHYs' 70 9
+2026-07-02 18:48:21,681 - DEBUG - PngImagePlugin - STREAM b'IDAT' 91 65445
+2026-07-02 18:48:21,681 - DEBUG - Image - Importing AvifImagePlugin
+2026-07-02 18:48:21,686 - DEBUG - Image - Importing BlpImagePlugin
+2026-07-02 18:48:21,687 - DEBUG - Image - Importing BmpImagePlugin
+2026-07-02 18:48:21,687 - DEBUG - Image - Importing BufrStubImagePlugin
+2026-07-02 18:48:21,689 - DEBUG - Image - Importing CurImagePlugin
+2026-07-02 18:48:21,690 - DEBUG - Image - Importing DcxImagePlugin
+2026-07-02 18:48:21,692 - DEBUG - Image - Importing DdsImagePlugin
+2026-07-02 18:48:21,696 - DEBUG - Image - Importing EpsImagePlugin
+2026-07-02 18:48:21,698 - DEBUG - Image - Importing FitsImagePlugin
+2026-07-02 18:48:21,699 - DEBUG - Image - Importing FliImagePlugin
+2026-07-02 18:48:21,701 - DEBUG - Image - Importing FpxImagePlugin
+2026-07-02 18:48:21,703 - DEBUG - Image - Image: failed to import FpxImagePlugin: No module named 'olefile'
+2026-07-02 18:48:21,703 - DEBUG - Image - Importing FtexImagePlugin
+2026-07-02 18:48:21,705 - DEBUG - Image - Importing GbrImagePlugin
+2026-07-02 18:48:21,706 - DEBUG - Image - Importing GifImagePlugin
+2026-07-02 18:48:21,706 - DEBUG - Image - Importing GribStubImagePlugin
+2026-07-02 18:48:21,707 - DEBUG - Image - Importing Hdf5StubImagePlugin
+2026-07-02 18:48:21,708 - DEBUG - Image - Importing IcnsImagePlugin
+2026-07-02 18:48:21,711 - DEBUG - Image - Importing IcoImagePlugin
+2026-07-02 18:48:21,713 - DEBUG - Image - Importing ImImagePlugin
+2026-07-02 18:48:21,714 - DEBUG - Image - Importing ImtImagePlugin
+2026-07-02 18:48:21,716 - DEBUG - Image - Importing IptcImagePlugin
+2026-07-02 18:48:21,717 - DEBUG - Image - Importing JpegImagePlugin
+2026-07-02 18:48:21,717 - DEBUG - Image - Importing Jpeg2KImagePlugin
+2026-07-02 18:48:21,717 - DEBUG - Image - Importing McIdasImagePlugin
+2026-07-02 18:48:21,719 - DEBUG - Image - Importing MicImagePlugin
+2026-07-02 18:48:21,721 - DEBUG - Image - Image: failed to import MicImagePlugin: No module named 'olefile'
+2026-07-02 18:48:21,721 - DEBUG - Image - Importing MpegImagePlugin
+2026-07-02 18:48:21,723 - DEBUG - Image - Importing MpoImagePlugin
+2026-07-02 18:48:21,727 - DEBUG - Image - Importing MspImagePlugin
+2026-07-02 18:48:21,728 - DEBUG - Image - Importing PalmImagePlugin
+2026-07-02 18:48:21,731 - DEBUG - Image - Importing PcdImagePlugin
+2026-07-02 18:48:21,732 - DEBUG - Image - Importing PcxImagePlugin
+2026-07-02 18:48:21,732 - DEBUG - Image - Importing PdfImagePlugin
+2026-07-02 18:48:21,739 - DEBUG - Image - Importing PixarImagePlugin
+2026-07-02 18:48:21,741 - DEBUG - Image - Importing PngImagePlugin
+2026-07-02 18:48:21,741 - DEBUG - Image - Importing PpmImagePlugin
+2026-07-02 18:48:21,741 - DEBUG - Image - Importing PsdImagePlugin
+2026-07-02 18:48:21,743 - DEBUG - Image - Importing QoiImagePlugin
+2026-07-02 18:48:21,745 - DEBUG - Image - Importing SgiImagePlugin
+2026-07-02 18:48:21,746 - DEBUG - Image - Importing SpiderImagePlugin
+2026-07-02 18:48:21,747 - DEBUG - Image - Importing SunImagePlugin
+2026-07-02 18:48:21,748 - DEBUG - Image - Importing TgaImagePlugin
+2026-07-02 18:48:21,750 - DEBUG - Image - Importing TiffImagePlugin
+2026-07-02 18:48:21,750 - DEBUG - Image - Importing WebPImagePlugin
+2026-07-02 18:48:21,755 - DEBUG - Image - Importing WmfImagePlugin
+2026-07-02 18:48:21,756 - DEBUG - Image - Importing XbmImagePlugin
+2026-07-02 18:48:21,758 - DEBUG - Image - Importing XpmImagePlugin
+2026-07-02 18:48:21,760 - DEBUG - Image - Importing XVThumbImagePlugin
+2026-07-02 18:48:51,264 - DEBUG - connectionpool - Starting new HTTP connection (1): 127.0.0.1:8080
+2026-07-02 18:48:53,383 - WARNING - service - Rank job 10 retry scheduled: Bridge connection failed: HTTPConnectionPool(host='127.0.0.1', port=8080): Max retries exceeded with url: /v1/ranks/provision/v1/ranks/provision (Caused by NewConnectionError("HTTPConnection(host='127.0.0.1', port=8080): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+2026-07-02 18:49:53,720 - INFO - payment_gateway - 📤 ارسال درخواست به زرین‌پال:
+2026-07-02 18:49:53,720 - INFO - payment_gateway -    - Merchant ID: 00000000-0000-0000-0000-000000000000
+2026-07-02 18:49:53,720 - INFO - payment_gateway -    - Amount (Rial): 180,000
+2026-07-02 18:49:53,720 - INFO - payment_gateway -    - Callback: http://192.168.1.5:8000/orders/payment/wart-coin/callback/39/
+2026-07-02 18:49:53,722 - DEBUG - connectionpool - Starting new HTTPS connection (1): sandbox.zarinpal.com:443
+2026-07-02 18:49:54,222 - DEBUG - connectionpool - https://sandbox.zarinpal.com:443 "POST /pg/v4/payment/request.json HTTP/1.1" 200 None
+2026-07-02 18:49:54,223 - INFO - payment_gateway - 📥 پاسخ زرین‌پال: Status 200
+2026-07-02 18:49:54,223 - INFO - payment_gateway -    - Response: {"data":{"authority":"S00000000000000000000000000000vdgpnr","fee":5400,"fee_type":"Merchant","code":100,"message":"Success"},"errors":[]}...
+2026-07-02 18:49:55,874 - INFO - payment_gateway - 📤 تایید پرداخت: Authority=S00000000000000000000000000000vdgpnr, Amount=180,000
+2026-07-02 18:49:55,875 - DEBUG - connectionpool - Starting new HTTPS connection (1): sandbox.zarinpal.com:443
+2026-07-02 18:49:56,383 - DEBUG - connectionpool - https://sandbox.zarinpal.com:443 "POST /pg/v4/payment/verify.json HTTP/1.1" 200 None
+2026-07-02 18:49:56,384 - INFO - payment_gateway - 📥 پاسخ تایید: Status 200
+2026-07-02 18:55:14,900 - INFO - autoreload - F:\sf\shop site\myshop\server\views.py changed, reloading.
+2026-07-02 18:55:15,401 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 18:55:23,952 - INFO - autoreload - F:\sf\shop site\myshop\server\views.py changed, reloading.
+2026-07-02 18:55:24,433 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 18:55:27,971 - INFO - autoreload - F:\sf\shop site\myshop\server\views.py changed, reloading.
+2026-07-02 18:55:28,501 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-02 22:59:48,942 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-03 17:36:30,351 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-03 17:36:48,922 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-03 17:48:24,591 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-03 17:51:17,705 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-04 17:59:09,860 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-04 18:03:27,840 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-04 18:07:58,149 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-06 10:43:21,106 - INFO - autoreload - Watching for file changes with StatReloader
+2026-07-08 12:52:03,870 - INFO - autoreload - Watching for file changes with StatReloader

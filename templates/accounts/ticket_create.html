@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% block title %}ایجاد تیکت جدید{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-control {
+        background: rgba(255,255,255,0.05) !important;
+        border: 1px solid rgba(255,255,255,0.1) !important;
+        color: var(--text-light) !important;
+        border-radius: 12px !important;
+        transition: all 0.3s ease;
+    }
+    .form-control:focus {
+        border-color: var(--primary-color) !important;
+        box-shadow: 0 0 0 4px rgba(76,175,80,0.12) !important;
+        background: rgba(255,255,255,0.07) !important;
+    }
+    .form-control::placeholder {
+        color: rgba(255,255,255,0.25);
+    }
+    .form-label {
+        color: var(--text-light);
+        font-weight: 600;
+        margin-bottom: 6px;
+    }
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-color), #66BB6A);
+        border: none;
+        border-radius: 50px;
+        padding: 10px 30px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(76,175,80,0.3);
+    }
+    .btn-secondary {
+        border-radius: 50px;
+        padding: 10px 24px;
+        border-color: rgba(255,255,255,0.15);
+        color: var(--text-light);
+    }
+    .btn-secondary:hover {
+        background: rgba(255,255,255,0.05);
+        border-color: var(--primary-color);
+        color: var(--primary-color);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 700px; margin-top: 40px;">
+    <div class="glass-card" style="padding: 30px 25px;">
+        <div class="text-center border-bottom border-secondary border-opacity-10 pb-3 mb-4">
+            <h1 style="color: var(--primary-color); font-size: 2rem; font-weight: 700;">🎫 تیکت جدید</h1>
+            <p style="color: var(--text-muted);">سوال یا مشکل خود را با جزئیات کامل مطرح کنید.</p>
+        </div>
+
+        {% if form.errors or message_form.errors %}
+            <div class="alert alert-danger" style="border-radius: 12px; background: rgba(244,67,54,0.08); border-color: rgba(244,67,54,0.2); color: #f44336; padding: 12px 18px;">
+                <strong>⚠️ خطا</strong>
+                <ul class="mb-0 mt-2" style="padding-right: 20px;">
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for field, errors in message_form.errors.items %}
+                        {% for error in errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            <div class="mb-4">
+                <label class="form-label" for="id_subject">📌 موضوع تیکت</label>
+                {{ form.subject }}
+                {% if form.subject.help_text %}
+                    <small class="text-muted d-block mt-1">{{ form.subject.help_text }}</small>
+                {% endif %}
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label" for="id_message">✏️ متن پیام</label>
+                {{ message_form.message }}
+                {% if message_form.message.help_text %}
+                    <small class="text-muted d-block mt-1">{{ message_form.message.help_text }}</small>
+                {% endif %}
+            </div>
+
+            <div class="d-flex justify-content-end gap-3 flex-wrap">
+                <a href="{% url 'accounts:ticket_list' %}" class="btn btn-secondary">انصراف</a>
+                <button type="submit" class="btn btn-primary">✅ ارسال تیکت</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

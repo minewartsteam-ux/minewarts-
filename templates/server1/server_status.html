@@ -1,0 +1,957 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}وضعیت سرور{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ===== RESET & BASE ===== */
+    .server-page {
+        padding: clamp(2rem, 5vw, 4rem) clamp(1rem, 3vw, 2rem);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .server-container {
+        width: 100%;
+        max-width: 1100px;
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 2.5rem;
+        align-items: start;
+    }
+
+    /* ===== MAIN CARD ===== */
+    .server-main {
+        background: linear-gradient(145deg, rgba(25, 25, 35, 0.95), rgba(15, 15, 25, 0.92));
+        border-radius: 24px;
+        padding: 2.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .server-main::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -30%;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(0, 230, 118, 0.06) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+    .server-main:hover {
+        border-color: rgba(76, 175, 80, 0.15);
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 40px rgba(76, 175, 80, 0.02);
+    }
+
+    /* ===== HEADER ===== */
+    .server-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2.5rem;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        position: relative;
+        z-index: 1;
+    }
+
+    .server-title h2 {
+        margin: 0;
+        font-size: clamp(1.75rem, 3vw, 2.25rem);
+        font-weight: 900;
+        background: linear-gradient(135deg, #4CAF50, #03A9F4);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .server-subtitle {
+        color: rgba(255, 255, 255, 0.4);
+        font-size: clamp(0.95rem, 1.6vw, 1.1rem);
+        margin-top: 0.3rem;
+        font-weight: 400;
+    }
+
+    .server-refresh-btn {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 12px;
+        padding: 10px 18px;
+        color: rgba(255, 255, 255, 0.5);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: 'Vazirmatn', sans-serif;
+    }
+
+    .server-refresh-btn:hover {
+        background: rgba(76, 175, 80, 0.1);
+        border-color: rgba(76, 175, 80, 0.2);
+        color: #4CAF50;
+        transform: scale(1.02);
+    }
+
+    .server-refresh-btn:active {
+        transform: scale(0.95);
+    }
+
+    .server-refresh-btn .spinner {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-top: 2px solid #4CAF50;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        visibility: hidden;
+    }
+
+    .server-refresh-btn.loading .spinner {
+        visibility: visible;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    /* ===== STATUS BADGE ===== */
+    .status-display {
+        margin-bottom: 2rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .status-badge {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        padding: 1.2rem 2rem;
+        border-radius: 50px;
+        font-size: 1.2rem;
+        font-weight: 800;
+        border: 2px solid;
+        min-height: 70px;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        cursor: default;
+        width: 100%;
+    }
+
+    .status-badge:hover {
+        transform: scale(1.01) translateY(-2px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .status-badge .icon {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        box-shadow: 0 0 20px currentColor;
+    }
+
+    .status-online {
+        background: rgba(0, 230, 118, 0.08);
+        border-color: rgba(0, 230, 118, 0.3);
+        color: #00e676;
+    }
+    .status-online .icon {
+        background: linear-gradient(135deg, #00e676, #00c853);
+        animation: onlinePulse 2s infinite;
+    }
+
+    .status-offline {
+        background: rgba(255, 82, 82, 0.08);
+        border-color: rgba(255, 82, 82, 0.25);
+        color: #ff5252;
+    }
+    .status-offline .icon {
+        background: linear-gradient(135deg, #ff5252, #d32f2f);
+        animation: offlineBlink 2.5s infinite;
+    }
+
+    .status-checking {
+        background: rgba(255, 193, 7, 0.08);
+        border-color: rgba(255, 193, 7, 0.25);
+        color: #FFC107;
+    }
+    .status-checking .icon {
+        background: linear-gradient(135deg, #FFC107, #FFA000);
+        animation: spin 1.5s linear infinite;
+        width: 16px;
+        height: 16px;
+        border: 2px solid transparent;
+        border-top: 2px solid #FFC107;
+        border-radius: 50%;
+    }
+
+    @keyframes onlinePulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.3); opacity: 0.7; }
+    }
+
+    @keyframes offlineBlink {
+        0%, 50% { opacity: 0.5; }
+        51%, 100% { opacity: 1; }
+    }
+
+    /* ===== PLAYERS BAR ===== */
+    .players-bar {
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 20px;
+        padding: 1.75rem;
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        position: relative;
+        z-index: 1;
+        transition: all 0.3s ease;
+    }
+
+    .players-bar:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.06);
+    }
+
+    .players-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.2rem;
+        font-size: 1.05rem;
+        font-weight: 600;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .percent-display {
+        color: #4CAF50;
+        font-size: 1.4rem;
+        font-weight: 800;
+        transition: all 0.3s ease;
+    }
+
+    .players-display {
+        color: rgba(255, 255, 255, 0.8);
+        background: rgba(255, 255, 255, 0.05);
+        padding: 0.4rem 1.2rem;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .progress-container {
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 16px;
+        height: 24px;
+        padding: 3px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #4CAF50, #66BB6A, #03A9F4);
+        border-radius: 14px;
+        width: 0%;
+        transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        box-shadow: 0 0 20px rgba(76, 175, 80, 0.15);
+    }
+
+    .progress-fill::after {
+        content: attr(data-percent);
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #fff;
+        font-weight: 700;
+        font-size: 0.85rem;
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    /* ===== SIDEBAR ===== */
+    .server-sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        height: fit-content;
+    }
+
+    .metric-card {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+        border-radius: 20px;
+        padding: 1.75rem;
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+    }
+
+    .metric-card:hover {
+        border-color: rgba(255, 255, 255, 0.06);
+        background: rgba(255, 255, 255, 0.02);
+    }
+
+    .metric-title {
+        color: #4CAF50;
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.8rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        text-align: center;
+        letter-spacing: 0.5px;
+    }
+
+    .metric-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.9rem 0;
+        border-bottom: 1px dashed rgba(255, 255, 255, 0.02);
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .metric-item:last-child {
+        border-bottom: none;
+    }
+
+    .metric-label {
+        color: rgba(255, 255, 255, 0.4);
+        font-weight: 500;
+        font-size: 0.95rem;
+    }
+
+    .metric-value {
+        color: rgba(255, 255, 255, 0.85);
+        font-weight: 700;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .ping-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        color: rgba(255, 255, 255, 0.8);
+        min-width: 90px;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    .ping-badge:hover {
+        background: rgba(255, 255, 255, 0.06);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .ping-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #03A9F4;
+        box-shadow: 0 0 12px rgba(3, 169, 244, 0.4);
+        animation: pingPulse 1.6s infinite;
+        flex-shrink: 0;
+    }
+
+    .ping-dot.good {
+        background: #4CAF50;
+        box-shadow: 0 0 12px rgba(76, 175, 80, 0.4);
+    }
+
+    .ping-dot.medium {
+        background: #FFC107;
+        box-shadow: 0 0 12px rgba(255, 193, 7, 0.4);
+    }
+
+    .ping-dot.bad {
+        background: #ff5252;
+        box-shadow: 0 0 12px rgba(255, 82, 82, 0.4);
+    }
+
+    @keyframes pingPulse {
+        0% { box-shadow: 0 0 0 0 rgba(3, 169, 244, 0.5); }
+        70% { box-shadow: 0 0 0 10px rgba(3, 169, 244, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(3, 169, 244, 0); }
+    }
+
+    .time-value small {
+        opacity: 0.6;
+        font-weight: 500;
+        font-size: 0.85rem;
+    }
+
+    /* ===== ERROR STATE ===== */
+    .error-state {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 3rem 2rem;
+        color: #ff5252;
+        background: rgba(255, 82, 82, 0.06);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 82, 82, 0.15);
+        display: none;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+
+    .error-state.active {
+        display: block;
+        animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .error-icon {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+        opacity: 0.7;
+    }
+
+    .error-state h3 {
+        color: #ff5252;
+        font-size: 1.3rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .error-state p {
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 0.95rem;
+    }
+
+    .error-state small {
+        opacity: 0.5;
+        display: block;
+        margin-top: 0.3rem;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 992px) {
+        .server-container {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            max-width: 100%;
+        }
+
+        .server-main {
+            padding: 2rem;
+        }
+
+        .metric-card {
+            padding: 1.5rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .server-page {
+            padding: 1rem 0.5rem;
+        }
+
+        .server-main {
+            padding: 1.5rem 1rem;
+            border-radius: 16px;
+        }
+
+        .server-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.8rem;
+        }
+
+        .server-refresh-btn {
+            width: 100%;
+            justify-content: center;
+            padding: 8px 14px;
+            font-size: 0.85rem;
+        }
+
+        .status-badge {
+            font-size: 1rem;
+            padding: 0.8rem 1.2rem;
+            min-height: 56px;
+            border-radius: 30px;
+        }
+
+        .players-bar {
+            padding: 1.2rem;
+        }
+
+        .players-header {
+            font-size: 0.95rem;
+        }
+
+        .percent-display {
+            font-size: 1.2rem;
+        }
+
+        .players-display {
+            font-size: 0.9rem;
+            padding: 0.3rem 0.8rem;
+        }
+
+        .progress-container {
+            height: 20px;
+        }
+
+        .progress-fill::after {
+            font-size: 0.7rem;
+            right: 0.6rem;
+        }
+
+        .metric-card {
+            padding: 1.2rem;
+            border-radius: 16px;
+        }
+
+        .metric-title {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .metric-item {
+            padding: 0.7rem 0;
+            font-size: 0.9rem;
+        }
+
+        .metric-value {
+            font-size: 1rem;
+        }
+
+        .ping-badge {
+            font-size: 0.85rem;
+            padding: 0.4rem 0.8rem;
+            min-width: 70px;
+        }
+
+        .error-state {
+            padding: 2rem 1rem;
+        }
+
+        .error-icon {
+            font-size: 2.5rem;
+        }
+    }
+
+    @media (max-width: 400px) {
+        .server-main {
+            padding: 1rem 0.7rem;
+        }
+
+        .server-title h2 {
+            font-size: 1.4rem;
+        }
+
+        .status-badge {
+            font-size: 0.9rem;
+            padding: 0.6rem 1rem;
+            min-height: 48px;
+            gap: 0.6rem;
+        }
+
+        .status-badge .icon {
+            width: 14px;
+            height: 14px;
+        }
+
+        .players-header {
+            font-size: 0.85rem;
+        }
+
+        .percent-display {
+            font-size: 1rem;
+        }
+
+        .players-display {
+            font-size: 0.8rem;
+            padding: 0.2rem 0.6rem;
+        }
+
+        .progress-container {
+            height: 18px;
+        }
+
+        .progress-fill::after {
+            font-size: 0.6rem;
+        }
+
+        .metric-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.3rem;
+        }
+
+        .metric-value {
+            width: 100%;
+            justify-content: flex-start;
+        }
+
+        .ping-badge {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    /* ===== SCROLLBAR ===== */
+    .server-main::-webkit-scrollbar,
+    .metric-card::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .server-main::-webkit-scrollbar-track,
+    .metric-card::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .server-main::-webkit-scrollbar-thumb,
+    .metric-card::-webkit-scrollbar-thumb {
+        background: rgba(76, 175, 80, 0.3);
+        border-radius: 4px;
+    }
+
+    /* ===== UTILITY ===== */
+    .text-center {
+        text-align: center;
+    }
+
+    .mt-1 { margin-top: 0.5rem; }
+    .mt-2 { margin-top: 1rem; }
+    .mt-3 { margin-top: 1.5rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container server-page">
+    <div class="server-container" role="main">
+        <!-- ===== ERROR STATE ===== -->
+        <div id="errorState" class="error-state">
+            <div class="error-icon">⚠️</div>
+            <h3>اتصال به سرور قطع شد</h3>
+            <p>سرور در دسترس نیست<br><small>تلاش مجدد هر ۳۰ ثانیه</small></p>
+        </div>
+
+        <!-- ===== MAIN CONTENT ===== -->
+        <div class="server-main">
+            <div class="server-header">
+                <div class="server-title">
+                    <h2>🎮 وضعیت سرور</h2>
+                    <div class="server-subtitle">آمار زنده + پینگ لحظه‌ای</div>
+                </div>
+                <button class="server-refresh-btn" id="refreshBtn" aria-label="بروزرسانی دستی">
+                    <span>🔄</span>
+                    <span>بروزرسانی</span>
+                    <span class="spinner"></span>
+                </button>
+            </div>
+
+            <div class="status-display">
+                <div id="statusBadge" class="status-badge status-checking" role="status" aria-live="polite">
+                    <div class="icon"></div>
+                    <span id="statusText">در حال اتصال...</span>
+                </div>
+            </div>
+
+            <div class="players-bar">
+                <div class="players-header">
+                    <div class="percent-display">
+                        <span id="percentText">۰٪</span>
+                    </div>
+                    <div class="players-display" id="playersText">۰ / ۰</div>
+                </div>
+                <div class="progress-container">
+                    <div id="progressFill" class="progress-fill" data-percent="۰٪"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== SIDEBAR ===== -->
+        <div class="server-sidebar">
+            <div class="metric-card">
+                <div class="metric-title">📊 جزئیات فنی</div>
+                
+                <div class="metric-item">
+                    <div class="metric-label">⏱️ پینگ</div>
+                    <div class="metric-value">
+                        <span class="ping-badge" id="pingBadge">
+                            <span class="ping-dot" id="pingDot"></span>
+                            <span id="pingText">-- ms</span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="metric-item">
+                    <div class="metric-label">✅ وضعیت</div>
+                    <div class="metric-value" id="stateText">در حال بارگذاری</div>
+                </div>
+
+                <div class="metric-item time-value">
+                    <div class="metric-label">🔄 آخرین بروزرسانی</div>
+                    <div class="metric-value">
+                        <small id="lastUpdate">--</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        'use strict';
+
+        // ===== CONFIG =====
+        const API_URL = "{% url 'server:server_status_json' %}";
+        const REFRESH_INTERVAL = 30000; // 30 seconds
+
+        // ===== DOM REFS =====
+        const els = {
+            errorState: document.getElementById('errorState'),
+            statusBadge: document.getElementById('statusBadge'),
+            statusText: document.getElementById('statusText'),
+            stateText: document.getElementById('stateText'),
+            percentText: document.getElementById('percentText'),
+            playersText: document.getElementById('playersText'),
+            progressFill: document.getElementById('progressFill'),
+            pingText: document.getElementById('pingText'),
+            pingDot: document.getElementById('pingDot'),
+            lastUpdate: document.getElementById('lastUpdate'),
+            refreshBtn: document.getElementById('refreshBtn'),
+        };
+
+        let consecutiveErrors = 0;
+        const MAX_ERRORS = 3;
+        let refreshTimer = null;
+        let isRefreshing = false;
+
+        // ===== HELPERS =====
+        function safeNumber(value, fallback = 0) {
+            if (value === null || value === undefined || value === '') return fallback;
+            const num = Number(value);
+            return isFinite(num) && num >= 0 ? num : fallback;
+        }
+
+        function safeString(value, fallback = '--') {
+            return value && typeof value === 'string' ? value : fallback;
+        }
+
+        function getStatusText(status) {
+            const s = safeString(status, '').toLowerCase();
+            if (s === 'online' || s === 'on' || s === 'true' || s === '1') return 'آنلاین ✅';
+            if (s === 'offline' || s === 'off' || s === 'false' || s === '0') return 'آفلاین ❌';
+            return 'نامشخص ⚠️';
+        }
+
+        function isOnlineStatus(status) {
+            const s = safeString(status, '').toLowerCase();
+            return ['online', 'on', 'true', '1'].includes(s);
+        }
+
+        function getPingClass(ping) {
+            const p = safeNumber(ping, 0);
+            if (p === 0) return '';
+            if (p < 50) return 'good';
+            if (p < 150) return 'medium';
+            return 'bad';
+        }
+
+        function formatTime(date) {
+            if (!date) return '--';
+            return new Intl.DateTimeFormat('fa-IR', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+            }).format(date);
+        }
+
+        // ===== UPDATE UI =====
+        function updateUI(data) {
+            // استخراج داده‌ها با fallback
+            const occupancy = safeNumber(data.occupancy_percent ?? data.percent ?? data.usage ?? 0);
+            const onlinePlayers = safeNumber(data.online_players ?? data.online ?? data.players ?? 0);
+            const maxPlayers = safeNumber(data.max_players ?? data.max ?? data.capacity ?? 100);
+            const latency = safeNumber(data.latency ?? data.latency_ms ?? data.ping ?? 0);
+            const status = data.status ?? (onlinePlayers > 0 ? 'ON' : 'OFF');
+            const serverName = safeString(data.server_name ?? data.name ?? 'سرور');
+
+            // وضعیت
+            const statusText = getStatusText(status);
+            const isOnline = isOnlineStatus(status);
+
+            if (els.statusText) els.statusText.textContent = statusText;
+            if (els.stateText) els.stateText.textContent = statusText;
+
+            if (els.statusBadge) {
+                els.statusBadge.className = `status-badge ${isOnline ? 'status-online' : 'status-offline'}`;
+            }
+
+            // درصد و بازیکنان
+            const percent = Math.min(100, Math.max(0, occupancy));
+            if (els.percentText) els.percentText.textContent = `${Math.round(percent)}٪`;
+            if (els.playersText) els.playersText.textContent = `${Math.round(onlinePlayers)} / ${Math.round(maxPlayers)}`;
+
+            // نوار پیشرفت
+            if (els.progressFill) {
+                els.progressFill.style.width = `${percent}%`;
+                els.progressFill.dataset.percent = `${Math.round(percent)}٪`;
+            }
+
+            // پینگ
+            if (els.pingText) {
+                els.pingText.textContent = latency > 0 ? `${Math.round(latency)} ms` : '-- ms';
+            }
+
+            if (els.pingDot) {
+                const pingClass = getPingClass(latency);
+                els.pingDot.className = `ping-dot ${pingClass}`;
+            }
+
+            // زمان آخرین بروزرسانی
+            if (els.lastUpdate) {
+                els.lastUpdate.textContent = formatTime(new Date());
+            }
+        }
+
+        // ===== FETCH DATA =====
+        async function fetchServerStatus() {
+            if (isRefreshing) return;
+            isRefreshing = true;
+
+            if (els.refreshBtn) els.refreshBtn.classList.add('loading');
+
+            try {
+                const response = await fetch(API_URL, {
+                    cache: 'no-store',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+
+                // Reset errors on success
+                consecutiveErrors = 0;
+                if (els.errorState) els.errorState.classList.remove('active');
+
+                // Update UI
+                updateUI(data);
+
+            } catch (error) {
+                consecutiveErrors++;
+                console.warn('[ServerStatus] Error:', error.message);
+
+                // Show error state after max errors
+                if (consecutiveErrors >= MAX_ERRORS && els.errorState) {
+                    els.errorState.classList.add('active');
+                }
+
+                // Show offline status
+                if (els.statusBadge) {
+                    els.statusBadge.className = 'status-badge status-offline';
+                }
+                if (els.statusText) els.statusText.textContent = 'آفلاین ❌';
+                if (els.stateText) els.stateText.textContent = 'آفلاین ❌';
+                if (els.pingText) els.pingText.textContent = '-- ms';
+                if (els.pingDot) els.pingDot.className = 'ping-dot bad';
+                if (els.percentText) els.percentText.textContent = '۰٪';
+                if (els.playersText) els.playersText.textContent = '۰ / ۰';
+                if (els.progressFill) {
+                    els.progressFill.style.width = '0%';
+                    els.progressFill.dataset.percent = '۰٪';
+                }
+                if (els.lastUpdate) {
+                    els.lastUpdate.textContent = formatTime(new Date());
+                }
+
+            } finally {
+                isRefreshing = false;
+                if (els.refreshBtn) els.refreshBtn.classList.remove('loading');
+            }
+        }
+
+        // ===== INIT =====
+        function init() {
+            // First fetch
+            fetchServerStatus();
+
+            // Auto-refresh
+            if (refreshTimer) clearInterval(refreshTimer);
+            refreshTimer = setInterval(fetchServerStatus, REFRESH_INTERVAL);
+
+            // Manual refresh button
+            if (els.refreshBtn) {
+                els.refreshBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    fetchServerStatus();
+                });
+            }
+
+            // Refresh on tab focus
+            document.addEventListener('visibilitychange', function() {
+                if (!document.hidden) {
+                    fetchServerStatus();
+                }
+            });
+
+            // Refresh on window focus (if tab was already visible)
+            let lastFocusTime = Date.now();
+            window.addEventListener('focus', function() {
+                const now = Date.now();
+                if (now - lastFocusTime > 5000) {
+                    fetchServerStatus();
+                }
+                lastFocusTime = now;
+            });
+        }
+
+        // ===== CLEANUP =====
+        function cleanup() {
+            if (refreshTimer) {
+                clearInterval(refreshTimer);
+                refreshTimer = null;
+            }
+        }
+
+        // Run on page load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', cleanup);
+
+    })();
+</script>
+{% endblock %}

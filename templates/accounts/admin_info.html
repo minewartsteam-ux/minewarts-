@@ -1,0 +1,205 @@
+<!-- templates/accounts/admin_info.html -->
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}اطلاعات ادمین‌های سرور - {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card" style="
+                background: var(--card-bg);
+                border: none;
+                border-radius: 20px;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+                backdrop-filter: blur(10px);
+                animation: fadeInUp 0.6s ease-out;
+            ">
+                <div class="card-body p-5">
+                    <div style="text-align: center; margin-bottom: 40px;">
+                        <h1 style="
+                            color: var(--secondary-color);
+                            font-weight: bold;
+                            font-size: clamp(1.8rem, 4vw, 2.5rem);
+                            margin-bottom: 15px;
+                        ">
+                            👥 ادمین‌های سرور
+                        </h1>
+                        <a href="{% url 'accounts:more_info' %}" style="
+                            color: var(--primary-color);
+                            text-decoration: none;
+                            font-size: 1.1rem;
+                        ">
+                            ← بازگشت به اطلاعات بیشتر
+                        </a>
+                    </div>
+
+                    {% if admins %}
+                    <div style="
+                        display: grid; 
+                        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+                        gap: 25px; 
+                        margin-bottom: 30px;
+                    ">
+                        {% for admin in admins %}
+                        <div class="admin-card" style="
+                            background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 235, 59, 0.1));
+                            border: 2px solid var(--secondary-color);
+                            border-radius: 20px;
+                            padding: 25px;
+                            text-align: center;
+                            transition: all 0.3s ease;
+                            animation: fadeInUp 0.6s ease-out;
+                            animation-delay: {% widthratio forloop.counter0 1 10 %}s;
+                            animation-fill-mode: both;
+                        ">
+                            <div style="
+                                width: 80px;
+                                height: 80px;
+                                background: linear-gradient(45deg, var(--secondary-color), #FFD54F);
+                                border-radius: 50%;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                margin: 0 auto 20px;
+                                font-size: 2.5rem;
+                            ">
+                                👤
+                            </div>
+
+                            <h3 style="
+                                color: var(--text-light);
+                                font-size: 1.5rem;
+                                font-weight: bold;
+                                margin-bottom: 15px;
+                            ">
+                                {{ admin.get_full_name|default:admin.username }}
+                            </h3>
+
+                            {% if admin.profile and admin.profile.minecraft_username %}
+                            <div style="
+                                background: rgba(76, 175, 80, 0.2);
+                                border: 2px solid var(--primary-color);
+                                border-radius: 15px;
+                                padding: 15px;
+                                margin-bottom: 15px;
+                            ">
+                                <div style="
+                                    color: var(--text-muted);
+                                    font-size: 0.9rem;
+                                    margin-bottom: 8px;
+                                ">
+                                    🎮 نام کاربری ماینکرفت:
+                                </div>
+                                <div style="
+                                    color: var(--primary-color);
+                                    font-size: 1.3rem;
+                                    font-weight: bold;
+                                    font-family: 'Courier New', monospace;
+                                ">
+                                    {{ admin.profile.minecraft_username }}
+                                </div>
+                            </div>
+                            {% else %}
+                            <div style="
+                                background: rgba(158, 158, 158, 0.2);
+                                border: 2px solid rgba(158, 158, 158, 0.5);
+                                border-radius: 15px;
+                                padding: 15px;
+                                margin-bottom: 15px;
+                            ">
+                                <div style="
+                                    color: var(--text-muted);
+                                    font-size: 0.9rem;
+                                ">
+                                    نام کاربری ماینکرفت تنظیم نشده
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <div style="
+                                color: var(--text-muted);
+                                font-size: 0.9rem;
+                                margin-top: 15px;
+                            ">
+                                نام کاربری سایت:
+                                <strong style="color: var(--text-light);">
+                                    {{ admin.username }}
+                                </strong>
+                            </div>
+
+                            {% if admin.email %}
+                            <div style="
+                                color: var(--text-muted);
+                                font-size: 0.9rem;
+                                margin-top: 10px;
+                            ">
+                                ایمیل:
+                                <strong style="color: var(--text-light);">
+                                    {{ admin.email }}
+                                </strong>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center" style="padding: 60px 20px; color: var(--text-muted);">
+                        <div style="font-size: 5rem; margin-bottom: 20px;">👤</div>
+                        <h2 style="color: var(--text-light); margin-bottom: 15px;">ادمینی یافت نشد</h2>
+                        <p>در حال حاضر ادمینی در سیستم ثبت نشده است.</p>
+                    </div>
+                    {% endif %}
+
+                    {% if site_info.admin_info_text %}
+                    <div style="
+                        padding: 25px;
+                        background: rgba(255, 193, 7, 0.1);
+                        border-radius: 15px;
+                        border-right: 4px solid var(--secondary-color);
+                        margin-top: 40px;
+                    ">
+                        <h3 style="color: var(--secondary-color); margin-bottom: 15px;">
+                            ℹ️ اطلاعات اضافی
+                        </h3>
+                        <div style="color: var(--text-light); line-height: 1.8;">
+                            {{ site_info.admin_info_text|safe }}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.admin-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 15px 40px rgba(255, 193, 7, 0.4);
+    border-color: #FFD54F;
+}
+
+/* بهینه‌سازی برای موبایل */
+@media (max-width: 576px) {
+    .card-body {
+        padding: 20px 15px !important;
+    }
+    .admin-card {
+        padding: 18px !important;
+    }
+}
+</style>
+{% endblock %}

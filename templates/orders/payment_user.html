@@ -1,0 +1,242 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}جزئیات سفارش{% endblock %}
+
+{% block extra_css %}
+<style>
+    .order-detail-wrapper {
+        background-color: var(--card-bg);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        margin: 20px 0;
+    }
+    
+    .order-detail-header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid var(--primary-color);
+    }
+    
+    .order-detail-header h1 {
+        color: var(--primary-color);
+        font-size: 2.5rem;
+        font-weight: bold;
+    }
+    
+    .order-status-badge {
+        display: inline-block;
+        padding: 10px 20px;
+        border-radius: 50px;
+        font-weight: bold;
+        margin-top: 15px;
+    }
+    
+    .status-paid {
+        background: linear-gradient(45deg, var(--primary-color), #66BB6A);
+        color: white;
+    }
+    
+    .status-pending {
+        background: linear-gradient(45deg, var(--secondary-color), #FFD54F);
+        color: var(--dark-bg);
+    }
+    
+    .order-sections {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin-bottom: 30px;
+    }
+    
+    .order-section {
+        background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(3, 169, 244, 0.1));
+        border: 2px solid var(--primary-color);
+        border-radius: 15px;
+        padding: 25px;
+    }
+    
+    .order-section h3 {
+        color: var(--primary-color);
+        margin-bottom: 20px;
+        font-size: 1.3rem;
+    }
+    
+    .order-section-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .order-section-item:last-child {
+        border-bottom: none;
+    }
+    
+    .order-section-label {
+        color: var(--text-muted);
+    }
+    
+    .order-section-value {
+        color: var(--text-light);
+        font-weight: bold;
+    }
+    
+    .order-items-section {
+        background: linear-gradient(135deg, rgba(30, 30, 30, 0.9), rgba(40, 40, 40, 0.9));
+        border: 2px solid var(--primary-color);
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+    }
+    
+    .order-items-section h3 {
+        color: var(--primary-color);
+        margin-bottom: 20px;
+        font-size: 1.5rem;
+    }
+    
+    .order-item-card {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+    
+    .order-item-image {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 10px;
+        border: 2px solid var(--primary-color);
+    }
+    
+    .order-item-details {
+        flex: 1;
+    }
+    
+    .order-item-name {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: var(--text-light);
+        margin-bottom: 10px;
+    }
+    
+    .order-item-info {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+    
+    .order-item-price {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: var(--secondary-color);
+    }
+    
+    .order-total {
+        background: linear-gradient(135deg, rgba(76, 175, 80, 0.2), rgba(3, 169, 244, 0.2));
+        border: 2px solid var(--primary-color);
+        border-radius: 15px;
+        padding: 25px;
+        text-align: center;
+    }
+    
+    .order-total-label {
+        color: var(--text-muted);
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+    
+    .order-total-value {
+        color: var(--secondary-color);
+        font-size: 3rem;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="order-detail-wrapper">
+        <div class="order-detail-header">
+            <h1>📋 جزئیات سفارش</h1>
+            <p style="color: var(--text-muted);">شماره سفارش: #{{ order.id }}</p>
+            <span class="order-status-badge {% if order.paid %}status-paid{% else %}status-pending{% endif %}">
+                {% if order.paid %}✅ پرداخت شده{% else %}⏳ در انتظار پرداخت{% endif %}
+            </span>
+        </div>
+        
+        <div class="order-sections">
+            <div class="order-section">
+                <h3>👤 اطلاعات شما</h3>
+                <div class="order-section-item">
+                    <span class="order-section-label">نام:</span>
+                    <span class="order-section-value">{{ order.first_name }} {{ order.last_name }}</span>
+                </div>
+                <div class="order-section-item">
+                    <span class="order-section-label">ایمیل:</span>
+                    <span class="order-section-value">{{ order.email }}</span>
+                </div>
+                {% if order.minecraft_username %}
+                <div class="order-section-item">
+                    <span class="order-section-label">🎮 نام کاربری ماینکرفت:</span>
+                    <span class="order-section-value" style="color: var(--primary-color); font-weight: bold;">{{ order.minecraft_username }}</span>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="order-section">
+                <h3>📅 اطلاعات سفارش</h3>
+                <div class="order-section-item">
+                    <span class="order-section-label">تاریخ ثبت:</span>
+                    <span class="order-section-value">{{ order.created|date:"Y/m/d H:i" }}</span>
+                </div>
+                <div class="order-section-item">
+                    <span class="order-section-label">💰 مبلغ وارت کوین:</span>
+                    <span class="order-section-value" style="color: var(--primary-color);">{{ order.wart_coin_amount|floatformat:2 }} WC</span>
+                </div>
+                {% if order.transaction_id %}
+                <div class="order-section-item">
+                    <span class="order-section-label">شناسه تراکنش:</span>
+                    <span class="order-section-value">{{ order.transaction_id }}</span>
+                </div>
+                {% endif %}
+                <div class="order-section-item">
+                    <span class="order-section-label">وضعیت:</span>
+                    <span class="order-section-value">{{ order.get_payment_status_display }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="order-items-section">
+            <h3>🛍️ محصولات سفارش</h3>
+            {% for item in order.items.all %}
+            <div class="order-item-card">
+                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="order-item-image">
+                <div class="order-item-details">
+                    <div class="order-item-name">{{ item.product.name }}</div>
+                    <div class="order-item-info">
+                        تعداد: {{ item.quantity }} -- قیمت واحد: 💰 {{ item.wart_coin_price|floatformat:2 }} WC
+                    </div>
+                </div>
+                <div class="order-item-price">💰 {{ item.get_cost|floatformat:2 }} WC</div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="order-total">
+            <div class="order-total-label">جمع کل سفارش</div>
+            <div class="order-total-value">💰 {{ order.get_total_wart_coin_cost|floatformat:2 }} WC</div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="{% url 'shop:product_list' %}" class="btn btn-primary" style="padding: 12px 40px; border-radius: 50px;">بازگشت به فروشگاه</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

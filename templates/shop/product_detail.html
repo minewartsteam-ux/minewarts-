@@ -1,0 +1,974 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ================================================================
+       🚀 ULTRA MODERN PRODUCT DETAIL - 2026 EDITION
+       ================================================================ */
+
+    /* ================================================================
+       PAGE WRAPPER
+       ================================================================ */
+    .product-detail-page {
+        padding: clamp(1.5rem, 3vw, 3rem) clamp(0.8rem, 2vw, 1.5rem);
+        max-width: 1200px;
+        margin: 0 auto;
+        animation: detailFadeIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        opacity: 0;
+    }
+
+    @keyframes detailFadeIn {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+    }
+
+    /* ================================================================
+       PRODUCT IMAGE
+       ================================================================ */
+    .product-image-wrap {
+        position: relative;
+        border-radius: 20px;
+        overflow: hidden;
+        background: var(--bg-glass, rgba(255, 255, 255, 0.02));
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.06));
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        padding: 16px;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .product-image-wrap:hover {
+        transform: translateY(-4px);
+        border-color: rgba(108, 99, 255, 0.15);
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+    }
+
+    .product-image-wrap img {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1/1;
+        object-fit: contain;
+        border-radius: 12px;
+        background: rgba(0, 0, 0, 0.2);
+        transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        padding: 8px;
+    }
+
+    .product-image-wrap:hover img {
+        transform: scale(1.02);
+    }
+
+    /* ================================================================
+       PRODUCT INFO
+       ================================================================ */
+    .product-info {
+        padding: 0 clamp(0.5rem, 2vw, 1rem);
+    }
+
+    .product-name {
+        font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, #8B83FF, #00D2FF);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: -0.5px;
+    }
+
+    .product-price {
+        font-size: clamp(1.8rem, 3vw, 2.4rem);
+        font-weight: 800;
+        color: #FFD740;
+        margin-bottom: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .product-price .currency {
+        font-size: 1.2rem;
+        color: #6B6B8A;
+        font-weight: 600;
+    }
+
+    .product-description {
+        color: var(--text-secondary, #B0B0C8);
+        font-size: clamp(1rem, 1.2vw, 1.05rem);
+        line-height: 2;
+        margin-bottom: 2rem;
+        padding: 1.2rem 1.5rem;
+        background: var(--bg-glass, rgba(255, 255, 255, 0.02));
+        border-radius: 12px;
+        border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.04));
+    }
+
+    /* ================================================================
+       MONTHLY OPTIONS - FIXED DISCOUNT BADGE
+       ================================================================ */
+    .monthly-options-section {
+        margin-bottom: 2rem;
+    }
+
+    .monthly-options-title {
+        color: var(--text-primary, #FFFFFF);
+        font-size: clamp(1.1rem, 1.5vw, 1.3rem);
+        font-weight: 700;
+        margin-bottom: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .monthly-options-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.2rem;
+    }
+
+    .month-option-card {
+        background: var(--bg-glass, rgba(255, 255, 255, 0.02));
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 2px solid var(--border-glass, rgba(255, 255, 255, 0.06));
+        border-radius: 14px;
+        padding: 1.2rem 0.8rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        overflow: visible;
+    }
+
+    .month-option-card::before {
+        content: '';
+        position: absolute;
+        inset: -1px;
+        border-radius: 14px;
+        padding: 1px;
+        background: conic-gradient(
+            from 0deg at 50% 50%,
+            transparent 0deg,
+            rgba(108, 99, 255, 0.06) 60deg,
+            transparent 120deg,
+            rgba(0, 210, 255, 0.06) 180deg,
+            transparent 240deg,
+            rgba(255, 101, 132, 0.06) 300deg,
+            transparent 360deg
+        );
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+    }
+
+    .month-option-card:hover::before {
+        opacity: 1;
+    }
+
+    .month-option-card:hover {
+        transform: translateY(-4px) scale(1.02);
+        border-color: rgba(108, 99, 255, 0.12);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .month-option-card.active {
+        border-color: #6C63FF;
+        background: rgba(108, 99, 255, 0.04);
+        box-shadow: 0 0 30px rgba(108, 99, 255, 0.05);
+        transform: scale(1.02);
+    }
+
+    .month-option-card .option-icon {
+        font-size: 2rem;
+        display: block;
+        margin-bottom: 0.3rem;
+    }
+
+    .month-option-card .option-months {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--text-primary, #FFFFFF);
+        margin-bottom: 0.3rem;
+    }
+
+    .month-option-card .option-price {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #FFD740;
+    }
+
+    .month-option-card .option-price .price-unit {
+        font-size: 0.7rem;
+        color: #6B6B8A;
+        font-weight: 600;
+    }
+
+    /* ===== DISCOUNT BADGE - FIXED ===== */
+    .discount-badge {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        background: linear-gradient(135deg, #FF1744, #D50000);
+        color: #fff;
+        padding: 3px 12px;
+        border-radius: 50px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        box-shadow: 0 4px 15px rgba(255, 23, 68, 0.3);
+        animation: discountPulse 2s ease-in-out infinite;
+        z-index: 10;
+        white-space: nowrap;
+        letter-spacing: 0.3px;
+        line-height: 1.4;
+    }
+
+    @keyframes discountPulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+
+    .month-option-card .option-image {
+        width: 100%;
+        height: 80px;
+        object-fit: contain;
+        border-radius: 8px;
+        margin-top: 0.5rem;
+        background: rgba(0, 0, 0, 0.15);
+        padding: 4px;
+    }
+
+    /* ================================================================
+       OPTION DESCRIPTION
+       ================================================================ */
+    .option-description-box {
+        display: none;
+        background: rgba(108, 99, 255, 0.03);
+        border: 1px solid rgba(108, 99, 255, 0.08);
+        border-radius: 12px;
+        padding: 1.2rem 1.5rem;
+        margin-bottom: 1.5rem;
+        animation: descriptionIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    .option-description-box.show {
+        display: block;
+    }
+
+    @keyframes descriptionIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .option-description-box .desc-title {
+        color: #8B83FF;
+        font-weight: 700;
+        font-size: 0.95rem;
+        margin-bottom: 0.3rem;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .option-description-box .desc-text {
+        color: var(--text-secondary, #B0B0C8);
+        font-size: 0.95rem;
+        line-height: 1.8;
+    }
+
+    /* ================================================================
+       QUANTITY CONTROLS - HIDDEN FOR RANK AND KIT
+       ================================================================ */
+    .quantity-wrapper {
+        margin-bottom: 1.2rem;
+    }
+    
+    /* Hide quantity controls for ranks and kits */
+    {% if product.product_type == 'rank' or product.product_type == 'kit' %}
+    .quantity-wrapper {
+        display: none !important;
+    }
+    {% endif %}
+
+    .quantity-label {
+        display: block;
+        color: var(--text-secondary, #B0B0C8);
+        font-weight: 600;
+        font-size: clamp(0.9rem, 1vw, 0.95rem);
+        margin-bottom: 0.5rem;
+    }
+
+    .quantity-controls {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+    }
+
+    .quantity-btn {
+        border: none;
+        border-radius: 50%;
+        width: clamp(36px, 5vw, 42px);
+        height: clamp(36px, 5vw, 42px);
+        color: white;
+        font-size: clamp(1.2rem, 2vw, 1.5rem);
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        font-family: 'Vazirmatn', sans-serif;
+    }
+
+    .quantity-btn:active {
+        transform: scale(0.9);
+    }
+
+    .quantity-btn.minus {
+        background: linear-gradient(135deg, #FF1744, #D50000);
+        box-shadow: 0 4px 15px rgba(255, 23, 68, 0.25);
+    }
+
+    .quantity-btn.minus:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 25px rgba(255, 23, 68, 0.35);
+    }
+
+    .quantity-btn.plus {
+        background: linear-gradient(135deg, #00E676, #00C853);
+        box-shadow: 0 4px 15px rgba(0, 230, 118, 0.25);
+    }
+
+    .quantity-btn.plus:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 25px rgba(0, 230, 118, 0.35);
+    }
+
+    .quantity-input {
+        width: clamp(60px, 8vw, 80px);
+        text-align: center;
+        background: rgba(0, 0, 0, 0.2);
+        border: 2px solid var(--border-glass, rgba(255, 255, 255, 0.06));
+        border-radius: 10px;
+        color: var(--text-primary, #FFFFFF);
+        font-size: clamp(1rem, 1.2vw, 1.1rem);
+        font-weight: 700;
+        padding: 0.4rem 0.2rem;
+        font-family: 'Vazirmatn', sans-serif;
+        transition: all 0.3s ease;
+    }
+
+    .quantity-input:focus {
+        outline: none;
+        border-color: #6C63FF;
+        box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
+    }
+
+    /* ================================================================
+       ADD TO CART BUTTON
+       ================================================================ */
+    .add-to-cart-btn {
+        width: 100%;
+        padding: clamp(0.8rem, 1.5vw, 1rem);
+        font-size: clamp(1rem, 1.2vw, 1.1rem);
+        font-weight: 700;
+        border: none;
+        border-radius: 50px;
+        background: linear-gradient(135deg, #6C63FF, #5A52D5);
+        color: #fff;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 4px 25px rgba(108, 99, 255, 0.3);
+        font-family: 'Vazirmatn', sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .add-to-cart-btn::before {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        border-radius: 50px;
+        background: linear-gradient(135deg, #6C63FF, #00D2FF, #6C63FF);
+        opacity: 0;
+        transition: all 0.4s ease;
+        z-index: -1;
+        filter: blur(8px);
+    }
+
+    .add-to-cart-btn:hover::before {
+        opacity: 0.3;
+    }
+
+    .add-to-cart-btn:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 8px 35px rgba(108, 99, 255, 0.4);
+    }
+
+    .add-to-cart-btn:active {
+        transform: scale(0.97);
+    }
+
+    .add-to-cart-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none !important;
+    }
+
+    /* ================================================================
+       RESPONSIVE
+       ================================================================ */
+    @media (max-width: 992px) {
+        .product-info {
+            padding: 1.5rem 0 0 0;
+        }
+
+        .product-image-wrap {
+            padding: 12px;
+        }
+
+        .monthly-options-grid {
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 0.8rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .product-detail-page {
+            padding: 1rem 0.5rem;
+        }
+
+        .product-image-wrap {
+            padding: 8px;
+            border-radius: 16px;
+        }
+
+        .product-name {
+            font-size: 1.6rem;
+        }
+
+        .product-price {
+            font-size: 1.6rem;
+        }
+
+        .product-description {
+            font-size: 0.9rem;
+            padding: 0.8rem 1rem;
+        }
+
+        .monthly-options-grid {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.6rem;
+        }
+
+        .month-option-card {
+            padding: 0.8rem 0.4rem;
+            border-radius: 12px;
+        }
+
+        .month-option-card .option-icon {
+            font-size: 1.5rem;
+        }
+
+        .month-option-card .option-months {
+            font-size: 1rem;
+        }
+
+        .month-option-card .option-price {
+            font-size: 0.9rem;
+        }
+
+        .discount-badge {
+            font-size: 0.55rem;
+            padding: 2px 8px;
+            top: -8px;
+            right: -8px;
+        }
+
+        .month-option-card .option-image {
+            height: 60px;
+        }
+
+        .option-description-box {
+            padding: 0.8rem 1rem;
+        }
+
+        .option-description-box .desc-text {
+            font-size: 0.85rem;
+        }
+
+        .quantity-controls {
+            gap: 0.6rem;
+        }
+
+        .quantity-btn {
+            width: 32px;
+            height: 32px;
+            font-size: 1rem;
+        }
+
+        .quantity-input {
+            width: 50px;
+            font-size: 0.95rem;
+        }
+
+        .add-to-cart-btn {
+            font-size: 0.95rem;
+            padding: 0.7rem 1.2rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .monthly-options-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+        }
+
+        .month-option-card {
+            padding: 0.6rem 0.3rem;
+        }
+
+        .month-option-card .option-icon {
+            font-size: 1.2rem;
+        }
+
+        .month-option-card .option-months {
+            font-size: 0.85rem;
+        }
+
+        .month-option-card .option-price {
+            font-size: 0.8rem;
+        }
+
+        .discount-badge {
+            font-size: 0.5rem;
+            padding: 2px 6px;
+            top: -6px;
+            right: -6px;
+        }
+
+        .month-option-card .option-image {
+            height: 50px;
+        }
+
+        .product-description {
+            font-size: 0.85rem;
+            padding: 0.6rem 0.8rem;
+        }
+
+        .product-name {
+            font-size: 1.3rem;
+        }
+
+        .product-price {
+            font-size: 1.3rem;
+        }
+
+        .option-description-box .desc-text {
+            font-size: 0.8rem;
+        }
+
+        .quantity-btn {
+            width: 28px;
+            height: 28px;
+            font-size: 0.85rem;
+        }
+
+        .quantity-input {
+            width: 44px;
+            font-size: 0.85rem;
+        }
+
+        .add-to-cart-btn {
+            font-size: 0.85rem;
+            padding: 0.6rem 1rem;
+            border-radius: 40px;
+        }
+    }
+
+    @media (max-width: 360px) {
+        .monthly-options-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 0.4rem;
+        }
+
+        .month-option-card {
+            padding: 0.4rem 0.2rem;
+        }
+
+        .month-option-card .option-icon {
+            font-size: 1rem;
+        }
+
+        .month-option-card .option-months {
+            font-size: 0.75rem;
+        }
+
+        .month-option-card .option-price {
+            font-size: 0.7rem;
+        }
+
+        .discount-badge {
+            font-size: 0.45rem;
+            padding: 1px 5px;
+            top: -5px;
+            right: -5px;
+        }
+
+        .product-name {
+            font-size: 1.1rem;
+        }
+
+        .product-price {
+            font-size: 1.1rem;
+        }
+
+        .product-description {
+            font-size: 0.75rem;
+            padding: 0.4rem 0.6rem;
+        }
+    }
+
+    /* ================================================================
+       LIGHT MODE SUPPORT
+       ================================================================ */
+    @media (prefers-color-scheme: light) {
+        .product-image-wrap {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: rgba(0, 0, 0, 0.04);
+        }
+
+        .product-name {
+            background: linear-gradient(135deg, #5A52D5, #0091EA);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .product-description {
+            color: rgba(0, 0, 0, 0.6);
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(0, 0, 0, 0.04);
+        }
+
+        .month-option-card {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(0, 0, 0, 0.04);
+        }
+
+        .month-option-card .option-months {
+            color: rgba(0, 0, 0, 0.85);
+        }
+
+        .month-option-card.active {
+            background: rgba(108, 99, 255, 0.04);
+            border-color: #5A52D5;
+        }
+
+        .monthly-options-title {
+            color: rgba(0, 0, 0, 0.85);
+        }
+
+        .quantity-input {
+            background: rgba(255, 255, 255, 0.6);
+            border-color: rgba(0, 0, 0, 0.06);
+            color: rgba(0, 0, 0, 0.85);
+        }
+
+        .quantity-input:focus {
+            border-color: #5A52D5;
+        }
+
+        .option-description-box {
+            background: rgba(108, 99, 255, 0.02);
+            border-color: rgba(108, 99, 255, 0.06);
+        }
+
+        .option-description-box .desc-text {
+            color: rgba(0, 0, 0, 0.6);
+        }
+
+        .quantity-label {
+            color: rgba(0, 0, 0, 0.5);
+        }
+
+        .discount-badge {
+            background: linear-gradient(135deg, #D50000, #B71C1C);
+        }
+    }
+
+    /* ================================================================
+       SCROLLBAR
+       ================================================================ */
+    .product-detail-page::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .product-detail-page::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .product-detail-page::-webkit-scrollbar-thumb {
+        background: rgba(108, 99, 255, 0.2);
+        border-radius: 4px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container product-detail-page">
+    <div class="row align-items-start g-4">
+        <!-- ============================================================
+        IMAGE
+        ============================================================ -->
+        <div class="col-md-6">
+            <div class="product-image-wrap">
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy">
+            </div>
+        </div>
+
+        <!-- ============================================================
+        INFO
+        ============================================================ -->
+        <div class="col-md-6">
+            <div class="product-info">
+                <h1 class="product-name">{{ product.name }}</h1>
+
+                <!-- ============================================================
+                MONTHLY OPTIONS
+                ============================================================ -->
+                {% if monthly_options %}
+                <div class="monthly-options-section">
+                    <div class="monthly-options-title">📅 انتخاب مدت زمان</div>
+
+                    <div class="monthly-options-grid" id="monthlyOptionsGrid">
+                        {% for option in monthly_options %}
+                        <div class="month-option-card" 
+                             data-option-id="{{ option.id }}"
+                             data-price="{{ option.get_final_price }}"
+                             data-months="{{ option.months }}"
+                             onclick="selectOption(this, {{ option.id }})">
+
+                            {% if option.has_discount %}
+                            <div class="discount-badge">🔥 {{ option.get_discount_percentage }}%</div>
+                            {% endif %}
+
+                            <span class="option-icon">📅</span>
+                            <div class="option-months">{{ option.months }} ماه</div>
+                            <div class="option-price">
+                                💰 {{ option.get_wart_coin_price|floatformat:0|intcomma }}
+                                <span class="price-unit">WC</span>
+                            </div>
+
+                            {% if option.image %}
+                            <img src="{{ option.image.url }}" alt="{{ option.months }} ماه" class="option-image" loading="lazy">
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Description -->
+                    <div class="option-description-box" id="optionDescription">
+                        <div class="desc-title">📋 توضیحات کامل</div>
+                        <div class="desc-text" id="optionDescriptionText"></div>
+                    </div>
+                </div>
+
+                <!-- ============================================================
+                FORM WITH MONTHLY OPTION
+                ============================================================ -->
+                <form action="{% url 'cart:cart_add' product.id %}" method="post" class="add-to-cart-form" id="cartForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="month_option_id" id="selectedMonthOption" value="">
+
+                    <!-- Quantity wrapper - hidden for ranks and kits -->
+                    <div class="quantity-wrapper">
+                        <label class="quantity-label" for="id_quantity">تعداد</label>
+                        <div class="quantity-controls">
+                            <button type="button" class="quantity-btn minus" onclick="adjustQuantity(-1)">−</button>
+                            {{ cart_add_product_form.quantity }}
+                            <button type="button" class="quantity-btn plus" onclick="adjustQuantity(1)">+</button>
+                        </div>
+                    </div>
+
+                    {{ cart_add_product_form.override }}
+
+                    <button type="submit" class="add-to-cart-btn" id="addToCartBtn">
+                        🛒 افزودن به سبد خرید
+                    </button>
+                </form>
+
+                {% else %}
+                <!-- ============================================================
+                REGULAR PRODUCT
+                ============================================================ -->
+                <div class="product-price">
+                    💰 {{ product.wart_coin_price|floatformat:0|intcomma }}
+                    <span class="currency">WC</span>
+                </div>
+
+                <div class="product-description">{{ product.description|linebreaks }}</div>
+
+                <form action="{% url 'cart:cart_add' product.id %}" method="post" class="add-to-cart-form" id="cartForm">
+                    {% csrf_token %}
+
+                    <!-- Quantity wrapper - hidden for ranks and kits -->
+                    <div class="quantity-wrapper">
+                        <label class="quantity-label" for="id_quantity">تعداد</label>
+                        <div class="quantity-controls">
+                            <button type="button" class="quantity-btn minus" onclick="adjustQuantity(-1)">−</button>
+                            {{ cart_add_product_form.quantity }}
+                            <button type="button" class="quantity-btn plus" onclick="adjustQuantity(1)">+</button>
+                        </div>
+                    </div>
+
+                    {{ cart_add_product_form.override }}
+
+                    <button type="submit" class="add-to-cart-btn" id="addToCartBtn">
+                        🛒 افزودن به سبد خرید
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ================================================================
+    // PRODUCT DETAIL JAVASCRIPT
+    // ================================================================
+
+    document.addEventListener('DOMContentLoaded', function() {
+        'use strict';
+
+        // ================================================================
+        // QUANTITY CONTROLS
+        // ================================================================
+        const quantityInput = document.querySelector('input[name="quantity"]');
+
+        window.adjustQuantity = function(amount) {
+            if (!quantityInput) return;
+            let value = parseInt(quantityInput.value) || 1;
+            value = Math.max(1, Math.min(20, value + amount));
+            quantityInput.value = value;
+            quantityInput.dispatchEvent(new Event('input'));
+        };
+
+        // ================================================================
+        // MONTHLY OPTIONS
+        // ================================================================
+        {% if monthly_options %}
+        const optionCards = document.querySelectorAll('.month-option-card');
+        const descriptionBox = document.getElementById('optionDescription');
+        const descriptionText = document.getElementById('optionDescriptionText');
+        const selectedInput = document.getElementById('selectedMonthOption');
+        const submitBtn = document.getElementById('addToCartBtn');
+
+        // Option data from Django
+        const optionData = {
+            {% for option in monthly_options %}
+            {{ option.id }}: {
+                description: `{{ option.description|escapejs }}`,
+                months: {{ option.months }},
+                price: {{ option.get_final_price }}
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        };
+
+        window.selectOption = function(element, optionId) {
+            // Remove active from all
+            optionCards.forEach(c => c.classList.remove('active'));
+
+            // Add active to selected
+            element.classList.add('active');
+
+            // Update hidden input
+            selectedInput.value = optionId;
+
+            // Show description
+            if (optionData[optionId]) {
+                descriptionText.innerHTML = optionData[optionId].description.replace(/\n/g, '<br>');
+                descriptionBox.classList.add('show');
+                descriptionBox.style.display = 'block';
+            }
+
+            // Enable submit button
+            submitBtn.disabled = false;
+        };
+
+        // Select first option by default
+        if (optionCards.length > 0) {
+            optionCards[0].click();
+        }
+
+        // Form validation
+        document.getElementById('cartForm').addEventListener('submit', function(e) {
+            if (optionCards.length > 0 && !selectedInput.value) {
+                e.preventDefault();
+                alert('لطفاً یک گزینه ماهانه را انتخاب کنید.');
+                optionCards[0].click();
+            }
+        });
+        {% endif %}
+
+        // ================================================================
+        // PREVENT DOUBLE SUBMIT
+        // ================================================================
+        const forms = document.querySelectorAll('.add-to-cart-form');
+        forms.forEach(form => {
+            form.addEventListener('submit', function() {
+                const btn = this.querySelector('.add-to-cart-btn');
+                if (btn) {
+                    btn.disabled = true;
+                    btn.innerHTML = '⏳ در حال افزودن...';
+                    setTimeout(() => {
+                        btn.disabled = false;
+                        btn.innerHTML = '🛒 افزودن به سبد خرید';
+                    }, 3000);
+                }
+            });
+        });
+
+        // ================================================================
+        // KEYBOARD SUPPORT
+        // ================================================================
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowUp' && document.activeElement === quantityInput) {
+                e.preventDefault();
+                adjustQuantity(1);
+            }
+            if (e.key === 'ArrowDown' && document.activeElement === quantityInput) {
+                e.preventDefault();
+                adjustQuantity(-1);
+            }
+        });
+
+        console.log('✅ Product detail page initialized');
+    });
+</script>
+{% endblock %}

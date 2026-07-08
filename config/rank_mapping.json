@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "default_server": "survival",
+  "aliases": {
+    "vip_plus": "vip-plus",
+    "VIP": "vip"
+  },
+  "servers": {
+    "survival": {
+      "groups": {
+        "vip": {
+          "lp_group": "vip",
+          "display_name": "VIP",
+          "clear_existing_parents": true
+        },
+        "vip-plus": {
+          "lp_group": "vip+",
+          "display_name": "VIP+",
+          "clear_existing_parents": true
+        },
+        "mvp": {
+          "lp_group": "mvp",
+          "display_name": "MVP",
+          "clear_existing_parents": true
+        }
+      }
+    }
+  }
+}

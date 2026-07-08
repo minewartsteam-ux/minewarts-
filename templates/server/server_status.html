@@ -1,0 +1,1246 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}وضعیت سرور{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ================================================================
+       SERVER STATUS PAGE - طراحی کاملاً جدید بر اساس قالب اصلی
+       ================================================================ */
+
+    /* ================================================================
+       SERVER STATUS SPECIFIC STYLES
+       ================================================================ */
+    .server-status-page {
+        padding: 2rem 0;
+        position: relative;
+    }
+
+    .server-status-page .container {
+        max-width: 1200px;
+    }
+
+    /* ===== SERVER CARD ===== */
+    .server-card {
+        background: var(--card-bg);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--glass-shadow);
+        padding: clamp(24px, 4vw, 40px);
+        transition: var(--transition-smooth);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .server-card::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: conic-gradient(
+            from 0deg at 50% 50%,
+            transparent 0deg,
+            rgba(108, 99, 255, 0.03) 60deg,
+            transparent 120deg,
+            rgba(0, 210, 255, 0.03) 180deg,
+            transparent 240deg,
+            rgba(255, 101, 132, 0.03) 300deg,
+            transparent 360deg
+        );
+        animation: rotateGlass 20s linear infinite;
+        pointer-events: none;
+    }
+
+    .server-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 60px rgba(0, 0, 0, 0.5);
+        border-color: rgba(108, 99, 255, 0.2);
+    }
+
+    /* ===== HEADER ===== */
+    .server-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        gap: 1rem;
+        flex-wrap: wrap;
+        position: relative;
+        z-index: 1;
+    }
+
+    .server-title h2 {
+        margin: 0;
+        font-size: clamp(1.5rem, 3vw, 2.2rem);
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .server-title h2 .emoji {
+        -webkit-text-fill-color: initial;
+        color: var(--primary-color);
+    }
+
+    .server-subtitle {
+        color: var(--text-muted);
+        font-size: clamp(0.85rem, 1.2vw, 1rem);
+        margin-top: 0.2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        flex-wrap: wrap;
+    }
+
+    .live-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        color: #4cd9a0;
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
+
+    .live-dot {
+        width: 8px;
+        height: 8px;
+        background: #4cd9a0;
+        border-radius: 50%;
+        animation: livePulse 1.8s infinite;
+        box-shadow: 0 0 18px #4cd9a0;
+    }
+
+    @keyframes livePulse {
+        0%, 100% { opacity: 0.5; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.25); }
+    }
+
+    .refresh-btn {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--glass-border);
+        border-radius: 50px;
+        padding: 0.6rem 1.6rem;
+        color: var(--text-muted);
+        font-weight: 600;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: var(--transition-smooth);
+        font-family: 'Vazirmatn', sans-serif;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        backdrop-filter: blur(4px);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .refresh-btn::before {
+        content: '';
+        position: absolute;
+        inset: -1px;
+        border-radius: 50px;
+        background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+        opacity: 0;
+        transition: var(--transition-smooth);
+        filter: blur(8px);
+        z-index: -1;
+    }
+
+    .refresh-btn:hover::before {
+        opacity: 0.15;
+    }
+
+    .refresh-btn:hover {
+        background: rgba(108, 99, 255, 0.06);
+        border-color: var(--primary-color);
+        color: var(--text-light);
+        transform: scale(1.03);
+    }
+
+    .refresh-btn:active {
+        transform: scale(0.95);
+    }
+
+    .refresh-btn .spinner {
+        display: none;
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(255, 255, 255, 0.06);
+        border-top: 2px solid var(--primary-color);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+    }
+
+    .refresh-btn.loading .spinner {
+        display: inline-block;
+    }
+
+    .refresh-btn.loading .btn-text {
+        display: none;
+    }
+
+    /* ===== STATUS BADGE ===== */
+    .status-display {
+        margin-bottom: 2rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .status-badge {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        padding: 1.2rem 2rem;
+        border-radius: 60px;
+        font-size: 1.15rem;
+        font-weight: 800;
+        border: 2px solid;
+        min-height: 70px;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .status-badge::before {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        border-radius: 60px;
+        filter: blur(15px);
+        opacity: 0;
+        transition: var(--transition-smooth);
+        z-index: -1;
+    }
+
+    .status-badge:hover::before {
+        opacity: 0.3;
+    }
+
+    .status-badge:hover {
+        transform: scale(1.01) translateY(-2px);
+    }
+
+    .status-icon {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        position: relative;
+    }
+
+    .status-icon::after {
+        content: '';
+        position: absolute;
+        inset: -5px;
+        border-radius: 50%;
+        filter: blur(10px);
+        opacity: 0.4;
+    }
+
+    .status-online {
+        background: rgba(0, 230, 118, 0.06);
+        border-color: rgba(0, 230, 118, 0.2);
+        color: #69F0AE;
+    }
+
+    .status-online .status-icon {
+        background: linear-gradient(135deg, #69F0AE, #00E676);
+        animation: iconPulse 2s infinite;
+    }
+
+    .status-online .status-icon::after {
+        background: #69F0AE;
+    }
+
+    .status-offline {
+        background: rgba(255, 23, 68, 0.06);
+        border-color: rgba(255, 23, 68, 0.2);
+        color: #FF5252;
+    }
+
+    .status-offline .status-icon {
+        background: linear-gradient(135deg, #FF5252, #FF1744);
+        animation: iconBlink 2.5s infinite;
+    }
+
+    .status-offline .status-icon::after {
+        background: #FF5252;
+    }
+
+    .status-checking {
+        background: rgba(255, 215, 64, 0.06);
+        border-color: rgba(255, 215, 64, 0.2);
+        color: #FFD740;
+    }
+
+    .status-checking .status-icon {
+        background: linear-gradient(135deg, #FFD740, #FFC107);
+        animation: spin 1.5s linear infinite;
+        width: 16px;
+        height: 16px;
+        border: 2px solid transparent;
+        border-top: 2px solid #FFD740;
+        border-radius: 50%;
+    }
+
+    .status-checking .status-icon::after {
+        display: none;
+    }
+
+    @keyframes iconPulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.4); opacity: 0.5; }
+    }
+
+    @keyframes iconBlink {
+        0%, 50% { opacity: 0.3; }
+        51%, 100% { opacity: 1; }
+    }
+
+    /* ===== PLAYERS SECTION ===== */
+    .players-section {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-md);
+        padding: 1.5rem;
+        transition: var(--transition-smooth);
+        position: relative;
+        z-index: 1;
+    }
+
+    .players-section:hover {
+        background: rgba(108, 99, 255, 0.02);
+        border-color: rgba(108, 99, 255, 0.06);
+    }
+
+    .players-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.8rem;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .players-percent {
+        color: var(--primary-color);
+        font-size: 1.5rem;
+        font-weight: 800;
+        transition: var(--transition-smooth);
+    }
+
+    .players-count {
+        color: var(--text-muted);
+        background: rgba(255, 255, 255, 0.03);
+        padding: 0.25rem 1rem;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        border: 1px solid var(--glass-border);
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .progress-bar {
+        background: rgba(255, 255, 255, 0.04);
+        border-radius: 50px;
+        height: 24px;
+        padding: 3px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+        border-radius: 50px;
+        width: 0%;
+        transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        box-shadow: 0 0 30px rgba(108, 99, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding-right: 0.8rem;
+        color: #fff;
+        font-weight: 700;
+        font-size: 0.7rem;
+        min-width: 40px;
+    }
+
+    .progress-fill .shine {
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 50%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+        animation: shineMove 3s ease-in-out infinite;
+    }
+
+    @keyframes shineMove {
+        0% { left: -100%; }
+        100% { left: 200%; }
+    }
+
+    /* ===== METRICS SIDEBAR ===== */
+    .metrics-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+        height: 100%;
+    }
+
+    .metric-box {
+        background: var(--card-bg);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-md);
+        padding: 1.5rem;
+        transition: var(--transition-smooth);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .metric-box::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -30%;
+        width: 150px;
+        height: 150px;
+        background: radial-gradient(circle, rgba(108, 99, 255, 0.03) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+    .metric-box:hover {
+        border-color: rgba(108, 99, 255, 0.06);
+        transform: translateY(-3px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .metric-box-title {
+        color: var(--primary-color);
+        font-weight: 700;
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--glass-border);
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .metric-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        position: relative;
+        z-index: 1;
+    }
+
+    .metric-row:last-child {
+        border-bottom: none;
+    }
+
+    .metric-label {
+        color: var(--text-muted);
+        font-weight: 500;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .metric-value {
+        color: var(--text-light);
+        font-weight: 700;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    /* ===== PING DISPLAY ===== */
+    .ping-display {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.3rem 1rem;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 0.8rem;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid var(--glass-border);
+        color: var(--text-muted);
+        min-width: 80px;
+        justify-content: center;
+        transition: var(--transition-smooth);
+    }
+
+    .ping-display:hover {
+        background: rgba(108, 99, 255, 0.04);
+        border-color: rgba(108, 99, 255, 0.06);
+        transform: scale(1.02);
+    }
+
+    .ping-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--text-muted);
+        flex-shrink: 0;
+        transition: all 0.3s ease;
+    }
+
+    .ping-dot.good {
+        background: #69F0AE;
+        box-shadow: 0 0 20px rgba(105, 240, 174, 0.25);
+        animation: pingAnim 1.6s infinite;
+    }
+
+    .ping-dot.medium {
+        background: #FFD740;
+        box-shadow: 0 0 20px rgba(255, 215, 64, 0.25);
+        animation: pingAnim 1.6s infinite;
+    }
+
+    .ping-dot.bad {
+        background: #FF5252;
+        box-shadow: 0 0 20px rgba(255, 82, 82, 0.25);
+        animation: pingAnim 1.6s infinite;
+    }
+
+    @keyframes pingAnim {
+        0%, 100% { box-shadow: 0 0 0 0 currentColor; opacity: 0.4; }
+        50% { box-shadow: 0 0 0 8px currentColor; opacity: 1; }
+    }
+
+    .time-text {
+        opacity: 0.5;
+        font-weight: 500;
+        font-size: 0.75rem;
+    }
+
+    /* ===== ERROR STATE ===== */
+    .error-box {
+        text-align: center;
+        padding: 3rem 2rem;
+        color: #FF5252;
+        background: rgba(255, 23, 68, 0.03);
+        border: 1px solid rgba(255, 23, 68, 0.06);
+        border-radius: var(--radius-md);
+        display: none;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        animation: errorIn 0.5s ease;
+        grid-column: 1 / -1;
+    }
+
+    .error-box.active {
+        display: block;
+    }
+
+    @keyframes errorIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .error-icon {
+        font-size: 3rem;
+        display: block;
+        margin-bottom: 0.5rem;
+        opacity: 0.6;
+    }
+
+    .error-title {
+        color: #FF5252;
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 0.2rem;
+    }
+
+    .error-text {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        margin: 0;
+    }
+
+    .error-small {
+        opacity: 0.5;
+        display: block;
+        margin-top: 0.2rem;
+        font-size: 0.8rem;
+    }
+
+    /* ================================================================
+       RESPONSIVE
+       ================================================================ */
+    @media (max-width: 992px) {
+        .server-status-page .container {
+            max-width: 100%;
+        }
+
+        .server-card {
+            padding: 1.5rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .server-header {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.8rem;
+        }
+
+        .refresh-btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .status-badge {
+            font-size: 0.95rem;
+            padding: 0.8rem 1.2rem;
+            min-height: 56px;
+            border-radius: 40px;
+        }
+
+        .players-percent {
+            font-size: 1.2rem;
+        }
+
+        .metrics-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .metric-box {
+            padding: 1rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .server-card {
+            padding: 1rem;
+            border-radius: var(--radius-md);
+        }
+
+        .status-badge {
+            font-size: 0.85rem;
+            padding: 0.6rem 1rem;
+            min-height: 48px;
+            border-radius: 30px;
+            gap: 0.6rem;
+        }
+
+        .status-icon {
+            width: 14px;
+            height: 14px;
+        }
+
+        .status-checking .status-icon {
+            width: 14px;
+            height: 14px;
+        }
+
+        .players-section {
+            padding: 1rem;
+        }
+
+        .players-percent {
+            font-size: 1rem;
+        }
+
+        .players-count {
+            font-size: 0.8rem;
+            padding: 0.15rem 0.8rem;
+        }
+
+        .progress-bar {
+            height: 18px;
+        }
+
+        .progress-fill {
+            font-size: 0.6rem;
+            min-width: 30px;
+            padding-right: 0.5rem;
+        }
+
+        .metric-box {
+            padding: 0.8rem;
+            border-radius: var(--radius-md);
+        }
+
+        .metric-box-title {
+            font-size: 0.85rem;
+        }
+
+        .metric-label {
+            font-size: 0.8rem;
+        }
+
+        .metric-value {
+            font-size: 0.8rem;
+        }
+
+        .ping-display {
+            font-size: 0.7rem;
+            padding: 0.15rem 0.8rem;
+            min-width: 60px;
+        }
+
+        .ping-dot {
+            width: 6px;
+            height: 6px;
+        }
+
+        .refresh-btn {
+            font-size: 0.8rem;
+            padding: 0.4rem 1rem;
+        }
+
+        .error-box {
+            padding: 1.5rem 1rem;
+        }
+
+        .error-icon {
+            font-size: 2rem;
+        }
+
+        .error-title {
+            font-size: 1rem;
+        }
+
+        .time-text {
+            font-size: 0.7rem;
+        }
+    }
+
+    @media (max-width: 400px) {
+        .server-card {
+            padding: 0.8rem;
+        }
+
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 0.4rem 0.8rem;
+            min-height: 40px;
+        }
+
+        .players-percent {
+            font-size: 0.9rem;
+        }
+
+        .players-count {
+            font-size: 0.7rem;
+        }
+
+        .progress-bar {
+            height: 16px;
+        }
+
+        .progress-fill {
+            font-size: 0.5rem;
+            min-width: 25px;
+        }
+
+        .metric-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.1rem;
+        }
+    }
+
+    /* ================================================================
+       LIGHT MODE SUPPORT
+       ================================================================ */
+    @media (prefers-color-scheme: light) {
+        .server-card {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: rgba(0, 0, 0, 0.04);
+        }
+
+        .server-card::before {
+            background: conic-gradient(
+                from 0deg at 50% 50%,
+                transparent 0deg,
+                rgba(108, 99, 255, 0.04) 60deg,
+                transparent 120deg,
+                rgba(0, 210, 255, 0.04) 180deg,
+                transparent 240deg,
+                rgba(255, 101, 132, 0.04) 300deg,
+                transparent 360deg
+            );
+        }
+
+        .server-title h2 {
+            background: linear-gradient(135deg, #5A52D5, #0091EA);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .server-subtitle {
+            color: #6B6B8A;
+        }
+
+        .refresh-btn {
+            color: #6B6B8A;
+            border-color: rgba(0, 0, 0, 0.06);
+        }
+
+        .refresh-btn:hover {
+            background: rgba(108, 99, 255, 0.04);
+            border-color: rgba(108, 99, 255, 0.08);
+            color: #5A52D5;
+        }
+
+        .players-section {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(0, 0, 0, 0.04);
+        }
+
+        .players-percent {
+            color: #5A52D5;
+        }
+
+        .players-count {
+            color: #6B6B8A;
+            background: rgba(255, 255, 255, 0.4);
+            border-color: rgba(0, 0, 0, 0.04);
+        }
+
+        .metric-box {
+            background: rgba(255, 255, 255, 0.5);
+            border-color: rgba(0, 0, 0, 0.04);
+        }
+
+        .metric-box:hover {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: rgba(108, 99, 255, 0.06);
+        }
+
+        .metric-box-title {
+            color: #5A52D5;
+        }
+
+        .metric-label {
+            color: #6B6B8A;
+        }
+
+        .metric-value {
+            color: #2D3748;
+        }
+
+        .ping-display {
+            color: #6B6B8A;
+            background: rgba(255, 255, 255, 0.4);
+            border-color: rgba(0, 0, 0, 0.04);
+        }
+
+        .ping-display:hover {
+            background: rgba(108, 99, 255, 0.04);
+        }
+
+        .status-online {
+            background: rgba(0, 230, 118, 0.04);
+            border-color: rgba(0, 230, 118, 0.06);
+            color: #00C853;
+        }
+
+        .status-offline {
+            background: rgba(255, 23, 68, 0.04);
+            border-color: rgba(255, 23, 68, 0.06);
+            color: #D50000;
+        }
+
+        .status-checking {
+            background: rgba(255, 215, 64, 0.04);
+            border-color: rgba(255, 215, 64, 0.06);
+            color: #F57F17;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #5A52D5, #0091EA);
+        }
+
+        .error-box {
+            background: rgba(255, 23, 68, 0.02);
+            border-color: rgba(255, 23, 68, 0.04);
+        }
+
+        .error-title {
+            color: #D50000;
+        }
+
+        .error-text {
+            color: #6B6B8A;
+        }
+
+        .live-dot {
+            background: #00C853;
+            box-shadow: 0 0 18px rgba(0, 200, 83, 0.3);
+        }
+
+        .live-indicator {
+            color: #00C853;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="server-status-page">
+    <div class="container">
+        <div class="row g-4">
+            <!-- ===== ERROR STATE ===== -->
+            <div class="col-12">
+                <div id="errorState" class="error-box">
+                    <span class="error-icon">⚠️</span>
+                    <div class="error-title">اتصال به سرور قطع شد</div>
+                    <p class="error-text">سرور در دسترس نیست</p>
+                    <small class="error-small">تلاش مجدد هر ۳۰ ثانیه</small>
+                </div>
+            </div>
+
+            <!-- ===== MAIN CONTENT ===== -->
+            <div class="col-lg-7">
+                <div class="server-card">
+                    <!-- HEADER -->
+                    <div class="server-header">
+                        <div class="server-title">
+                            <h2><span class="emoji">🎮</span> وضعیت سرور</h2>
+                            <div class="server-subtitle">
+                                <span class="live-indicator">
+                                    <span class="live-dot"></span>
+                                    زنده
+                                </span>
+                                <span style="opacity: 0.3;">•</span>
+                                <span>آمار لحظه‌ای</span>
+                            </div>
+                        </div>
+                        <button class="refresh-btn" id="refreshBtn">
+                            <span class="spinner"></span>
+                            <span class="btn-text">🔄 بروزرسانی</span>
+                        </button>
+                    </div>
+
+                    <!-- STATUS -->
+                    <div class="status-display">
+                        <div id="statusBadge" class="status-badge status-checking">
+                            <div class="status-icon"></div>
+                            <span id="statusText">در حال اتصال...</span>
+                        </div>
+                    </div>
+
+                    <!-- PLAYERS -->
+                    <div class="players-section">
+                        <div class="players-header">
+                            <div class="players-percent" id="percentText">۰٪</div>
+                            <div class="players-count">
+                                <span>👥</span>
+                                <span id="playersText">۰ / ۰</span>
+                            </div>
+                        </div>
+                        <div class="progress-bar">
+                            <div id="progressFill" class="progress-fill" style="width: 0%;">
+                                <span class="shine"></span>
+                                ۰٪
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== METRICS SIDEBAR ===== -->
+            <div class="col-lg-5">
+                <div class="metrics-grid">
+                    <div class="metric-box">
+                        <div class="metric-box-title">📊 جزئیات فنی</div>
+
+                        <div class="metric-row">
+                            <span class="metric-label">⏱️ پینگ</span>
+                            <span class="metric-value">
+                                <span class="ping-display" id="pingBadge">
+                                    <span class="ping-dot" id="pingDot"></span>
+                                    <span id="pingText">-- ms</span>
+                                </span>
+                            </span>
+                        </div>
+
+                        <div class="metric-row">
+                            <span class="metric-label">✅ وضعیت</span>
+                            <span class="metric-value" id="stateText">در حال بارگذاری</span>
+                        </div>
+
+                        <div class="metric-row">
+                            <span class="metric-label">🔄 آخرین بروزرسانی</span>
+                            <span class="metric-value">
+                                <span class="time-text" id="lastUpdate">--</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        'use strict';
+
+        // ================================================================
+        // CONFIG
+        // ================================================================
+        const API_URL = "{% url 'server:server_status_json' %}";
+        const REFRESH_INTERVAL = 30000;
+
+        // ================================================================
+        // DOM REFS
+        // ================================================================
+        const els = {
+            errorState: document.getElementById('errorState'),
+            statusBadge: document.getElementById('statusBadge'),
+            statusText: document.getElementById('statusText'),
+            stateText: document.getElementById('stateText'),
+            percentText: document.getElementById('percentText'),
+            playersText: document.getElementById('playersText'),
+            progressFill: document.getElementById('progressFill'),
+            pingText: document.getElementById('pingText'),
+            pingDot: document.getElementById('pingDot'),
+            lastUpdate: document.getElementById('lastUpdate'),
+            refreshBtn: document.getElementById('refreshBtn'),
+        };
+
+        let consecutiveErrors = 0;
+        const MAX_ERRORS = 3;
+        let refreshTimer = null;
+        let isRefreshing = false;
+
+        // ================================================================
+        // HELPERS
+        // ================================================================
+        function safeNumber(value, fallback = 0) {
+            if (value === null || value === undefined || value === '') return fallback;
+            const num = Number(value);
+            return isFinite(num) && num >= 0 ? num : fallback;
+        }
+
+        function safeString(value, fallback = '--') {
+            return value && typeof value === 'string' ? value : fallback;
+        }
+
+        function getStatusText(status) {
+            const s = safeString(status, '').toLowerCase();
+            if (s === 'online' || s === 'on' || s === 'true' || s === '1') return 'آنلاین ✅';
+            if (s === 'offline' || s === 'off' || s === 'false' || s === '0') return 'آفلاین ❌';
+            return 'نامشخص ⚠️';
+        }
+
+        function isOnlineStatus(status) {
+            const s = safeString(status, '').toLowerCase();
+            return ['online', 'on', 'true', '1'].includes(s);
+        }
+
+        function getPingClass(ping) {
+            const p = safeNumber(ping, 0);
+            if (p === 0) return '';
+            if (p < 50) return 'good';
+            if (p < 150) return 'medium';
+            return 'bad';
+        }
+
+        function formatTime(date) {
+            if (!date) return '--';
+            return new Intl.DateTimeFormat('fa-IR', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+            }).format(date);
+        }
+
+        // ================================================================
+        // UPDATE UI
+        // ================================================================
+        function updateUI(data) {
+            const occupancy = safeNumber(data.occupancy_percent ?? data.percent ?? data.usage ?? 0);
+            const onlinePlayers = safeNumber(data.online_players ?? data.online ?? data.players ?? 0);
+            const maxPlayers = safeNumber(data.max_players ?? data.max ?? data.capacity ?? 100);
+            const latency = safeNumber(data.latency ?? data.latency_ms ?? data.ping ?? 0);
+            const status = data.status ?? (onlinePlayers > 0 ? 'ON' : 'OFF');
+
+            const statusText = getStatusText(status);
+            const isOnline = isOnlineStatus(status);
+
+            if (els.statusText) els.statusText.textContent = statusText;
+            if (els.stateText) els.stateText.textContent = statusText;
+
+            if (els.statusBadge) {
+                els.statusBadge.className = `status-badge ${isOnline ? 'status-online' : 'status-offline'}`;
+            }
+
+            const percent = Math.min(100, Math.max(0, occupancy));
+            if (els.percentText) els.percentText.textContent = `${Math.round(percent)}٪`;
+            if (els.playersText) els.playersText.textContent = `${Math.round(onlinePlayers)} / ${Math.round(maxPlayers)}`;
+
+            if (els.progressFill) {
+                els.progressFill.style.width = `${percent}%`;
+                els.progressFill.textContent = `${Math.round(percent)}٪`;
+            }
+
+            if (els.pingText) {
+                els.pingText.textContent = latency > 0 ? `${Math.round(latency)} ms` : '-- ms';
+            }
+
+            if (els.pingDot) {
+                const pingClass = getPingClass(latency);
+                els.pingDot.className = `ping-dot ${pingClass}`;
+            }
+
+            if (els.lastUpdate) {
+                els.lastUpdate.textContent = formatTime(new Date());
+            }
+        }
+
+        // ================================================================
+        // FETCH DATA
+        // ================================================================
+        async function fetchServerStatus() {
+            if (isRefreshing) return;
+            isRefreshing = true;
+
+            if (els.refreshBtn) els.refreshBtn.classList.add('loading');
+
+            try {
+                const response = await fetch(API_URL, {
+                    cache: 'no-store',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+
+                consecutiveErrors = 0;
+                if (els.errorState) els.errorState.classList.remove('active');
+
+                updateUI(data);
+
+            } catch (error) {
+                consecutiveErrors++;
+                console.warn('[ServerStatus] Error:', error.message);
+
+                if (consecutiveErrors >= MAX_ERRORS && els.errorState) {
+                    els.errorState.classList.add('active');
+                }
+
+                if (els.statusBadge) {
+                    els.statusBadge.className = 'status-badge status-offline';
+                }
+                if (els.statusText) els.statusText.textContent = 'آفلاین ❌';
+                if (els.stateText) els.stateText.textContent = 'آفلاین ❌';
+                if (els.pingText) els.pingText.textContent = '-- ms';
+                if (els.pingDot) els.pingDot.className = 'ping-dot bad';
+                if (els.percentText) els.percentText.textContent = '۰٪';
+                if (els.playersText) els.playersText.textContent = '۰ / ۰';
+                if (els.progressFill) {
+                    els.progressFill.style.width = '0%';
+                    els.progressFill.textContent = '۰٪';
+                }
+                if (els.lastUpdate) {
+                    els.lastUpdate.textContent = formatTime(new Date());
+                }
+
+            } finally {
+                isRefreshing = false;
+                if (els.refreshBtn) els.refreshBtn.classList.remove('loading');
+            }
+        }
+
+        // ================================================================
+        // INIT
+        // ================================================================
+        function init() {
+            fetchServerStatus();
+
+            if (refreshTimer) clearInterval(refreshTimer);
+            refreshTimer = setInterval(fetchServerStatus, REFRESH_INTERVAL);
+
+            if (els.refreshBtn) {
+                els.refreshBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    fetchServerStatus();
+                });
+            }
+
+            document.addEventListener('visibilitychange', function() {
+                if (!document.hidden) {
+                    fetchServerStatus();
+                }
+            });
+
+            let lastFocusTime = Date.now();
+            window.addEventListener('focus', function() {
+                const now = Date.now();
+                if (now - lastFocusTime > 5000) {
+                    fetchServerStatus();
+                }
+                lastFocusTime = now;
+            });
+        }
+
+        // ================================================================
+        // CLEANUP
+        // ================================================================
+        function cleanup() {
+            if (refreshTimer) {
+                clearInterval(refreshTimer);
+                refreshTimer = null;
+            }
+        }
+
+        // Run on page load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+
+        window.addEventListener('beforeunload', cleanup);
+
+    })();
+</script>
+{% endblock %}

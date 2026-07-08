@@ -1,0 +1,468 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}داشبورد مدیریت{% endblock %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <style>
+        /* استایل‌های داشبورد */
+        .dashboard-container {
+            padding: 24px;
+            background: #0A0A0F;
+            min-height: 100vh;
+        }
+        
+        .dashboard-header {
+            background: linear-gradient(135deg, #6C63FF, #00D2FF);
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(108, 99, 255, 0.3);
+        }
+        
+        .dashboard-header h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            font-weight: 800;
+        }
+        
+        .dashboard-header p {
+            font-size: 1.2rem;
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(108, 99, 255, 0.3);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+        }
+        
+        .stat-card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .stat-card-title {
+            font-size: 0.85rem;
+            color: #6B6B8A;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+        
+        .stat-card-value {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #8B83FF, #00D2FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .dashboard-section {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+        
+        .dashboard-section:hover {
+            border-color: rgba(108, 99, 255, 0.2);
+        }
+        
+        .dashboard-section h2 {
+            color: #FFFFFF;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.06);
+        }
+        
+        .table {
+            color: #B0B0C8 !important;
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        .table thead th {
+            background: rgba(108, 99, 255, 0.12);
+            color: #8B83FF;
+            border: none;
+            padding: 12px 16px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+        }
+        
+        .table tbody td {
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            color: #B0B0C8;
+        }
+        
+        .table tbody tr:hover {
+            background: rgba(108, 99, 255, 0.05);
+        }
+        
+        .badge {
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        
+        .badge-success {
+            background: rgba(0, 230, 118, 0.15);
+            color: #69F0AE;
+            border: 1px solid rgba(0, 230, 118, 0.2);
+        }
+        
+        .badge-warning {
+            background: rgba(255, 215, 64, 0.15);
+            color: #FFD740;
+            border: 1px solid rgba(255, 215, 64, 0.2);
+        }
+        
+        .badge-danger {
+            background: rgba(255, 23, 68, 0.15);
+            color: #FF5252;
+            border: 1px solid rgba(255, 23, 68, 0.2);
+        }
+        
+        .product-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 16px;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .product-item:hover {
+            background: rgba(108, 99, 255, 0.05);
+            transform: translateX(4px);
+        }
+        
+        .product-item img {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            margin-left: 15px;
+            object-fit: cover;
+        }
+        
+        .product-item-info {
+            flex: 1;
+        }
+        
+        .product-item-name {
+            font-weight: bold;
+            color: #FFFFFF;
+        }
+        
+        .product-item-count {
+            color: #6B6B8A;
+            font-size: 0.85rem;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #6B6B8A;
+        }
+        
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .dashboard-grid-responsive {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .payment-stat {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        
+        .payment-stat.paid {
+            background: rgba(0, 230, 118, 0.08);
+            border-color: rgba(0, 230, 118, 0.15);
+        }
+        
+        .payment-stat.pending {
+            background: rgba(255, 215, 64, 0.08);
+            border-color: rgba(255, 215, 64, 0.15);
+        }
+        
+        .payment-stat.failed {
+            background: rgba(255, 23, 68, 0.08);
+            border-color: rgba(255, 23, 68, 0.15);
+        }
+        
+        .payment-stat-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+        
+        .payment-stat.paid .payment-stat-value {
+            color: #69F0AE;
+        }
+        
+        .payment-stat.pending .payment-stat-value {
+            color: #FFD740;
+        }
+        
+        .payment-stat.failed .payment-stat-value {
+            color: #FF5252;
+        }
+        
+        @media (max-width: 992px) {
+            .dashboard-grid-responsive {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .dashboard-container {
+                padding: 12px;
+            }
+            
+            .dashboard-header {
+                padding: 20px;
+            }
+            
+            .dashboard-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .dashboard-header p {
+                font-size: 1rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+            
+            .stat-card {
+                padding: 16px;
+            }
+            
+            .stat-card-value {
+                font-size: 1.3rem;
+            }
+            
+            .dashboard-section {
+                padding: 16px;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Header -->
+    <div class="dashboard-header">
+        <h1>📊 داشبورد مدیریت</h1>
+        <p>خوش آمدید به پنل مدیریت فروشگاه ماینکرفت</p>
+    </div>
+    
+    <!-- آمار کلی -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-card-icon">📦</div>
+            <div class="stat-card-title">کل سفارشات</div>
+            <div class="stat-card-value">{{ total_orders|default:"0" }}</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-card-icon">🛍️</div>
+            <div class="stat-card-title">کل محصولات</div>
+            <div class="stat-card-value">{{ total_products|default:"0" }}</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-card-icon">📁</div>
+            <div class="stat-card-title">دسته‌بندی‌ها</div>
+            <div class="stat-card-value">{{ total_categories|default:"0" }}</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-card-icon">💰</div>
+            <div class="stat-card-title">درآمد کل (WC)</div>
+            <div class="stat-card-value">{{ total_revenue|floatformat:0|default:"0" }}</div>
+        </div>
+    </div>
+    
+    <!-- آمار امروز و هفته -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-card-icon">📅</div>
+            <div class="stat-card-title">سفارشات امروز</div>
+            <div class="stat-card-value">{{ today_orders|default:"0" }}</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-card-icon">💵</div>
+            <div class="stat-card-title">درآمد امروز (WC)</div>
+            <div class="stat-card-value">{{ today_revenue|floatformat:0|default:"0" }}</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-card-icon">📊</div>
+            <div class="stat-card-title">سفارشات هفته</div>
+            <div class="stat-card-value">{{ week_orders|default:"0" }}</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-card-icon">💳</div>
+            <div class="stat-card-title">درآمد هفته (WC)</div>
+            <div class="stat-card-value">{{ week_revenue|floatformat:0|default:"0" }}</div>
+        </div>
+    </div>
+    
+    <!-- Grid -->
+    <div class="dashboard-grid-responsive">
+        <!-- آخرین سفارشات -->
+        <div class="dashboard-section">
+            <h2>📋 آخرین سفارشات</h2>
+            {% if recent_orders %}
+            <div style="overflow-x: auto;">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>مشتری</th>
+                            <th>🎮 Minecraft</th>
+                            <th>💰 مبلغ</th>
+                            <th>وضعیت</th>
+                            <th>تاریخ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in recent_orders %}
+                        <tr>
+                            <td><strong>#{{ order.id }}</strong></td>
+                            <td>{{ order.first_name }} {{ order.last_name }}</td>
+                            <td>
+                                {% if order.minecraft_username %}
+                                    <span style="color: #8B83FF; font-weight: 600;">{{ order.minecraft_username }}</span>
+                                {% else %}
+                                    <span style="color: #6B6B8A;">-</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ order.get_total_wart_coin_cost|floatformat:0 }} WC</td>
+                            <td>
+                                {% if order.paid %}
+                                    <span class="badge badge-success">✓ پرداخت شده</span>
+                                {% else %}
+                                    <span class="badge badge-warning">⏳ در انتظار</span>
+                                {% endif %}
+                            </td>
+                            <td style="font-size: 0.8rem; color: #6B6B8A;">{{ order.created|date:"Y/m/d H:i" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <span class="empty-state-icon">📦</span>
+                <p>هنوز سفارشی ثبت نشده است</p>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- وضعیت پرداخت -->
+        <div class="dashboard-section">
+            <h2>💳 وضعیت پرداخت</h2>
+            <div style="padding: 4px 0;">
+                <div class="payment-stat paid">
+                    <span>✅ پرداخت شده</span>
+                    <span class="payment-stat-value">{{ payment_stats.paid|default:"0" }}</span>
+                </div>
+                <div class="payment-stat pending">
+                    <span>⏳ در انتظار</span>
+                    <span class="payment-stat-value">{{ payment_stats.pending|default:"0" }}</span>
+                </div>
+                <div class="payment-stat failed">
+                    <span>❌ ناموفق</span>
+                    <span class="payment-stat-value">{{ payment_stats.failed|default:"0" }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- محصولات پرفروش -->
+    <div class="dashboard-section">
+        <h2>🔥 محصولات پرفروش</h2>
+        {% if top_products %}
+        <div>
+            {% for product in top_products %}
+            <div class="product-item">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                {% else %}
+                <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #6C63FF, #00D2FF); border-radius: 8px; margin-left: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0;">📦</div>
+                {% endif %}
+                <div class="product-item-info">
+                    <div class="product-item-name">{{ product.name }}</div>
+                    <div class="product-item-count">تعداد فروخته شده: <strong style="color: #8B83FF;">{{ product.total_sold|default:"0" }}</strong></div>
+                </div>
+                <div style="font-size: 1.1rem; font-weight: bold; color: #8B83FF; flex-shrink: 0;">
+                    💰 {{ product.wart_coin_price|floatformat:0 }} WC
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <span class="empty-state-icon">📦</span>
+            <p>هنوز محصولی فروخته نشده است</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

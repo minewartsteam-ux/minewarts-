@@ -1,0 +1,675 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}ثبت سفارش{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ================================================================
+       🚀 ULTRA MODERN ORDER CREATE - 2026 EDITION
+       فیکس پس‌زمینه برای موبایل
+       ================================================================ */
+
+    /* ===== FIX: پس‌زمینه ثابت برای کل صفحه ===== */
+    body {
+        background: var(--dark-bg, #0A0A0F) !important;
+        min-height: 100vh;
+    }
+
+    .main-content {
+        background: var(--dark-bg, #0A0A0F) !important;
+    }
+
+    .container {
+        background: transparent !important;
+    }
+
+    .row {
+        background: transparent !important;
+    }
+
+    .col-12, .col-md-10, .col-lg-8, .col-xl-7, .col-xxl-6 {
+        background: transparent !important;
+    }
+
+    /* ================================================================
+       WRAPPER - GLASS + NEON
+       ================================================================ */
+    .order-create-page {
+        background: var(--card-bg, rgba(20, 22, 36, 0.95)) !important;
+        backdrop-filter: blur(24px) saturate(180%);
+        -webkit-backdrop-filter: blur(24px) saturate(180%);
+        border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.06));
+        border-radius: clamp(1rem, 2vw, 1.5rem);
+        padding: clamp(1.5rem, 3vw, 2.5rem);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        position: relative;
+        overflow: hidden;
+        animation: orderFadeIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    .order-create-page::before {
+        content: '';
+        position: absolute;
+        inset: -1px;
+        border-radius: clamp(1rem, 2vw, 1.5rem);
+        padding: 1px;
+        background: conic-gradient(
+            from 0deg at 50% 50%,
+            transparent 0deg,
+            rgba(108, 99, 255, 0.08) 60deg,
+            transparent 120deg,
+            rgba(0, 210, 255, 0.08) 180deg,
+            transparent 240deg,
+            rgba(255, 101, 132, 0.08) 300deg,
+            transparent 360deg
+        );
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+        animation: orderNeonRotate 20s linear infinite;
+    }
+
+    @keyframes orderNeonRotate {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    @keyframes orderFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* ================================================================
+       HEADER
+       ================================================================ */
+    .order-create-page h1 {
+        font-size: clamp(1.8rem, 4vw, 2.8rem);
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        text-align: center;
+        background: linear-gradient(135deg, #8B83FF, #00D2FF);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    /* ================================================================
+       ORDER SUMMARY - FIXED
+       ================================================================ */
+    .order-summary-box {
+        background: linear-gradient(135deg, rgba(108, 99, 255, 0.06), rgba(0, 210, 255, 0.04));
+        border: 1px solid rgba(108, 99, 255, 0.08);
+        border-radius: clamp(0.8rem, 1.5vw, 1.2rem);
+        padding: clamp(1rem, 2vw, 1.5rem);
+        margin-bottom: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .order-summary-box:hover {
+        border-color: rgba(108, 99, 255, 0.15);
+        transform: scale(1.005);
+    }
+
+    .order-summary-box h3 {
+        color: var(--text-secondary, #B0B0C8);
+        font-size: clamp(1rem, 1.3vw, 1.1rem);
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+    }
+
+    .order-summary-box .total-price {
+        color: #FFD740;
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 900;
+        text-shadow: 0 0 40px rgba(255, 215, 64, 0.08);
+    }
+
+    .order-summary-box .total-price .currency {
+        font-size: clamp(1rem, 1.5vw, 1.4rem);
+        opacity: 0.6;
+        font-weight: 600;
+    }
+
+    .order-summary-box .wallet-info {
+        color: var(--text-muted, #6B6B8A);
+        margin-top: 0.5rem;
+        font-size: clamp(0.85rem, 1vw, 0.95rem);
+    }
+
+    .order-summary-box .wallet-info strong {
+        color: #8B83FF;
+    }
+
+    /* ================================================================
+       FORM - MODERN
+       ================================================================ */
+    .order-form .form-group {
+        margin-bottom: 1.2rem;
+    }
+
+    .order-form label {
+        color: var(--text-secondary, #B0B0C8);
+        font-weight: 600;
+        margin-bottom: 0.4rem;
+        display: block;
+        font-size: clamp(0.9rem, 1vw, 0.95rem);
+    }
+
+    .order-form input,
+    .order-form textarea {
+        background: rgba(0, 0, 0, 0.25);
+        border: 2px solid var(--glass-border, rgba(255, 255, 255, 0.06));
+        border-radius: clamp(0.5rem, 1vw, 0.8rem);
+        color: var(--text-primary, #FFFFFF);
+        padding: clamp(0.6rem, 1vw, 0.8rem) clamp(0.8rem, 1.2vw, 1rem);
+        width: 100%;
+        font-size: clamp(0.9rem, 1vw, 1rem);
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        font-family: 'Vazirmatn', sans-serif;
+        box-sizing: border-box;
+    }
+
+    .order-form input:focus,
+    .order-form textarea:focus {
+        outline: none;
+        border-color: #6C63FF;
+        box-shadow: 0 0 0 4px rgba(108, 99, 255, 0.1);
+        background: rgba(0, 0, 0, 0.4);
+        transform: scale(1.005);
+    }
+
+    .order-form input::placeholder,
+    .order-form textarea::placeholder {
+        color: var(--text-muted, #6B6B8A);
+        opacity: 0.6;
+    }
+
+    .order-form textarea {
+        min-height: 80px;
+        resize: vertical;
+        font-family: 'Vazirmatn', sans-serif;
+    }
+
+    /* ================================================================
+       MINECRAFT USERNAME DISPLAY - FIXED
+       ================================================================ */
+    .minecraft-username-box {
+        padding: clamp(0.6rem, 1vw, 0.8rem) clamp(0.8rem, 1.2vw, 1rem);
+        background: rgba(108, 99, 255, 0.06);
+        border: 2px solid rgba(108, 99, 255, 0.12);
+        border-radius: clamp(0.5rem, 1vw, 0.8rem);
+        margin-bottom: 0.8rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .minecraft-username-box .username {
+        color: #8B83FF;
+        font-weight: 700;
+        font-size: clamp(1rem, 1.2vw, 1.1rem);
+        word-break: break-all;
+    }
+
+    .minecraft-username-box .username-empty {
+        color: #FF5252;
+        font-weight: 600;
+        font-size: clamp(0.9rem, 1vw, 0.95rem);
+    }
+
+    .minecraft-username-box .edit-link {
+        color: #00D2FF;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: clamp(0.8rem, 0.9vw, 0.85rem);
+        transition: all 0.3s ease;
+        white-space: nowrap;
+    }
+
+    .minecraft-username-box .edit-link:hover {
+        color: #8B83FF;
+        transform: scale(1.05);
+    }
+
+    .minecraft-warning {
+        color: #FF5252;
+        font-size: clamp(0.8rem, 0.9vw, 0.85rem);
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        margin-top: 0.3rem;
+    }
+
+    .minecraft-warning .warning-icon {
+        font-size: 1.1rem;
+    }
+
+    /* ================================================================
+       EMAIL DISPLAY - FIXED
+       ================================================================ */
+    .email-display {
+        color: var(--text-muted, #6B6B8A);
+        font-size: clamp(0.85rem, 0.9vw, 0.9rem);
+        padding: 0.4rem 0;
+    }
+
+    .email-display strong {
+        color: var(--text-secondary, #B0B0C8);
+    }
+
+    .email-display .email-note {
+        font-size: clamp(0.75rem, 0.8vw, 0.8rem);
+        color: var(--text-muted, #6B6B8A);
+        margin-top: 0.2rem;
+    }
+
+    /* ================================================================
+       SUBMIT BUTTON
+       ================================================================ */
+    .order-form .btn-primary {
+        background: linear-gradient(135deg, #6C63FF, #5A52D5);
+        border: none;
+        border-radius: 50px;
+        font-size: clamp(1rem, 1.2vw, 1.1rem);
+        font-weight: 700;
+        padding: clamp(0.8rem, 1.2vw, 1rem) clamp(1.5rem, 2vw, 2rem);
+        width: 100%;
+        margin-top: 0.5rem;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 4px 25px rgba(108, 99, 255, 0.3);
+        color: #fff;
+        cursor: pointer;
+        font-family: 'Vazirmatn', sans-serif;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .order-form .btn-primary::before {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        border-radius: 50px;
+        background: linear-gradient(135deg, #6C63FF, #00D2FF, #6C63FF);
+        opacity: 0;
+        transition: all 0.4s ease;
+        z-index: -1;
+        filter: blur(8px);
+    }
+
+    .order-form .btn-primary:hover::before {
+        opacity: 0.3;
+    }
+
+    .order-form .btn-primary:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 8px 35px rgba(108, 99, 255, 0.4);
+    }
+
+    .order-form .btn-primary:active {
+        transform: translateY(0) scale(0.97);
+    }
+
+    .order-form .btn-primary:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none !important;
+    }
+
+    /* ================================================================
+       FORM ERRORS
+       ================================================================ */
+    .form-errors {
+        background: rgba(255, 23, 68, 0.08);
+        border: 1px solid rgba(255, 23, 68, 0.15);
+        border-radius: clamp(0.5rem, 1vw, 0.8rem);
+        padding: clamp(0.8rem, 1.2vw, 1rem);
+        margin-bottom: 1.2rem;
+        color: #FF5252;
+        animation: errorShake 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes errorShake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-6px); }
+        75% { transform: translateX(6px); }
+    }
+
+    .form-errors strong {
+        display: block;
+        margin-bottom: 0.3rem;
+    }
+
+    .form-errors ul {
+        margin: 0.3rem 0 0 0;
+        padding-right: 1.2rem;
+    }
+
+    .form-errors ul li {
+        margin-bottom: 0.2rem;
+        font-size: clamp(0.85rem, 0.9vw, 0.9rem);
+    }
+
+    /* ================================================================
+       RESPONSIVE
+       ================================================================ */
+    @media (max-width: 768px) {
+        .order-create-page {
+            padding: 1.2rem;
+        }
+
+        .order-summary-box .total-price {
+            font-size: 2.2rem;
+        }
+
+        .minecraft-username-box {
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: right;
+            width: 100%;
+        }
+
+        .minecraft-username-box .edit-link {
+            align-self: flex-start;
+        }
+
+        .order-form .btn-primary {
+            font-size: 1rem;
+            padding: 0.8rem 1.5rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .order-create-page {
+            padding: 0.8rem;
+        }
+
+        .order-create-page h1 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .order-summary-box {
+            padding: 0.8rem;
+        }
+
+        .order-summary-box .total-price {
+            font-size: 1.8rem;
+        }
+
+        .order-summary-box h3 {
+            font-size: 0.9rem;
+        }
+
+        .order-form .form-group {
+            margin-bottom: 0.8rem;
+        }
+
+        .order-form label {
+            font-size: 0.85rem;
+        }
+
+        .order-form input,
+        .order-form textarea {
+            font-size: 0.85rem;
+            padding: 0.5rem 0.7rem;
+        }
+
+        .minecraft-username-box {
+            padding: 0.5rem 0.7rem;
+        }
+
+        .minecraft-username-box .username {
+            font-size: 0.9rem;
+        }
+
+        .minecraft-username-box .username-empty {
+            font-size: 0.8rem;
+        }
+
+        .minecraft-username-box .edit-link {
+            font-size: 0.75rem;
+        }
+
+        .minecraft-warning {
+            font-size: 0.75rem;
+        }
+
+        .email-display {
+            font-size: 0.8rem;
+        }
+
+        .email-display .email-note {
+            font-size: 0.7rem;
+        }
+
+        .order-form .btn-primary {
+            font-size: 0.9rem;
+            padding: 0.7rem 1.2rem;
+        }
+
+        .form-errors {
+            padding: 0.6rem 0.8rem;
+            font-size: 0.85rem;
+        }
+
+        .form-errors ul li {
+            font-size: 0.8rem;
+        }
+    }
+
+    @media (max-width: 360px) {
+        .order-create-page {
+            padding: 0.6rem;
+        }
+
+        .order-create-page h1 {
+            font-size: 1.3rem;
+        }
+
+        .order-summary-box .total-price {
+            font-size: 1.5rem;
+        }
+
+        .order-form input,
+        .order-form textarea {
+            font-size: 0.8rem;
+            padding: 0.4rem 0.6rem;
+        }
+
+        .order-form .btn-primary {
+            font-size: 0.85rem;
+            padding: 0.6rem 1rem;
+        }
+
+        .minecraft-username-box .username {
+            font-size: 0.8rem;
+        }
+    }
+
+    /* ================================================================
+       LIGHT MODE FIX - برای موبایل
+       ================================================================ */
+    @media (prefers-color-scheme: light) {
+        /* اطمینان از پس‌زمینه تیره در حالت Light Mode */
+        body {
+            background: #0A0A0F !important;
+        }
+
+        .main-content {
+            background: #0A0A0F !important;
+        }
+
+        .order-create-page {
+            background: rgba(20, 22, 36, 0.95) !important;
+            border-color: rgba(255, 255, 255, 0.06) !important;
+        }
+
+        .order-summary-box {
+            background: linear-gradient(135deg, rgba(108, 99, 255, 0.06), rgba(0, 210, 255, 0.04)) !important;
+            border-color: rgba(108, 99, 255, 0.08) !important;
+        }
+
+        .order-summary-box h3 {
+            color: #B0B0C8 !important;
+        }
+
+        .order-summary-box .wallet-info {
+            color: #6B6B8A !important;
+        }
+
+        .order-form label {
+            color: #B0B0C8 !important;
+        }
+
+        .order-form input,
+        .order-form textarea {
+            background: rgba(0, 0, 0, 0.25) !important;
+            border-color: rgba(255, 255, 255, 0.06) !important;
+            color: #FFFFFF !important;
+        }
+
+        .order-form input:focus,
+        .order-form textarea:focus {
+            background: rgba(0, 0, 0, 0.4) !important;
+            border-color: #6C63FF !important;
+        }
+
+        .order-form input::placeholder,
+        .order-form textarea::placeholder {
+            color: #6B6B8A !important;
+        }
+
+        .minecraft-username-box {
+            background: rgba(108, 99, 255, 0.06) !important;
+            border-color: rgba(108, 99, 255, 0.12) !important;
+        }
+
+        .minecraft-username-box .username {
+            color: #8B83FF !important;
+        }
+
+        .minecraft-username-box .edit-link {
+            color: #00D2FF !important;
+        }
+
+        .email-display {
+            color: #6B6B8A !important;
+        }
+
+        .email-display strong {
+            color: #B0B0C8 !important;
+        }
+
+        .email-display .email-note {
+            color: #6B6B8A !important;
+        }
+
+        .form-errors {
+            background: rgba(255, 23, 68, 0.08) !important;
+            border-color: rgba(255, 23, 68, 0.15) !important;
+            color: #FF5252 !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8 col-xl-7 col-xxl-6">
+            <div class="order-create-page">
+                <h1>📝 ثبت سفارش</h1>
+                
+                <!-- ===== ORDER SUMMARY ===== -->
+                <div class="order-summary-box">
+                    <h3>🧾 جمع کل سبد خرید</h3>
+                    <div class="total-price">
+                        {{ total_wart_coins|floatformat:0|intcomma }}
+                        <span class="currency">WC</span>
+                    </div>
+                    <div class="wallet-info">
+                        موجودی شما: <strong>{{ wallet_balance|floatformat:0|intcomma }} WC</strong>
+                    </div>
+                </div>
+                
+                <!-- ===== FORM ERRORS ===== -->
+                {% if form.errors %}
+                <div class="form-errors">
+                    <strong>⚠️ لطفا خطاهای زیر را برطرف کنید:</strong>
+                    <ul>
+                        {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+                
+                <!-- ===== FORM ===== -->
+                <form action="." method="post" class="order-form">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }}</label>
+                        {{ form.first_name }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.last_name.id_for_label }}">{{ form.last_name.label }}</label>
+                        {{ form.last_name }}
+                    </div>
+                    
+                    <!-- ===== MINECRAFT USERNAME ===== -->
+                    <div class="form-group">
+                        <label>🎮 نام کاربری ماینکرفت</label>
+                        <div class="minecraft-username-box">
+                            {% if user.profile.minecraft_username %}
+                                <span class="username">🎯 {{ user.profile.minecraft_username }}</span>
+                            {% else %}
+                                <span class="username-empty">⚠️ تنظیم نشده</span>
+                            {% endif %}
+                            <a href="{% url 'accounts:profile' %}" class="edit-link">✏️ ویرایش در پروفایل</a>
+                        </div>
+                        {% if not user.profile.minecraft_username %}
+                            <div class="minecraft-warning">
+                                <span class="warning-icon">⚠️</span>
+                                برای ثبت سفارش، باید نام کاربری ماینکرفت خود را در پروفایل تنظیم کنید.
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- ===== EMAIL ===== -->
+                    <div class="form-group">
+                        <label>📧 ایمیل</label>
+                        <div class="email-display">
+                            <strong>{{ user.email }}</strong>
+                            <div class="email-note">ایمیل شما از حساب کاربری استفاده می‌شود</div>
+                        </div>
+                    </div>
+                    
+                    <!-- ===== SUBMIT ===== -->
+                    <button type="submit" class="btn-primary" {% if not user.profile.minecraft_username %}disabled{% endif %}>
+                        {% if user.profile.minecraft_username %}
+                            ✅ ثبت سفارش و پرداخت با وارت کوین
+                        {% else %}
+                            ⚠️ ابتدا نام کاربری ماینکرفت را تنظیم کنید
+                        {% endif %}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,132 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static admin_modify %}
+
+{% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+&rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>
+&rsaquo; <a href="{% url 'admin:accounts_wartcoin_changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+&rsaquo; تغییر موجودی
+</div>
+{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 20px auto; padding: 20px;">
+    <h1 style="color: #4CAF50; margin-bottom: 30px; text-align: center;">
+        💰 تغییر موجودی وارت کوین
+    </h1>
+    
+    <div style="background: white; border-radius: 15px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+        <div style="margin-bottom: 25px;">
+            <h2 style="color: #333; margin-bottom: 15px;">کاربر: <span style="color: #4CAF50;">{{ wallet.user.get_full_name|default:wallet.user.username }}</span></h2>
+            <p style="color: #666; margin: 5px 0;"><strong>نام کاربری:</strong> {{ wallet.user.username }}</p>
+            <p style="color: #666; margin: 5px 0;"><strong>ایمیل:</strong> {{ wallet.user.email }}</p>
+        </div>
+        
+        <div style="background: #f5f5f5; border-radius: 10px; padding: 20px; margin-bottom: 25px;">
+            <h3 style="color: #333; margin-bottom: 15px;">موجودی فعلی</h3>
+            <p style="font-size: 2rem; font-weight: bold; color: #4CAF50; margin: 0;">
+                {{ wallet.balance|floatformat:2 }} WC
+            </p>
+        </div>
+        
+        <form method="post" style="margin-top: 30px;">
+            {% csrf_token %}
+            
+            <div style="margin-bottom: 20px;">
+                <label for="balance" style="display: block; margin-bottom: 8px; color: #333; font-weight: bold;">
+                    موجودی جدید (وارت کوین):
+                </label>
+                <input 
+                    type="number" 
+                    id="balance" 
+                    name="balance" 
+                    value="{{ wallet.balance|floatformat:2 }}" 
+                    step="0.01" 
+                    min="0"
+                    required
+                    style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 10px; font-size: 1.1rem;"
+                />
+                <small style="color: #666; display: block; margin-top: 5px;">
+                    مقدار جدید موجودی را وارد کنید (حداقل 0)
+                </small>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <label for="reason" style="display: block; margin-bottom: 8px; color: #333; font-weight: bold;">
+                    دلیل تغییر (اختیاری):
+                </label>
+                <textarea 
+                    id="reason" 
+                    name="reason" 
+                    rows="3"
+                    placeholder="مثال: افزایش موجودی به دلیل هدیه..."
+                    style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 10px; font-size: 1rem; resize: vertical;"
+                >تغییر دستی موجودی توسط ادمین</textarea>
+            </div>
+            
+            <div style="display: flex; gap: 15px; margin-top: 30px;">
+                <button 
+                    type="submit" 
+                    style="flex: 1; background: linear-gradient(135deg, #4CAF50, #66BB6A); color: white; padding: 15px; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: all 0.3s;"
+                    onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(76, 175, 80, 0.4)';"
+                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';"
+                >
+                    ✅ ذخیره تغییرات
+                </button>
+                <a 
+                    href="{% url 'admin:accounts_wartcoin_changelist' %}" 
+                    style="flex: 1; background: #f5f5f5; color: #333; padding: 15px; border: 2px solid #ddd; border-radius: 10px; font-size: 1.1rem; font-weight: bold; text-decoration: none; text-align: center; transition: all 0.3s; display: flex; align-items: center; justify-content: center;"
+                    onmouseover="this.style.background='#e0e0e0'; this.style.borderColor='#bbb';"
+                    onmouseout="this.style.background='#f5f5f5'; this.style.borderColor='#ddd';"
+                >
+                    ❌ انصراف
+                </a>
+            </div>
+        </form>
+        
+        {% if safe_transactions %}
+        <div style="margin-top: 40px; padding-top: 30px; border-top: 2px solid #eee;">
+            <h3 style="color: #333; margin-bottom: 20px;">آخرین تراکنش‌ها:</h3>
+            <div style="max-height: 300px; overflow-y: auto;">
+                {% for txn in safe_transactions %}
+                <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-right: 4px solid {% if txn.amount >= 0 %}#4CAF50{% else %}#f44336{% endif %};">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong style="color: {% if txn.amount >= 0 %}#4CAF50{% else %}#f44336{% endif %};">
+                                {% if txn.amount >= 0 %}+{% endif %}{{ txn.amount|floatformat:2 }} WC
+                            </strong>
+                            <span style="color: #666; margin-right: 10px;">- 
+                                {% if txn.transaction_type == 'purchase' %}خرید
+                                {% elif txn.transaction_type == 'spend' %}خرج
+                                {% elif txn.transaction_type == 'manual' %}دستی (ادمین)
+                                {% elif txn.transaction_type == 'refund' %}بازپرداخت
+                                {% else %}{{ txn.transaction_type }}{% endif %}
+                            </span>
+                        </div>
+                        <small style="color: #999;">{{ txn.created }}</small>
+                    </div>
+                    {% if txn.reason %}
+                    <p style="color: #666; margin: 5px 0 0 0; font-size: 0.9rem;">{{ txn.reason }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    input[type="number"]:focus,
+    textarea:focus {
+        outline: none;
+        border-color: #4CAF50 !important;
+        box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2) !important;
+    }
+</style>
+{% endblock %}
+
+

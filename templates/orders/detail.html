@@ -1,0 +1,1017 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}جزئیات سفارش{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ================================================================
+       ULTRA MODERN ORDER DETAIL - 2026 EDITION
+       طراحی کاملاً مدرن با استفاده از CSS Variables base.html
+       ================================================================ */
+
+    /* ================================================================
+       WRAPPER - GLASS + NEON
+       ================================================================ */
+    .order-detail-wrapper {
+        background: var(--card-bg, rgba(20, 22, 36, 0.85));
+        backdrop-filter: blur(24px) saturate(180%);
+        -webkit-backdrop-filter: blur(24px) saturate(180%);
+        border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.06));
+        border-radius: var(--radius-lg, 24px);
+        padding: clamp(1.5rem, 4vw, 3.5rem);
+        box-shadow: var(--glass-shadow, 0 20px 60px rgba(0, 0, 0, 0.4));
+        margin: 20px auto;
+        max-width: 1100px;
+        position: relative;
+        overflow: hidden;
+        animation: orderFadeIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        transition: var(--transition-smooth, all 0.3s ease);
+    }
+
+    .order-detail-wrapper:hover {
+        border-color: rgba(108, 99, 255, 0.15);
+        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5), 0 0 40px rgba(108, 99, 255, 0.02);
+    }
+
+    .order-detail-wrapper::before {
+        content: '';
+        position: absolute;
+        inset: -1px;
+        border-radius: var(--radius-lg, 24px);
+        padding: 1px;
+        background: conic-gradient(
+            from 0deg at 50% 50%,
+            transparent 0deg,
+            rgba(108, 99, 255, 0.08) 60deg,
+            transparent 120deg,
+            rgba(0, 210, 255, 0.08) 180deg,
+            transparent 240deg,
+            rgba(255, 101, 132, 0.08) 300deg,
+            transparent 360deg
+        );
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+        animation: neonRotate 20s linear infinite;
+    }
+
+    @keyframes neonRotate {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    @keyframes orderFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(30px) scale(0.98);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    /* ================================================================
+       HEADER
+       ================================================================ */
+    .order-detail-header {
+        text-align: center;
+        margin-bottom: 2.5rem;
+        padding-bottom: 1.8rem;
+        border-bottom: 2px solid var(--glass-border, rgba(255, 255, 255, 0.06));
+        position: relative;
+    }
+
+    .order-detail-header::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 25%;
+        width: 50%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--primary-color, #6C63FF), var(--accent-color, #00D2FF), transparent);
+        border-radius: 2px;
+    }
+
+    .order-detail-header h1 {
+        font-size: clamp(1.8rem, 4vw, 3rem);
+        font-weight: 800;
+        margin-bottom: 0.4rem;
+        background: linear-gradient(135deg, var(--primary-color, #6C63FF), var(--accent-color, #00D2FF));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .order-detail-header .order-id {
+        color: var(--text-muted, #6B6B8A);
+        font-size: clamp(0.9rem, 1.2vw, 1.05rem);
+        margin: 0;
+        font-weight: 500;
+    }
+
+    .order-detail-header .order-id strong {
+        color: var(--text-secondary, #B0B0C8);
+        font-weight: 700;
+    }
+
+    .order-status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.6rem 1.8rem;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: clamp(0.85rem, 1.1vw, 1rem);
+        margin-top: 0.8rem;
+        border: 1px solid transparent;
+        transition: var(--transition-smooth, all 0.3s ease);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+
+    .order-status-badge:hover {
+        transform: scale(1.04) translateY(-2px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .status-paid {
+        background: rgba(0, 230, 118, 0.08);
+        border-color: rgba(0, 230, 118, 0.2);
+        color: #69F0AE;
+        box-shadow: 0 0 30px rgba(0, 230, 118, 0.05);
+    }
+
+    .status-pending {
+        background: rgba(255, 215, 64, 0.08);
+        border-color: rgba(255, 215, 64, 0.2);
+        color: #FFD740;
+        box-shadow: 0 0 30px rgba(255, 215, 64, 0.05);
+    }
+
+    .status-cancelled {
+        background: rgba(255, 23, 68, 0.08);
+        border-color: rgba(255, 23, 68, 0.2);
+        color: #FF5252;
+        box-shadow: 0 0 30px rgba(255, 23, 68, 0.05);
+    }
+
+    /* ================================================================
+       SECTIONS GRID
+       ================================================================ */
+    .order-sections {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .order-section {
+        background: var(--bg-glass, rgba(255, 255, 255, 0.02));
+        border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.04));
+        border-radius: var(--radius-md, 16px);
+        padding: clamp(1.2rem, 2vw, 1.8rem);
+        transition: var(--transition-smooth, all 0.3s ease);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+
+    .order-section:hover {
+        background: rgba(108, 99, 255, 0.03);
+        border-color: rgba(108, 99, 255, 0.1);
+        transform: translateY(-4px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .order-section h3 {
+        color: var(--primary-color, #6C63FF);
+        font-size: clamp(1rem, 1.3vw, 1.15rem);
+        font-weight: 700;
+        margin-bottom: 1.2rem;
+        padding-bottom: 0.6rem;
+        border-bottom: 1px solid var(--glass-border, rgba(255, 255, 255, 0.04));
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+
+    .order-section-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid var(--glass-border, rgba(255, 255, 255, 0.02));
+        gap: 0.5rem;
+    }
+
+    .order-section-item:last-child {
+        border-bottom: none;
+    }
+
+    .order-section-label {
+        color: var(--text-muted, #6B6B8A);
+        font-size: clamp(0.8rem, 1vw, 0.9rem);
+        font-weight: 500;
+        flex-shrink: 0;
+    }
+
+    .order-section-value {
+        color: var(--text-secondary, #B0B0C8);
+        font-weight: 600;
+        font-size: clamp(0.8rem, 1vw, 0.9rem);
+        text-align: left;
+        word-break: break-all;
+        overflow-wrap: break-word;
+        max-width: 65%;
+        flex: 1;
+    }
+
+    .order-section-value.minecraft {
+        color: var(--primary-color, #6C63FF);
+        font-weight: 700;
+        font-family: 'Courier New', monospace;
+        letter-spacing: 0.5px;
+        word-break: break-all;
+        background: rgba(108, 99, 255, 0.05);
+        padding: 2px 8px;
+        border-radius: 4px;
+    }
+
+    .order-section-value.amount {
+        color: #FFD740;
+        font-weight: 700;
+    }
+
+    /* ================================================================
+       ITEMS SECTION
+       ================================================================ */
+    .order-items-section {
+        background: var(--bg-glass, rgba(255, 255, 255, 0.02));
+        border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.04));
+        border-radius: var(--radius-md, 16px);
+        padding: clamp(1.2rem, 2vw, 1.8rem);
+        margin-bottom: 1.8rem;
+        transition: var(--transition-smooth, all 0.3s ease);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+
+    .order-items-section:hover {
+        background: rgba(108, 99, 255, 0.02);
+        border-color: rgba(108, 99, 255, 0.08);
+    }
+
+    .order-items-section h3 {
+        color: var(--primary-color, #6C63FF);
+        font-size: clamp(1.1rem, 1.5vw, 1.3rem);
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.6rem;
+        border-bottom: 1px solid var(--glass-border, rgba(255, 255, 255, 0.04));
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+
+    /* ================================================================
+       ITEM CARD - MODERN
+       ================================================================ */
+    .order-item-card {
+        background: rgba(255, 255, 255, 0.02);
+        border-radius: var(--radius-md, 14px);
+        padding: clamp(0.8rem, 1.2vw, 1.2rem);
+        margin-bottom: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: clamp(0.8rem, 1.5vw, 1.2rem);
+        transition: var(--transition-smooth, all 0.3s ease);
+        border: 1px solid transparent;
+        flex-wrap: wrap;
+    }
+
+    .order-item-card:hover {
+        background: rgba(108, 99, 255, 0.04);
+        border-color: rgba(108, 99, 255, 0.08);
+        transform: translateX(6px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .order-item-card:last-child {
+        margin-bottom: 0;
+    }
+
+    /* ================================================================
+       ITEM IMAGE
+       ================================================================ */
+    .order-item-image {
+        width: clamp(60px, 10vw, 80px);
+        height: clamp(60px, 10vw, 80px);
+        min-width: 60px;
+        min-height: 60px;
+        object-fit: contain;
+        border-radius: var(--radius-md, 12px);
+        border: 2px solid rgba(108, 99, 255, 0.12);
+        flex-shrink: 0;
+        transition: var(--transition-smooth, all 0.3s ease);
+        background: rgba(0, 0, 0, 0.2);
+        padding: 4px;
+    }
+
+    .order-item-image:hover {
+        transform: scale(1.08);
+        border-color: var(--primary-color, #6C63FF);
+        box-shadow: 0 0 30px rgba(108, 99, 255, 0.1);
+    }
+
+    .order-item-image-placeholder {
+        width: clamp(60px, 10vw, 80px);
+        height: clamp(60px, 10vw, 80px);
+        min-width: 60px;
+        min-height: 60px;
+        border-radius: var(--radius-md, 12px);
+        background: rgba(108, 99, 255, 0.06);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.2rem;
+        flex-shrink: 0;
+        border: 2px solid rgba(108, 99, 255, 0.08);
+        transition: var(--transition-smooth, all 0.3s ease);
+    }
+
+    .order-item-card:hover .order-item-image-placeholder {
+        background: rgba(108, 99, 255, 0.1);
+        border-color: rgba(108, 99, 255, 0.15);
+        transform: scale(1.05);
+    }
+
+    /* ================================================================
+       ITEM DETAILS
+       ================================================================ */
+    .order-item-details {
+        flex: 1;
+        min-width: 120px;
+        max-width: 100%;
+    }
+
+    .order-item-name {
+        font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+        font-weight: 700;
+        color: var(--text-primary, #FFFFFF);
+        margin-bottom: 0.2rem;
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
+
+    .order-item-info {
+        color: var(--text-muted, #6B6B8A);
+        font-size: clamp(0.7rem, 0.9vw, 0.8rem);
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        flex-wrap: wrap;
+    }
+
+    .order-item-info span {
+        background: rgba(255, 255, 255, 0.02);
+        padding: 2px 8px;
+        border-radius: 4px;
+    }
+
+    .order-item-price {
+        font-size: clamp(1rem, 1.3vw, 1.2rem);
+        font-weight: 700;
+        color: #FFD740;
+        white-space: nowrap;
+        flex-shrink: 0;
+        margin-right: auto;
+        padding-right: 0.5rem;
+        background: rgba(255, 215, 64, 0.03);
+        padding: 4px 12px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 215, 64, 0.06);
+    }
+
+    /* ================================================================
+       TOTAL
+       ================================================================ */
+    .order-total {
+        background: linear-gradient(135deg, rgba(108, 99, 255, 0.05), rgba(0, 210, 255, 0.03));
+        border: 2px solid rgba(108, 99, 255, 0.06);
+        border-radius: var(--radius-md, 16px);
+        padding: clamp(1.2rem, 2vw, 1.8rem);
+        text-align: center;
+        transition: var(--transition-smooth, all 0.3s ease);
+        margin-bottom: 1.8rem;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .order-total::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle at 50% 50%, rgba(108, 99, 255, 0.02), transparent 70%);
+        pointer-events: none;
+    }
+
+    .order-total:hover {
+        background: linear-gradient(135deg, rgba(108, 99, 255, 0.08), rgba(0, 210, 255, 0.05));
+        border-color: rgba(108, 99, 255, 0.12);
+        transform: scale(1.01);
+        box-shadow: 0 8px 40px rgba(108, 99, 255, 0.05);
+    }
+
+    .order-total-label {
+        color: var(--text-muted, #6B6B8A);
+        font-size: clamp(1rem, 1.3vw, 1.15rem);
+        font-weight: 500;
+        margin-bottom: 0.3rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .order-total-value {
+        color: #FFD740;
+        font-size: clamp(2.2rem, 5vw, 3.8rem);
+        font-weight: 900;
+        text-shadow: 0 0 60px rgba(255, 215, 64, 0.06);
+        letter-spacing: 1px;
+        word-break: break-word;
+        overflow-wrap: break-word;
+        position: relative;
+        z-index: 1;
+    }
+
+    .order-total-value .currency {
+        font-size: clamp(1.1rem, 1.8vw, 1.6rem);
+        opacity: 0.5;
+        margin-right: 0.3rem;
+    }
+
+    /* ================================================================
+       BACK BUTTON
+       ================================================================ */
+    .order-back-btn {
+        text-align: center;
+        margin-top: 0.5rem;
+    }
+
+    .order-back-btn .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.9rem 2.8rem;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: clamp(0.9rem, 1.1vw, 1.05rem);
+        background: linear-gradient(135deg, var(--primary-color, #6C63FF), var(--primary-color-dark, #5A52D5));
+        border: none;
+        color: #fff;
+        transition: var(--transition-smooth, all 0.3s ease);
+        box-shadow: 0 4px 25px rgba(108, 99, 255, 0.25);
+        text-decoration: none;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .order-back-btn .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .order-back-btn .btn:hover::before {
+        left: 100%;
+    }
+
+    .order-back-btn .btn:hover {
+        transform: translateY(-4px) scale(1.02);
+        box-shadow: 0 8px 40px rgba(108, 99, 255, 0.35);
+        color: #fff;
+    }
+
+    .order-back-btn .btn:active {
+        transform: scale(0.97);
+    }
+
+    /* ================================================================
+       EMPTY STATE
+       ================================================================ */
+    .order-empty {
+        text-align: center;
+        padding: 2.5rem 1rem;
+        color: var(--text-muted, #6B6B8A);
+    }
+
+    .order-empty .icon {
+        font-size: 3.5rem;
+        margin-bottom: 0.5rem;
+        opacity: 0.3;
+        display: block;
+    }
+
+    .order-empty p {
+        font-size: 1rem;
+    }
+
+    /* ================================================================
+       RESPONSIVE - MODERN
+       ================================================================ */
+
+    @media (max-width: 992px) {
+        .order-detail-wrapper {
+            padding: 1.8rem;
+            margin: 15px 12px;
+        }
+
+        .order-sections {
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .order-detail-wrapper {
+            padding: 1.2rem;
+            margin: 10px 8px;
+            border-radius: var(--radius-md, 16px);
+        }
+
+        .order-sections {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .order-section {
+            padding: 1rem 1.2rem;
+        }
+
+        .order-section-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.15rem;
+            padding: 0.5rem 0;
+        }
+
+        .order-section-value {
+            max-width: 100%;
+            width: 100%;
+            text-align: left;
+            word-break: break-word;
+        }
+
+        /* ===== ITEM CARD - MOBILE ===== */
+        .order-item-card {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 1rem;
+            gap: 0.8rem;
+        }
+
+        .order-item-image,
+        .order-item-image-placeholder {
+            width: 70px;
+            height: 70px;
+            min-width: 70px;
+            min-height: 70px;
+        }
+
+        .order-item-details {
+            width: 100%;
+            min-width: unset;
+        }
+
+        .order-item-price {
+            width: 100%;
+            text-align: left;
+            white-space: normal;
+            margin-right: 0;
+            padding: 0.4rem 0.8rem;
+            border-top: 1px solid var(--glass-border, rgba(255, 255, 255, 0.04));
+        }
+
+        .order-total-value {
+            font-size: 2.2rem;
+        }
+
+        .order-status-badge {
+            padding: 0.4rem 1.2rem;
+            font-size: 0.85rem;
+        }
+
+        .order-detail-header h1 {
+            font-size: 1.6rem;
+        }
+
+        .order-back-btn .btn {
+            width: 100%;
+            justify-content: center;
+            padding: 0.8rem 1.5rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .order-detail-wrapper {
+            padding: 0.8rem;
+            border-radius: var(--radius-md, 12px);
+            margin: 8px 4px;
+        }
+
+        .order-section {
+            padding: 0.8rem;
+            border-radius: var(--radius-md, 12px);
+        }
+
+        .order-section h3 {
+            font-size: 0.95rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .order-section-label {
+            font-size: 0.78rem;
+        }
+
+        .order-section-value {
+            font-size: 0.82rem;
+        }
+
+        .order-item-card {
+            padding: 0.8rem;
+            border-radius: var(--radius-md, 10px);
+        }
+
+        .order-item-image,
+        .order-item-image-placeholder {
+            width: 55px;
+            height: 55px;
+            min-width: 55px;
+            min-height: 55px;
+        }
+
+        .order-item-name {
+            font-size: 0.9rem;
+        }
+
+        .order-item-info {
+            font-size: 0.7rem;
+        }
+
+        .order-item-price {
+            font-size: 0.9rem;
+            padding: 0.3rem 0.6rem;
+        }
+
+        .order-total {
+            padding: 1rem;
+        }
+
+        .order-total-value {
+            font-size: 1.8rem;
+        }
+
+        .order-total-label {
+            font-size: 0.9rem;
+        }
+
+        .order-status-badge {
+            font-size: 0.75rem;
+            padding: 0.3rem 0.8rem;
+            gap: 0.4rem;
+        }
+
+        .order-detail-header {
+            margin-bottom: 1.2rem;
+            padding-bottom: 1rem;
+        }
+
+        .order-detail-header h1 {
+            font-size: 1.3rem;
+        }
+
+        .order-back-btn .btn {
+            font-size: 0.85rem;
+            padding: 0.7rem 1.2rem;
+        }
+
+        .order-items-section {
+            padding: 0.8rem;
+        }
+
+        .order-items-section h3 {
+            font-size: 0.95rem;
+        }
+
+        .order-item-image-placeholder {
+            font-size: 1.5rem;
+        }
+
+        .order-empty .icon {
+            font-size: 2.5rem;
+        }
+    }
+
+    @media (max-width: 360px) {
+        .order-detail-wrapper {
+            padding: 0.6rem;
+        }
+
+        .order-item-image,
+        .order-item-image-placeholder {
+            width: 48px;
+            height: 48px;
+            min-width: 48px;
+            min-height: 48px;
+        }
+
+        .order-item-name {
+            font-size: 0.82rem;
+        }
+
+        .order-item-price {
+            font-size: 0.82rem;
+        }
+
+        .order-total-value {
+            font-size: 1.5rem;
+        }
+
+        .order-section-value {
+            font-size: 0.75rem;
+        }
+    }
+
+    @media (min-width: 1400px) {
+        .order-detail-wrapper {
+            padding: 3.5rem;
+        }
+
+        .order-sections {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.8rem;
+        }
+
+        .order-section {
+            padding: 2rem;
+        }
+
+        .order-item-card {
+            padding: 1.5rem;
+        }
+    }
+
+    /* ================================================================
+       DARK/LIGHT MODE - با CSS Variables از base.html
+       ================================================================ */
+    @media (prefers-color-scheme: light) {
+        .order-detail-wrapper {
+            background: rgba(255, 255, 255, 0.92);
+            border-color: rgba(0, 0, 0, 0.04);
+        }
+
+        .order-section {
+            background: rgba(0, 0, 0, 0.02);
+            border-color: rgba(0, 0, 0, 0.04);
+        }
+
+        .order-section:hover {
+            background: rgba(0, 0, 0, 0.03);
+        }
+
+        .order-section-value {
+            color: rgba(0, 0, 0, 0.85);
+        }
+
+        .order-section-label {
+            color: rgba(0, 0, 0, 0.4);
+        }
+
+        .order-items-section {
+            background: rgba(0, 0, 0, 0.02);
+            border-color: rgba(0, 0, 0, 0.04);
+        }
+
+        .order-item-card {
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        .order-item-card:hover {
+            background: rgba(0, 0, 0, 0.04);
+        }
+
+        .order-item-name {
+            color: rgba(0, 0, 0, 0.85);
+        }
+
+        .order-item-info {
+            color: rgba(0, 0, 0, 0.35);
+        }
+
+        .order-item-info span {
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        .order-detail-header .order-id {
+            color: rgba(0, 0, 0, 0.4);
+        }
+
+        .order-detail-header .order-id strong {
+            color: rgba(0, 0, 0, 0.6);
+        }
+
+        .order-total {
+            background: linear-gradient(135deg, rgba(108, 99, 255, 0.04), rgba(0, 210, 255, 0.04));
+            border-color: rgba(108, 99, 255, 0.06);
+        }
+
+        .order-total-label {
+            color: rgba(0, 0, 0, 0.4);
+        }
+
+        .order-empty {
+            color: rgba(0, 0, 0, 0.3);
+        }
+
+        .order-item-image-placeholder {
+            background: rgba(0, 0, 0, 0.04);
+        }
+
+        .order-item-price {
+            background: rgba(255, 215, 64, 0.05);
+            border-color: rgba(255, 215, 64, 0.08);
+        }
+
+        .order-section-value.minecraft {
+            background: rgba(108, 99, 255, 0.04);
+        }
+    }
+
+    /* ================================================================
+       SCROLLBAR
+       ================================================================ */
+    .order-detail-wrapper::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .order-detail-wrapper::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .order-detail-wrapper::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, var(--primary-color, #6C63FF), var(--accent-color, #00D2FF));
+        border-radius: 4px;
+    }
+
+    /* ================================================================
+       ANIMATIONS
+       ================================================================ */
+    .order-item-card {
+        animation: itemSlideIn 0.4s ease forwards;
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+
+    .order-item-card:nth-child(1) { animation-delay: 0.05s; }
+    .order-item-card:nth-child(2) { animation-delay: 0.1s; }
+    .order-item-card:nth-child(3) { animation-delay: 0.15s; }
+    .order-item-card:nth-child(4) { animation-delay: 0.2s; }
+    .order-item-card:nth-child(5) { animation-delay: 0.25s; }
+
+    @keyframes itemSlideIn {
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="order-detail-wrapper">
+        <!-- ===== HEADER ===== -->
+        <div class="order-detail-header">
+            <h1>📋 جزئیات سفارش</h1>
+            <p class="order-id">شماره سفارش: <strong>#{{ order.id }}</strong></p>
+            <span class="order-status-badge {% if order.paid %}status-paid{% elif order.cancelled %}status-cancelled{% else %}status-pending{% endif %}">
+                {% if order.paid %}
+                    ✅ پرداخت شده
+                {% elif order.cancelled %}
+                    ❌ لغو شده
+                {% else %}
+                    ⏳ در انتظار پرداخت
+                {% endif %}
+            </span>
+        </div>
+
+        <!-- ===== SECTIONS ===== -->
+        <div class="order-sections">
+            <!-- اطلاعات مشتری -->
+            <div class="order-section">
+                <h3>👤 اطلاعات مشتری</h3>
+                <div class="order-section-item">
+                    <span class="order-section-label">نام:</span>
+                    <span class="order-section-value">{{ order.first_name|default:"—" }} {{ order.last_name|default:"" }}</span>
+                </div>
+                <div class="order-section-item">
+                    <span class="order-section-label">ایمیل:</span>
+                    <span class="order-section-value">{{ order.email|default:"—" }}</span>
+                </div>
+                {% if order.minecraft_username %}
+                <div class="order-section-item">
+                    <span class="order-section-label">🎮 نام کاربری ماینکرفت:</span>
+                    <span class="order-section-value minecraft">{{ order.minecraft_username }}</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- اطلاعات سفارش -->
+            <div class="order-section">
+                <h3>📅 اطلاعات سفارش</h3>
+                <div class="order-section-item">
+                    <span class="order-section-label">تاریخ ثبت:</span>
+                    <span class="order-section-value">{{ order.created|date:"Y/m/d H:i" }}</span>
+                </div>
+                <div class="order-section-item">
+                    <span class="order-section-label">💰 مبلغ وارت کوین:</span>
+                    <span class="order-section-value amount">{{ order.wart_coin_amount|floatformat:2 }} WC</span>
+                </div>
+                {% if order.transaction_id %}
+                <div class="order-section-item">
+                    <span class="order-section-label">شناسه تراکنش:</span>
+                    <span class="order-section-value" style="font-size:0.75rem; font-family:monospace; opacity:0.6; word-break:break-all;">{{ order.transaction_id }}</span>
+                </div>
+                {% endif %}
+                <div class="order-section-item">
+                    <span class="order-section-label">وضعیت:</span>
+                    <span class="order-section-value">
+                        {% if order.paid %}
+                            <span style="color:#69F0AE;">پرداخت شده</span>
+                        {% elif order.cancelled %}
+                            <span style="color:#FF5252;">لغو شده</span>
+                        {% else %}
+                            <span style="color:#FFD740;">در انتظار</span>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== ITEMS ===== -->
+        <div class="order-items-section">
+            <h3>🛍️ محصولات سفارش</h3>
+            {% for item in order.items.all %}
+            <div class="order-item-card">
+                {% if item.product.image %}
+                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="order-item-image" loading="lazy">
+                {% else %}
+                <div class="order-item-image-placeholder">🎁</div>
+                {% endif %}
+                <div class="order-item-details">
+                    <div class="order-item-name">{{ item.product.name|default:"محصول" }}</div>
+                    <div class="order-item-info">
+                        <span>تعداد: {{ item.quantity }}</span>
+                        <span>💰 {{ item.wart_coin_price|floatformat:2 }} WC</span>
+                    </div>
+                </div>
+                <div class="order-item-price">💰 {{ item.get_cost|floatformat:2 }} WC</div>
+            </div>
+            {% empty %}
+            <div class="order-empty">
+                <span class="icon">📭</span>
+                <p>هیچ محصولی در این سفارش وجود ندارد</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- ===== TOTAL ===== -->
+        <div class="order-total">
+            <div class="order-total-label">🧾 جمع کل سفارش</div>
+            <div class="order-total-value">
+                {{ order.get_total_wart_coin_cost|floatformat:2 }}
+                <span class="currency">WC</span>
+            </div>
+        </div>
+
+        <!-- ===== BACK BUTTON ===== -->
+        <div class="order-back-btn">
+            <a href="{% url 'shop:product_list' %}" class="btn">
+                🏠 بازگشت به فروشگاه
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,467 @@
+{% extends 'base.html' %}
+{% block title %}تیکت‌های من{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ================================================================
+       🚀 ULTRA MODERN TICKET LIST - 2026 EDITION
+       ================================================================ */
+
+    /* ================================================================
+       TICKET ITEM - GLASS CARD
+       ================================================================ */
+    .ticket-item {
+        background: var(--bg-glass, rgba(255, 255, 255, 0.02));
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.04));
+        border-radius: clamp(0.8rem, 1.2vw, 1rem);
+        margin-bottom: clamp(0.6rem, 1vw, 0.8rem);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        text-decoration: none;
+        display: block;
+        padding: clamp(0.8rem, 1.5vw, 1.2rem) clamp(1rem, 2vw, 1.5rem);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .ticket-item::before {
+        content: '';
+        position: absolute;
+        inset: -1px;
+        border-radius: clamp(0.8rem, 1.2vw, 1rem);
+        padding: 1px;
+        background: conic-gradient(
+            from 0deg at 50% 50%,
+            transparent 0deg,
+            rgba(108, 99, 255, 0.06) 60deg,
+            transparent 120deg,
+            rgba(0, 210, 255, 0.06) 180deg,
+            transparent 240deg,
+            rgba(255, 101, 132, 0.06) 300deg,
+            transparent 360deg
+        );
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+    }
+
+    .ticket-item:hover::before {
+        opacity: 1;
+    }
+
+    .ticket-item:hover {
+        background: rgba(108, 99, 255, 0.04);
+        border-color: rgba(108, 99, 255, 0.1);
+        transform: translateX(-6px) scale(1.005);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .ticket-item:active {
+        transform: scale(0.995);
+    }
+
+    /* ================================================================
+       TICKET CONTENT
+       ================================================================ */
+    .ticket-subject {
+        font-weight: 700;
+        font-size: clamp(0.95rem, 1.2vw, 1.05rem);
+        color: var(--text-primary, #FFFFFF);
+        margin-bottom: 0.2rem;
+        word-break: break-word;
+    }
+
+    .ticket-subject .ticket-id {
+        color: var(--text-muted, #6B6B8A);
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
+
+    .ticket-meta {
+        color: var(--text-muted, #6B6B8A);
+        font-size: clamp(0.75rem, 0.9vw, 0.85rem);
+        display: flex;
+        align-items: center;
+        gap: clamp(0.5rem, 1vw, 0.8rem);
+        flex-wrap: wrap;
+    }
+
+    .ticket-meta .meta-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.2rem;
+    }
+
+    /* ================================================================
+       STATUS BADGES - MODERN
+       ================================================================ */
+    .status-badge {
+        padding: 0.2rem 0.8rem;
+        border-radius: 50px;
+        font-size: clamp(0.65rem, 0.8vw, 0.75rem);
+        font-weight: 700;
+        white-space: nowrap;
+        letter-spacing: 0.3px;
+        border: 1px solid transparent;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.2rem;
+    }
+
+    .status-badge:hover {
+        transform: scale(1.05);
+    }
+
+    .status-new {
+        background: rgba(77, 208, 225, 0.12);
+        border-color: rgba(77, 208, 225, 0.2);
+        color: #4DD0E1;
+    }
+
+    .status-pending_user {
+        background: rgba(255, 215, 64, 0.12);
+        border-color: rgba(255, 215, 64, 0.2);
+        color: #FFD740;
+    }
+
+    .status-pending_admin {
+        background: rgba(255, 152, 0, 0.12);
+        border-color: rgba(255, 152, 0, 0.2);
+        color: #FFA726;
+    }
+
+    .status-in_progress {
+        background: rgba(108, 99, 255, 0.12);
+        border-color: rgba(108, 99, 255, 0.2);
+        color: #8B83FF;
+    }
+
+    .status-answered {
+        background: rgba(0, 230, 118, 0.12);
+        border-color: rgba(0, 230, 118, 0.2);
+        color: #69F0AE;
+    }
+
+    .status-closed {
+        background: rgba(108, 117, 125, 0.15);
+        border-color: rgba(108, 117, 125, 0.2);
+        color: #ADB5BD;
+    }
+
+    .status-reopened {
+        background: rgba(32, 201, 151, 0.12);
+        border-color: rgba(32, 201, 151, 0.2);
+        color: #4DD0E1;
+    }
+
+    .status-escalated {
+        background: rgba(232, 62, 140, 0.12);
+        border-color: rgba(232, 62, 140, 0.2);
+        color: #F06292;
+    }
+
+    .status-resolved {
+        background: rgba(0, 210, 255, 0.12);
+        border-color: rgba(0, 210, 255, 0.2);
+        color: #4DD0E1;
+    }
+
+    .status-spam {
+        background: rgba(255, 23, 68, 0.12);
+        border-color: rgba(255, 23, 68, 0.2);
+        color: #FF5252;
+    }
+
+    .status-default {
+        background: rgba(108, 117, 125, 0.12);
+        border-color: rgba(108, 117, 125, 0.15);
+        color: #ADB5BD;
+    }
+
+    /* ================================================================
+       BUTTONS
+       ================================================================ */
+    .btn-outline-secondary {
+        border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.06));
+        color: var(--text-secondary, #B0B0C8);
+        background: transparent;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        font-family: 'Vazirmatn', sans-serif;
+        cursor: pointer;
+    }
+
+    .btn-outline-secondary:hover {
+        background: rgba(108, 99, 255, 0.06);
+        border-color: rgba(108, 99, 255, 0.15);
+        color: #8B83FF;
+        transform: translateY(-2px);
+    }
+
+    .btn-outline-secondary:active {
+        transform: scale(0.97);
+    }
+
+    /* ================================================================
+       EMPTY STATE
+       ================================================================ */
+    .empty-state {
+        text-align: center;
+        padding: clamp(2rem, 4vw, 3.5rem) clamp(1rem, 2vw, 1.5rem);
+    }
+
+    .empty-state .icon {
+        font-size: clamp(3rem, 6vw, 4.5rem);
+        display: block;
+        opacity: 0.4;
+        margin-bottom: 0.8rem;
+        animation: emptyFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes emptyFloat {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+    }
+
+    .empty-state h4 {
+        color: var(--text-primary, #FFFFFF);
+        font-size: clamp(1.2rem, 2vw, 1.5rem);
+        font-weight: 700;
+        margin-bottom: 0.3rem;
+    }
+
+    .empty-state p {
+        color: var(--text-muted, #6B6B8A);
+        font-size: clamp(0.9rem, 1vw, 1rem);
+        margin-bottom: 1.2rem;
+    }
+
+    /* ================================================================
+       RESPONSIVE
+       ================================================================ */
+    @media (max-width: 768px) {
+        .ticket-item {
+            padding: 0.8rem 1rem;
+        }
+
+        .ticket-item:hover {
+            transform: translateX(-4px) scale(1.01);
+        }
+
+        .ticket-subject {
+            font-size: 0.95rem;
+        }
+
+        .ticket-meta {
+            font-size: 0.75rem;
+            gap: 0.4rem;
+        }
+
+        .status-badge {
+            font-size: 0.65rem;
+            padding: 0.15rem 0.6rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .ticket-item {
+            padding: 0.6rem 0.8rem;
+            border-radius: 10px;
+        }
+
+        .ticket-item:hover {
+            transform: translateX(-2px);
+        }
+
+        .ticket-subject {
+            font-size: 0.85rem;
+        }
+
+        .ticket-subject .ticket-id {
+            font-size: 0.75rem;
+        }
+
+        .ticket-meta {
+            font-size: 0.7rem;
+            flex-wrap: wrap;
+        }
+
+        .status-badge {
+            font-size: 0.6rem;
+            padding: 0.1rem 0.5rem;
+        }
+
+        .btn-outline-secondary {
+            font-size: 0.8rem;
+            padding: 6px 14px !important;
+        }
+
+        .empty-state .icon {
+            font-size: 2.5rem;
+        }
+
+        .empty-state h4 {
+            font-size: 1.1rem;
+        }
+
+        .empty-state p {
+            font-size: 0.85rem;
+        }
+    }
+
+    @media (max-width: 360px) {
+        .ticket-item {
+            padding: 0.5rem 0.6rem;
+        }
+
+        .ticket-subject {
+            font-size: 0.8rem;
+        }
+
+        .ticket-meta {
+            font-size: 0.65rem;
+            gap: 0.3rem;
+        }
+
+        .status-badge {
+            font-size: 0.55rem;
+            padding: 0.1rem 0.4rem;
+        }
+    }
+
+    /* ================================================================
+       DARK MODE SUPPORT
+       ================================================================ */
+    @media (prefers-color-scheme: light) {
+        .ticket-item {
+            background: rgba(255, 255, 255, 0.8);
+            border-color: rgba(0, 0, 0, 0.04);
+        }
+
+        .ticket-item:hover {
+            background: rgba(108, 99, 255, 0.04);
+            border-color: rgba(108, 99, 255, 0.1);
+        }
+
+        .ticket-subject {
+            color: rgba(0, 0, 0, 0.85);
+        }
+
+        .ticket-subject .ticket-id {
+            color: rgba(0, 0, 0, 0.4);
+        }
+
+        .ticket-meta {
+            color: rgba(0, 0, 0, 0.4);
+        }
+
+        .btn-outline-secondary {
+            border-color: rgba(0, 0, 0, 0.08);
+            color: rgba(0, 0, 0, 0.6);
+        }
+
+        .btn-outline-secondary:hover {
+            background: rgba(108, 99, 255, 0.04);
+            border-color: rgba(108, 99, 255, 0.15);
+            color: #5A52D5;
+        }
+
+        .empty-state h4 {
+            color: rgba(0, 0, 0, 0.85);
+        }
+
+        .empty-state p {
+            color: rgba(0, 0, 0, 0.4);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 900px; margin-top: 40px;">
+    <div class="glass-card" style="padding: clamp(1.2rem, 3vw, 2rem) clamp(1rem, 2.5vw, 1.8rem);">
+        <!-- ===== HEADER ===== -->
+        <div class="d-flex justify-content-between align-items-center border-bottom border-secondary border-opacity-10 pb-3 mb-4 flex-wrap gap-3">
+            <div>
+                <h1 style="font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 800; margin: 0; background: linear-gradient(135deg, #8B83FF, #00D2FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                    🎫 تیکت‌های من
+                </h1>
+                <p style="color: var(--text-muted, #6B6B8A); margin: 0; font-size: clamp(0.85rem, 1vw, 0.95rem);">
+                    همه تیکت‌های پشتیبانی شما
+                </p>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+                <a href="{% url 'accounts:ticket_create' %}" class="btn btn-primary" style="border-radius: 50px; padding: 8px 22px; font-weight: 600; background: linear-gradient(135deg, #6C63FF, #5A52D5); border: none; box-shadow: 0 4px 20px rgba(108, 99, 255, 0.3); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+                    ➕ جدید
+                </a>
+                <a href="{% url 'shop:product_list' %}" class="btn-outline-secondary" style="border-radius: 50px; padding: 8px 20px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+                    🏠 فروشگاه
+                </a>
+            </div>
+        </div>
+
+        <!-- ===== TICKETS LIST ===== -->
+        {% if tickets %}
+            <div class="list-group">
+                {% for ticket in tickets %}
+                    <a href="{% url 'accounts:ticket_detail' ticket.id %}" class="ticket-item">
+                        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                            <div class="flex-grow-1">
+                                <div class="ticket-subject">
+                                    <span class="ticket-id">#{{ ticket.id }}</span>
+                                    {{ ticket.subject }}
+                                </div>
+                                <div class="ticket-meta">
+                                    <span class="meta-item">📅 {{ ticket.updated|date:"Y/m/d H:i" }}</span>
+                                    {% with count=ticket.messages.count %}
+                                        <span class="meta-item">💬 {{ count }} پیام</span>
+                                    {% endwith %}
+                                </div>
+                            </div>
+                            <div>
+                                {% if ticket.status == 'new' %}
+                                    <span class="status-badge status-new">🆕 جدید</span>
+                                {% elif ticket.status == 'pending_user' %}
+                                    <span class="status-badge status-pending_user">⏳ منتظر پاسخ شما</span>
+                                {% elif ticket.status == 'pending_admin' %}
+                                    <span class="status-badge status-pending_admin">⏳ در انتظار ادمین</span>
+                                {% elif ticket.status == 'in_progress' %}
+                                    <span class="status-badge status-in_progress">🔄 در حال بررسی</span>
+                                {% elif ticket.status == 'answered' %}
+                                    <span class="status-badge status-answered">✅ پاسخ داده شده</span>
+                                {% elif ticket.status == 'closed' %}
+                                    <span class="status-badge status-closed">🔒 بسته شده</span>
+                                {% elif ticket.status == 'reopened' %}
+                                    <span class="status-badge status-reopened">🔓 دوباره باز</span>
+                                {% elif ticket.status == 'escalated' %}
+                                    <span class="status-badge status-escalated">⬆️ ارجاع داده شده</span>
+                                {% elif ticket.status == 'resolved' %}
+                                    <span class="status-badge status-resolved">🎯 حل شده</span>
+                                {% elif ticket.status == 'spam' %}
+                                    <span class="status-badge status-spam">🚫 اسپم</span>
+                                {% else %}
+                                    <span class="status-badge status-default">{{ ticket.get_status_display }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <!-- ===== EMPTY STATE ===== -->
+            <div class="empty-state">
+                <span class="icon">🎫</span>
+                <h4>هنوز تیکتی ارسال نکردید</h4>
+                <p>برای دریافت پشتیبانی، اولین تیکت خود را ایجاد کنید.</p>
+                <a href="{% url 'accounts:ticket_create' %}" class="btn btn-primary" style="border-radius: 50px; padding: 10px 30px; font-weight: 600; background: linear-gradient(135deg, #6C63FF, #5A52D5); border: none; box-shadow: 0 4px 20px rgba(108, 99, 255, 0.3); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-decoration: none; display: inline-block;">
+                    ➕ ایجاد تیکت جدید
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

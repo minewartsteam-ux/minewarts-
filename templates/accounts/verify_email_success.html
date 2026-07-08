@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}تایید ایمیل{% endblock %}
+
+{% block extra_css %}
+<style>
+    .verification-container {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+    }
+    
+    .verification-card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(76, 175, 80, 0.3);
+        border-radius: 30px;
+        padding: 60px 40px;
+        max-width: 600px;
+        width: 100%;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        animation: fadeInUp 0.8s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .success-icon {
+        font-size: 100px;
+        margin-bottom: 30px;
+        animation: bounce 1s ease-out, pulse 2s infinite 1s;
+    }
+    
+    @keyframes bounce {
+        0% {
+            transform: scale(0);
+        }
+        50% {
+            transform: scale(1.2);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+    
+    @keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.1);
+        }
+    }
+    
+    .verification-card h1 {
+        color: var(--primary-color);
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        font-weight: bold;
+    }
+    
+    .verification-card p {
+        color: var(--text-light);
+        font-size: 1.2rem;
+        line-height: 1.8;
+        margin-bottom: 40px;
+    }
+    
+    .login-button {
+        display: inline-block;
+        background: linear-gradient(135deg, var(--primary-color), #66BB6A);
+        color: white;
+        padding: 18px 50px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-size: 1.2rem;
+        font-weight: bold;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .login-button::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+    
+    .login-button:hover::before {
+        width: 400px;
+        height: 400px;
+    }
+    
+    .login-button:hover {
+        transform: translateY(-5px) scale(1.05);
+        box-shadow: 0 12px 35px rgba(76, 175, 80, 0.5);
+    }
+    
+    .confetti {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        background: #4CAF50;
+        position: absolute;
+        animation: confetti-fall 3s linear infinite;
+    }
+    
+    @keyframes confetti-fall {
+        0% {
+            transform: translateY(-100vh) rotate(0deg);
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(100vh) rotate(720deg);
+            opacity: 0;
+        }
+    }
+    
+    .error-card {
+        border-color: rgba(244, 67, 54, 0.3);
+    }
+    
+    .error-icon {
+        color: #f44336;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="verification-container">
+    <!-- نمایش پیام‌های Django messages -->
+    {% if messages %}
+    <div style="max-width: 600px; width: 100%; margin-bottom: 20px;">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert" style="
+            border-radius: 15px;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            animation: fadeInUp 0.5s ease-out;
+        ">
+            {% if message.tags == 'success' %}
+                <strong>✅ موفقیت:</strong>
+            {% elif message.tags == 'error' or message.tags == 'danger' %}
+                <strong>❌ خطا:</strong>
+            {% elif message.tags == 'warning' %}
+                <strong>⚠️ هشدار:</strong>
+            {% elif message.tags == 'info' %}
+                <strong>ℹ️ اطلاعات:</strong>
+            {% endif %}
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <div class="verification-card {% if error %}error-card{% endif %}">
+        {% if error %}
+        <div class="success-icon error-icon">❌</div>
+        <h1>خطا در تایید ایمیل</h1>
+        <p>{{ error }}</p>
+        <a href="{% url 'accounts:login' %}" class="login-button">بازگشت به صفحه ورود</a>
+        {% elif success %}
+        <div class="success-icon">✅</div>
+        <h1>ایمیل شما با موفقیت تایید شد! 🎉</h1>
+        <p>
+            حساب کاربری شما فعال شد و اکنون می‌توانید به فروشگاه ماینکرفت دسترسی داشته باشید.
+            لطفاً وارد حساب کاربری خود شوید.
+        </p>
+        <a href="{% url 'accounts:login' %}" class="login-button">ورود به حساب کاربری</a>
+        {% else %}
+        <div class="success-icon">⏳</div>
+        <h1>در حال پردازش...</h1>
+        <p>لطفاً صبر کنید...</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

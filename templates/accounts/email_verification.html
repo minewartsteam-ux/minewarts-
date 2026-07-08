@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تایید ایمیل - {{ site_name }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 50px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: fadeInUp 0.8s ease-out;
+            text-align: center;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        h1 {
+            color: #4CAF50;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .greeting {
+            color: #333;
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+        
+        .message {
+            color: #666;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 40px;
+        }
+        
+        .verify-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #4CAF50, #66BB6A);
+            color: white;
+            padding: 18px 50px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .verify-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .verify-button:hover::before {
+            width: 400px;
+            height: 400px;
+        }
+        
+        .verify-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 12px 35px rgba(76, 175, 80, 0.5);
+        }
+        
+        .verify-link {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 15px;
+            word-break: break-all;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            color: #999;
+            font-size: 0.9rem;
+        }
+        
+        .security-note {
+            margin-top: 30px;
+            padding: 15px;
+            background: rgba(255, 193, 7, 0.1);
+            border-right: 4px solid #FFC107;
+            border-radius: 10px;
+            color: #856404;
+            text-align: right;
+            font-size: 0.95rem;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .icon {
+                font-size: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">📧</div>
+        <h1>خوش آمدید {{ user.get_full_name|default:user.username }}! 🎉</h1>
+        <p class="greeting">به فروشگاه ماینکرفت خوش آمدید</p>
+        <p class="message">
+            برای تکمیل ثبت‌نام و فعال‌سازی حساب کاربری خود، لطفاً روی دکمه زیر کلیک کنید.
+            این لینک تا 48 ساعت اعتبار دارد.
+        </p>
+        <a href="{{ verify_url }}" class="verify-button">
+            ✨ تأیید ایمیل من
+        </a>
+        <div class="verify-link">
+            یا این لینک را در مرورگر خود باز کنید:<br>
+            <strong>{{ verify_url }}</strong>
+        </div>
+        <div class="security-note">
+            🔒 اگر شما این درخواست را نداده‌اید، نگران نباشید. این ایمیل را نادیده بگیرید.
+            <br><br>
+            📍 نشانی IP: {{ client_ip|default:"نامشخص" }}
+        </div>
+        <div class="footer">
+            با تشکر از شما<br>
+            <strong>{{ site_name }}</strong>
+        </div>
+    </div>
+</body>
+</html>
+
+

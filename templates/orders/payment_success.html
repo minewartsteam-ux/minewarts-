@@ -1,0 +1,595 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}پرداخت موفق{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ================================================================
+       🚀 ULTRA MODERN SUCCESS PAGE - 2026 EDITION
+       فیکس پس‌زمینه برای موبایل
+       ================================================================ */
+
+    /* ===== FIX: پس‌زمینه ثابت برای کل صفحه ===== */
+    body {
+        background: var(--dark-bg, #0A0A0F) !important;
+        min-height: 100vh;
+    }
+
+    .main-content {
+        background: var(--dark-bg, #0A0A0F) !important;
+    }
+
+    .container {
+        background: transparent !important;
+    }
+
+    /* ================================================================
+       WRAPPER - GLASS + NEON
+       ================================================================ */
+    .success-page-wrapper {
+        background: var(--card-bg, rgba(20, 22, 36, 0.95)) !important;
+        backdrop-filter: blur(24px) saturate(180%);
+        -webkit-backdrop-filter: blur(24px) saturate(180%);
+        border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.06));
+        border-radius: clamp(1rem, 2vw, 1.5rem);
+        padding: clamp(2rem, 5vw, 4rem) clamp(1.5rem, 3vw, 2.5rem);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        max-width: 700px;
+        margin: 2rem auto;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        animation: successFadeIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    .success-page-wrapper::before {
+        content: '';
+        position: absolute;
+        inset: -1px;
+        border-radius: clamp(1rem, 2vw, 1.5rem);
+        padding: 1px;
+        background: conic-gradient(
+            from 0deg at 50% 50%,
+            transparent 0deg,
+            rgba(0, 230, 118, 0.15) 60deg,
+            transparent 120deg,
+            rgba(108, 99, 255, 0.15) 180deg,
+            transparent 240deg,
+            rgba(0, 210, 255, 0.15) 300deg,
+            transparent 360deg
+        );
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+        animation: successNeonRotate 20s linear infinite;
+    }
+
+    @keyframes successNeonRotate {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    @keyframes successFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(40px) scale(0.96);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    /* ================================================================
+       ICON - با انیمیشن
+       ================================================================ */
+    .success-icon {
+        font-size: clamp(4rem, 8vw, 6rem);
+        display: block;
+        margin-bottom: clamp(1rem, 2vw, 1.5rem);
+        animation: successScaleIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both, successFloat 3s ease-in-out 1s infinite;
+    }
+
+    @keyframes successScaleIn {
+        from {
+            transform: scale(0) rotate(-30deg);
+            opacity: 0;
+        }
+        to {
+            transform: scale(1) rotate(0deg);
+            opacity: 1;
+        }
+    }
+
+    @keyframes successFloat {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+
+    /* ================================================================
+       HEADER
+       ================================================================ */
+    .success-header h1 {
+        font-size: clamp(1.8rem, 4vw, 2.8rem);
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, #69F0AE, #00E676);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    /* ================================================================
+       MESSAGE
+       ================================================================ */
+    .success-message {
+        color: var(--text-secondary, #B0B0C8);
+        font-size: clamp(1rem, 1.2vw, 1.1rem);
+        margin-bottom: 1.5rem;
+        line-height: 2;
+    }
+
+    .success-message strong {
+        color: var(--text-primary, #FFFFFF);
+    }
+
+    .success-message .order-id {
+        color: #69F0AE;
+        font-weight: 700;
+    }
+
+    .success-message .payment-id {
+        color: #FFD740;
+        font-weight: 700;
+    }
+
+    /* ================================================================
+       ORDER INFO - GLASS
+       ================================================================ */
+    .order-info {
+        background: rgba(0, 230, 118, 0.04);
+        border: 1px solid rgba(0, 230, 118, 0.08);
+        border-radius: clamp(0.8rem, 1.5vw, 1.2rem);
+        padding: clamp(1.2rem, 2vw, 1.8rem);
+        margin: 1.5rem 0;
+        text-align: right;
+        transition: all 0.3s ease;
+    }
+
+    .order-info:hover {
+        border-color: rgba(0, 230, 118, 0.15);
+        transform: scale(1.005);
+    }
+
+    .order-info h3 {
+        color: #69F0AE;
+        font-size: clamp(1.1rem, 1.5vw, 1.3rem);
+        font-weight: 700;
+        margin-bottom: 1rem;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .order-info-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: clamp(0.6rem, 1vw, 0.8rem) 0;
+        border-bottom: 1px solid var(--border-glass, rgba(255, 255, 255, 0.04));
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .order-info-item:last-child {
+        border-bottom: none;
+    }
+
+    .order-info-label {
+        color: var(--text-muted, #6B6B8A);
+        font-size: clamp(0.85rem, 1vw, 0.95rem);
+        font-weight: 500;
+    }
+
+    .order-info-value {
+        color: var(--text-secondary, #B0B0C8);
+        font-weight: 600;
+        font-size: clamp(0.85rem, 1vw, 0.95rem);
+        text-align: left;
+        word-break: break-word;
+        max-width: 60%;
+    }
+
+    /* ================================================================
+       TOTAL - HIGHLIGHT
+       ================================================================ */
+    .order-info-total {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 0.8rem;
+        padding-top: 0.8rem;
+        border-top: 2px solid rgba(0, 230, 118, 0.15);
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .order-info-total-label {
+        color: #69F0AE;
+        font-size: clamp(1.1rem, 1.5vw, 1.4rem);
+        font-weight: 700;
+    }
+
+    .order-info-total-value {
+        font-size: clamp(1.6rem, 3vw, 2.4rem);
+        font-weight: 900;
+        background: linear-gradient(135deg, #FFD740, #FFC107);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .order-info-total-value .currency {
+        font-size: clamp(0.9rem, 1.2vw, 1.2rem);
+        -webkit-text-fill-color: var(--text-muted, #6B6B8A);
+        opacity: 0.6;
+        font-weight: 600;
+    }
+
+    /* ================================================================
+       ACTIONS
+       ================================================================ */
+    .success-actions {
+        margin-top: 1.5rem;
+        display: flex;
+        gap: clamp(0.8rem, 1.5vw, 1.2rem);
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-home,
+    .btn-detail {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        border: none;
+        border-radius: 50px;
+        padding: clamp(0.7rem, 1.2vw, 0.9rem) clamp(1.5rem, 2.5vw, 2.5rem);
+        font-weight: 700;
+        font-size: clamp(0.9rem, 1vw, 1rem);
+        text-decoration: none;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        cursor: pointer;
+        font-family: 'Vazirmatn', sans-serif;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-home {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.06));
+        color: var(--text-secondary, #B0B0C8);
+    }
+
+    .btn-home:hover {
+        background: rgba(255, 255, 255, 0.08);
+        transform: translateY(-3px) scale(1.03);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        color: var(--text-primary, #FFFFFF);
+    }
+
+    .btn-detail {
+        background: linear-gradient(135deg, #00D2FF, #0091EA);
+        color: #fff;
+        box-shadow: 0 4px 25px rgba(0, 210, 255, 0.3);
+    }
+
+    .btn-detail::before {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        border-radius: 50px;
+        background: linear-gradient(135deg, #00D2FF, #6C63FF, #00D2FF);
+        opacity: 0;
+        transition: all 0.4s ease;
+        z-index: -1;
+        filter: blur(8px);
+    }
+
+    .btn-detail:hover::before {
+        opacity: 0.3;
+    }
+
+    .btn-detail:hover {
+        transform: translateY(-3px) scale(1.03);
+        box-shadow: 0 8px 35px rgba(0, 210, 255, 0.4);
+        color: #fff;
+    }
+
+    .btn-home:active,
+    .btn-detail:active {
+        transform: scale(0.97);
+    }
+
+    /* ================================================================
+       RESPONSIVE
+       ================================================================ */
+    @media (max-width: 768px) {
+        .success-page-wrapper {
+            padding: 1.5rem 1.2rem;
+            margin: 1rem 0.8rem;
+        }
+
+        .order-info-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.2rem;
+        }
+
+        .order-info-value {
+            max-width: 100%;
+            text-align: right;
+            width: 100%;
+        }
+
+        .order-info-total {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .success-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn-home,
+        .btn-detail {
+            justify-content: center;
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .success-page-wrapper {
+            padding: 1rem 0.8rem;
+            margin: 0.8rem 0.5rem;
+            border-radius: 12px;
+        }
+
+        .success-header h1 {
+            font-size: 1.5rem;
+        }
+
+        .success-icon {
+            font-size: 3.5rem;
+        }
+
+        .success-message {
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        .order-info {
+            padding: 0.8rem;
+        }
+
+        .order-info h3 {
+            font-size: 1rem;
+        }
+
+        .order-info-item {
+            padding: 0.4rem 0;
+        }
+
+        .order-info-label {
+            font-size: 0.8rem;
+        }
+
+        .order-info-value {
+            font-size: 0.8rem;
+        }
+
+        .order-info-total-label {
+            font-size: 1rem;
+        }
+
+        .order-info-total-value {
+            font-size: 1.6rem;
+        }
+
+        .btn-home,
+        .btn-detail {
+            font-size: 0.85rem;
+            padding: 0.6rem 1.2rem;
+        }
+    }
+
+    @media (max-width: 360px) {
+        .success-page-wrapper {
+            padding: 0.8rem 0.6rem;
+        }
+
+        .success-header h1 {
+            font-size: 1.3rem;
+        }
+
+        .success-icon {
+            font-size: 3rem;
+        }
+
+        .success-message {
+            font-size: 0.8rem;
+        }
+
+        .order-info-total-value {
+            font-size: 1.3rem;
+        }
+
+        .btn-home,
+        .btn-detail {
+            font-size: 0.8rem;
+            padding: 0.5rem 1rem;
+        }
+    }
+
+    /* ================================================================
+       LIGHT MODE FIX - برای موبایل
+       ================================================================ */
+    @media (prefers-color-scheme: light) {
+        /* اطمینان از پس‌زمینه تیره در حالت Light Mode */
+        body {
+            background: #0A0A0F !important;
+        }
+
+        .main-content {
+            background: #0A0A0F !important;
+        }
+
+        .success-page-wrapper {
+            background: rgba(20, 22, 36, 0.95) !important;
+            border-color: rgba(255, 255, 255, 0.06) !important;
+        }
+
+        .success-header h1 {
+            background: linear-gradient(135deg, #69F0AE, #00E676) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            background-clip: text !important;
+        }
+
+        .success-message {
+            color: #B0B0C8 !important;
+        }
+
+        .success-message strong {
+            color: #FFFFFF !important;
+        }
+
+        .success-message .order-id {
+            color: #69F0AE !important;
+        }
+
+        .order-info {
+            background: rgba(0, 230, 118, 0.04) !important;
+            border-color: rgba(0, 230, 118, 0.08) !important;
+        }
+
+        .order-info h3 {
+            color: #69F0AE !important;
+        }
+
+        .order-info-label {
+            color: #6B6B8A !important;
+        }
+
+        .order-info-value {
+            color: #B0B0C8 !important;
+        }
+
+        .order-info-total-label {
+            color: #69F0AE !important;
+        }
+
+        .btn-home {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border-color: rgba(255, 255, 255, 0.06) !important;
+            color: #B0B0C8 !important;
+        }
+
+        .btn-home:hover {
+            background: rgba(255, 255, 255, 0.08) !important;
+            color: #FFFFFF !important;
+        }
+    }
+
+    /* ================================================================
+       SCROLLBAR
+       ================================================================ */
+    .success-page-wrapper::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .success-page-wrapper::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .success-page-wrapper::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, #00E676, #00D2FF);
+        border-radius: 4px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="success-page-wrapper">
+        <!-- ===== ICON ===== -->
+        <span class="success-icon">✅</span>
+
+        <!-- ===== HEADER ===== -->
+        <div class="success-header">
+            <h1>پرداخت با موفقیت انجام شد!</h1>
+        </div>
+
+        <!-- ===== MESSAGE ===== -->
+        <div class="success-message">
+            <p>🎉 سفارش شما با موفقیت ثبت و پرداخت شد.</p>
+            <p>
+                شماره پیگیری سفارش شما:
+                <strong class="order-id">#{{ order.id }}</strong>
+            </p>
+            <p>
+                شناسه پرداخت:
+                <strong class="payment-id">{{ order.payment_id }}</strong>
+            </p>
+        </div>
+
+        <!-- ===== ORDER INFO ===== -->
+        <div class="order-info">
+            <h3>📦 اطلاعات سفارش</h3>
+
+            <div class="order-info-item">
+                <span class="order-info-label">نام:</span>
+                <span class="order-info-value">{{ order.first_name }} {{ order.last_name }}</span>
+            </div>
+
+            <div class="order-info-item">
+                <span class="order-info-label">ایمیل:</span>
+                <span class="order-info-value">{{ order.email }}</span>
+            </div>
+
+            <div class="order-info-item">
+                <span class="order-info-label">شهر:</span>
+                <span class="order-info-value">{{ order.city }}</span>
+            </div>
+
+            <div class="order-info-item">
+                <span class="order-info-label">تعداد آیتم‌ها:</span>
+                <span class="order-info-value">{{ order.items.count }} محصول</span>
+            </div>
+
+            <div class="order-info-total">
+                <span class="order-info-total-label">💰 کوین پرداخت شده:</span>
+                <span class="order-info-total-value">
+                    {{ order.get_total_cost|floatformat:0 }}
+                    <span class="currency">WC</span>
+                </span>
+            </div>
+        </div>
+
+        <!-- ===== ACTIONS ===== -->
+        <div class="success-actions">
+            <a href="{% url 'shop:product_list' %}" class="btn-home">
+                🏠 بازگشت به فروشگاه
+            </a>
+            <a href="{% url 'orders:order_detail' order.id %}" class="btn-detail">
+                📋 مشاهده جزئیات سفارش
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

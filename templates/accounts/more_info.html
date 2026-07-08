@@ -1,0 +1,770 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}اطلاعات بیشتر - {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="info-card-glass">
+                <div class="info-card-body">
+                    <!-- Header -->
+                    <div class="info-header">
+                        <div class="info-header-icon">ℹ️</div>
+                        <h1 class="info-header-title">اطلاعات بیشتر</h1>
+                        <p class="info-header-subtitle">همه چیز درباره سرور ماینکرفت ما</p>
+                    </div>
+                    
+                    <!-- Discord Section -->
+                    {% if site_info.discord_invite_link %}
+                    <div class="info-section info-section-discord">
+                        <div class="info-section-header">
+                            <span class="info-section-icon">💬</span>
+                            <h3 class="info-section-title">سرور دیسکورد</h3>
+                        </div>
+                        <p class="info-section-text">
+                            برای ارتباط با تیم سرور و سایر بازیکنان، به سرور دیسکورد ما بپیوندید:
+                        </p>
+                        <a href="{{ site_info.discord_invite_link }}" 
+                           target="_blank" 
+                           class="info-btn info-btn-discord">
+                            <span class="info-btn-icon">🔗</span>
+                            پیوستن به دیسکورد
+                            <span class="info-btn-arrow">→</span>
+                        </a>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Minecraft Server Section -->
+                    {% if site_info.minecraft_server_ip %}
+                    <div class="info-section info-section-minecraft">
+                        <div class="info-section-header">
+                            <span class="info-section-icon">🎮</span>
+                            <h3 class="info-section-title">سرور ماینکرفت</h3>
+                        </div>
+                        <p class="info-section-text">
+                            برای اتصال به سرور، از آدرس زیر استفاده کنید:
+                        </p>
+                        <div class="server-ip-box">
+                            <code class="server-ip-code">{{ site_info.minecraft_server_ip }}</code>
+                            <button onclick="copyToClipboard('{{ site_info.minecraft_server_ip }}')" class="server-copy-btn">
+                                <i class="fas fa-copy"></i>
+                                کپی
+                            </button>
+                        </div>
+                        <div class="server-status">
+                            <span class="status-dot"></span>
+                            <span class="status-text">سرور آنلاین</span>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Admins Section -->
+                    <div class="info-section info-section-admins">
+                        <div class="info-section-header">
+                            <span class="info-section-icon">👤</span>
+                            <h3 class="info-section-title">ادمین‌های سرور</h3>
+                        </div>
+                        <p class="info-section-text">
+                            برای مشاهده اطلاعات ادمین‌های سرور و نام کاربری آن‌ها، روی دکمه زیر کلیک کنید:
+                        </p>
+                        <a href="{% url 'accounts:admin_info' %}" class="info-btn info-btn-admins">
+                            <span class="info-btn-icon">👥</span>
+                            مشاهده اطلاعات ادمین‌ها
+                            <span class="info-btn-arrow">→</span>
+                        </a>
+                    </div>
+                    
+                    <!-- Additional Info -->
+                    {% if site_info.additional_info %}
+                    <div class="info-section info-section-additional">
+                        <div class="info-section-header">
+                            <span class="info-section-icon">📋</span>
+                            <h3 class="info-section-title">اطلاعات تکمیلی</h3>
+                        </div>
+                        <div class="additional-info-content">
+                            {{ site_info.additional_info|safe }}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Empty State -->
+                    {% if not site_info.discord_invite_link and not site_info.minecraft_server_ip and not site_info.admin_info_text and not site_info.additional_info %}
+                    <div class="info-empty-state">
+                        <div class="info-empty-icon">📭</div>
+                        <p class="info-empty-title">هنوز اطلاعاتی تنظیم نشده است</p>
+                        <p class="info-empty-text">لطفاً بعداً بازگردید.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* ================================================================
+       INFO CARD - ULTRA MODERN GLASS
+       ================================================================ */
+    .info-card-glass {
+        background: var(--admin-bg-glass, rgba(255, 255, 255, 0.02));
+        backdrop-filter: blur(24px) saturate(180%);
+        -webkit-backdrop-filter: blur(24px) saturate(180%);
+        border: 1px solid var(--admin-border-glass, rgba(255, 255, 255, 0.06));
+        border-radius: 24px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        overflow: hidden;
+        animation: infoFadeIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        position: relative;
+    }
+    
+    .info-card-glass::before {
+        content: '';
+        position: absolute;
+        inset: -1px;
+        border-radius: 24px;
+        padding: 1px;
+        background: conic-gradient(
+            from 0deg at 50% 50%,
+            transparent 0deg,
+            rgba(108, 99, 255, 0.1) 60deg,
+            transparent 120deg,
+            rgba(0, 210, 255, 0.1) 180deg,
+            transparent 240deg,
+            rgba(255, 101, 132, 0.1) 300deg,
+            transparent 360deg
+        );
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+        animation: rotateNeon 20s linear infinite;
+    }
+    
+    .info-card-glass::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(ellipse at 30% 20%, rgba(108, 99, 255, 0.03), transparent 60%);
+        pointer-events: none;
+        animation: breatheGlow 4s ease-in-out infinite;
+    }
+    
+    @keyframes rotateNeon {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    @keyframes breatheGlow {
+        0%, 100% { opacity: 0.5; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.1); }
+    }
+    
+    @keyframes infoFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* ================================================================
+       CARD BODY
+       ================================================================ */
+    .info-card-body {
+        padding: 48px;
+        position: relative;
+        z-index: 1;
+    }
+    
+    /* ================================================================
+       HEADER
+       ================================================================ */
+    .info-header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding-bottom: 30px;
+        border-bottom: 2px solid var(--admin-border-glass, rgba(255, 255, 255, 0.06));
+        position: relative;
+    }
+    
+    .info-header::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 30%;
+        width: 40%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #6C63FF, #00D2FF, transparent);
+    }
+    
+    .info-header-icon {
+        font-size: 4rem;
+        margin-bottom: 12px;
+        display: block;
+        animation: floatIcon 3s ease-in-out infinite;
+    }
+    
+    @keyframes floatIcon {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    .info-header-title {
+        color: #FFFFFF;
+        font-size: 2.8rem;
+        font-weight: 800;
+        margin: 0 0 8px 0;
+        background: linear-gradient(135deg, #8B83FF, #00D2FF);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .info-header-subtitle {
+        color: #B0B0C8;
+        font-size: 1.1rem;
+        margin: 0;
+        font-weight: 400;
+    }
+    
+    /* ================================================================
+       INFO SECTIONS
+       ================================================================ */
+    .info-section {
+        padding: 24px 28px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        overflow: hidden;
+        border: 1px solid transparent;
+    }
+    
+    .info-section:hover {
+        transform: translateY(-4px) scale(1.005);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+    }
+    
+    .info-section-discord {
+        background: rgba(114, 137, 218, 0.08);
+        border-color: rgba(114, 137, 218, 0.15);
+    }
+    
+    .info-section-discord:hover {
+        border-color: rgba(114, 137, 218, 0.3);
+        box-shadow: 0 12px 40px rgba(114, 137, 218, 0.1);
+    }
+    
+    .info-section-minecraft {
+        background: rgba(76, 175, 80, 0.08);
+        border-color: rgba(76, 175, 80, 0.15);
+    }
+    
+    .info-section-minecraft:hover {
+        border-color: rgba(76, 175, 80, 0.3);
+        box-shadow: 0 12px 40px rgba(76, 175, 80, 0.1);
+    }
+    
+    .info-section-admins {
+        background: rgba(255, 193, 7, 0.08);
+        border-color: rgba(255, 193, 7, 0.15);
+    }
+    
+    .info-section-admins:hover {
+        border-color: rgba(255, 193, 7, 0.3);
+        box-shadow: 0 12px 40px rgba(255, 193, 7, 0.1);
+    }
+    
+    .info-section-additional {
+        background: rgba(0, 210, 255, 0.06);
+        border-color: rgba(0, 210, 255, 0.1);
+    }
+    
+    .info-section-additional:hover {
+        border-color: rgba(0, 210, 255, 0.25);
+        box-shadow: 0 12px 40px rgba(0, 210, 255, 0.08);
+    }
+    
+    /* ================================================================
+       SECTION HEADER
+       ================================================================ */
+    .info-section-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+    
+    .info-section-icon {
+        font-size: 1.8rem;
+    }
+    
+    .info-section-title {
+        color: #FFFFFF;
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin: 0;
+    }
+    
+    .info-section-discord .info-section-title {
+        color: #7289da;
+    }
+    
+    .info-section-minecraft .info-section-title {
+        color: #4CAF50;
+    }
+    
+    .info-section-admins .info-section-title {
+        color: #FFD740;
+    }
+    
+    .info-section-additional .info-section-title {
+        color: #4DD0E1;
+    }
+    
+    .info-section-text {
+        color: #B0B0C8;
+        font-size: 1rem;
+        line-height: 1.8;
+        margin-bottom: 16px;
+    }
+    
+    /* ================================================================
+       BUTTONS
+       ================================================================ */
+    .info-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 28px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 1rem;
+        text-decoration: none;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: none;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .info-btn::before {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        border-radius: 50px;
+        opacity: 0;
+        transition: all 0.4s ease;
+        z-index: -1;
+        filter: blur(8px);
+    }
+    
+    .info-btn:hover::before {
+        opacity: 0.4;
+    }
+    
+    .info-btn:hover {
+        transform: translateY(-3px) scale(1.03);
+    }
+    
+    .info-btn:active {
+        transform: translateY(0) scale(0.97);
+    }
+    
+    .info-btn-icon {
+        font-size: 1.2rem;
+    }
+    
+    .info-btn-arrow {
+        transition: transform 0.3s ease;
+        font-size: 1.2rem;
+    }
+    
+    .info-btn:hover .info-btn-arrow {
+        transform: translateX(6px);
+    }
+    
+    .info-btn-discord {
+        background: linear-gradient(135deg, #7289da, #5b6eae);
+        color: white;
+        box-shadow: 0 4px 20px rgba(114, 137, 218, 0.3);
+    }
+    
+    .info-btn-discord:hover {
+        box-shadow: 0 8px 35px rgba(114, 137, 218, 0.45);
+    }
+    
+    .info-btn-admins {
+        background: linear-gradient(135deg, #FFD740, #FFC107);
+        color: #1a1a1a;
+        box-shadow: 0 4px 20px rgba(255, 215, 64, 0.3);
+    }
+    
+    .info-btn-admins:hover {
+        box-shadow: 0 8px 35px rgba(255, 215, 64, 0.45);
+    }
+    
+    /* ================================================================
+       SERVER IP BOX
+       ================================================================ */
+    .server-ip-box {
+        display: inline-flex;
+        align-items: center;
+        gap: 16px;
+        background: rgba(0, 0, 0, 0.3);
+        padding: 12px 20px;
+        border-radius: 12px;
+        border: 1px solid rgba(76, 175, 80, 0.2);
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+    }
+    
+    .server-ip-code {
+        color: #4CAF50;
+        font-size: 1.4rem;
+        font-weight: 700;
+        font-family: 'Courier New', monospace;
+        padding: 4px 8px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 6px;
+    }
+    
+    .server-copy-btn {
+        background: rgba(76, 175, 80, 0.15);
+        border: 1px solid rgba(76, 175, 80, 0.2);
+        border-radius: 8px;
+        padding: 6px 16px;
+        color: #4CAF50;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-family: 'Vazirmatn', sans-serif;
+    }
+    
+    .server-copy-btn:hover {
+        background: rgba(76, 175, 80, 0.25);
+        transform: scale(1.05);
+    }
+    
+    .server-copy-btn:active {
+        transform: scale(0.95);
+    }
+    
+    .server-status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 8px;
+    }
+    
+    .status-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #00E676;
+        animation: pulseDot 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulseDot {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.5; transform: scale(0.8); }
+    }
+    
+    .status-text {
+        color: #69F0AE;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+    
+    /* ================================================================
+       ADDITIONAL INFO
+       ================================================================ */
+    .additional-info-content {
+        color: #B0B0C8;
+        line-height: 2;
+        font-size: 1rem;
+    }
+    
+    .additional-info-content p {
+        margin-bottom: 12px;
+    }
+    
+    .additional-info-content ul {
+        padding-right: 20px;
+    }
+    
+    .additional-info-content ul li {
+        margin-bottom: 6px;
+        list-style: none;
+        position: relative;
+    }
+    
+    .additional-info-content ul li::before {
+        content: '✦';
+        color: #4DD0E1;
+        position: absolute;
+        right: -20px;
+    }
+    
+    /* ================================================================
+       EMPTY STATE
+       ================================================================ */
+    .info-empty-state {
+        text-align: center;
+        padding: 60px 20px;
+    }
+    
+    .info-empty-icon {
+        font-size: 5rem;
+        display: block;
+        margin-bottom: 16px;
+        opacity: 0.5;
+    }
+    
+    .info-empty-title {
+        color: #FFFFFF;
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+    
+    .info-empty-text {
+        color: #6B6B8A;
+        font-size: 1rem;
+    }
+    
+    /* ================================================================
+       RESPONSIVE
+       ================================================================ */
+    @media (max-width: 992px) {
+        .info-card-body {
+            padding: 32px 24px;
+        }
+        
+        .info-header-title {
+            font-size: 2.2rem;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .info-card-body {
+            padding: 24px 16px;
+        }
+        
+        .info-header {
+            margin-bottom: 28px;
+            padding-bottom: 20px;
+        }
+        
+        .info-header-title {
+            font-size: 1.8rem;
+        }
+        
+        .info-header-icon {
+            font-size: 3rem;
+        }
+        
+        .info-section {
+            padding: 18px 16px;
+        }
+        
+        .info-section-title {
+            font-size: 1.1rem;
+        }
+        
+        .info-btn {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .server-ip-box {
+            flex-direction: column;
+            align-items: stretch;
+            text-align: center;
+        }
+        
+        .server-ip-code {
+            font-size: 1.1rem;
+            word-break: break-all;
+        }
+        
+        .server-copy-btn {
+            justify-content: center;
+        }
+        
+        .info-header-subtitle {
+            font-size: 0.95rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .info-card-body {
+            padding: 16px 12px;
+        }
+        
+        .info-header-title {
+            font-size: 1.5rem;
+        }
+        
+        .info-header-icon {
+            font-size: 2.5rem;
+        }
+        
+        .info-section {
+            padding: 14px 12px;
+            border-radius: 12px;
+        }
+        
+        .info-section-title {
+            font-size: 1rem;
+        }
+        
+        .info-section-icon {
+            font-size: 1.4rem;
+        }
+        
+        .info-btn {
+            padding: 8px 16px;
+            font-size: 0.85rem;
+        }
+        
+        .server-ip-code {
+            font-size: 0.95rem;
+        }
+        
+        .info-empty-icon {
+            font-size: 3.5rem;
+        }
+        
+        .info-empty-title {
+            font-size: 1.2rem;
+        }
+    }
+    
+    /* ================================================================
+       SCROLLBAR
+       ================================================================ */
+    .info-card-body::-webkit-scrollbar {
+        width: 4px;
+    }
+    
+    .info-card-body::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    
+    .info-card-body::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, #6C63FF, #00D2FF);
+        border-radius: 4px;
+    }
+</style>
+
+<script>
+function copyToClipboard(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function() {
+            showNotification('✅ آدرس سرور کپی شد!');
+        }).catch(function() {
+            fallbackCopy(text);
+        });
+    } else {
+        fallbackCopy(text);
+    }
+}
+
+function fallbackCopy(text) {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+        document.execCommand('copy');
+        showNotification('✅ آدرس سرور کپی شد!');
+    } catch (err) {
+        showNotification('❌ کپی ناموفق، لطفاً دستی کپی کنید');
+    }
+    document.body.removeChild(textarea);
+}
+
+function showNotification(message) {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(20, 20, 30, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 16px 32px;
+        color: #FFFFFF;
+        font-size: 1rem;
+        font-weight: 600;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+        z-index: 999999;
+        animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        font-family: 'Vazirmatn', sans-serif;
+        direction: rtl;
+        text-align: center;
+    `;
+    
+    // Add style for animation if not exists
+    if (!document.getElementById('notification-style')) {
+        const style = document.createElement('style');
+        style.id = 'notification-style';
+        style.textContent = `
+            @keyframes slideUp {
+                from {
+                    opacity: 0;
+                    transform: translateX(-50%) translateY(20px) scale(0.95);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateX(-50%) translateY(0) scale(1);
+                }
+            }
+            @keyframes slideDown {
+                from {
+                    opacity: 1;
+                    transform: translateX(-50%) translateY(0) scale(1);
+                }
+                to {
+                    opacity: 0;
+                    transform: translateX(-50%) translateY(20px) scale(0.95);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    document.body.appendChild(notification);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.style.animation = 'slideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards';
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 400);
+    }, 3000);
+}
+</script>
+{% endblock %}

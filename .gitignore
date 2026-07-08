@@ -1,0 +1,25 @@
+# Python (محیط مجازی و فایل‌های موقت پایتون)
+venv/
+env/
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django (فایل‌های تنظیمات و دیتابیس محلی)
+db.sqlite3
+local_settings.py
+media/
+staticfiles/
+
+# Environment Variables (خیلی مهم: فایل‌های حاوی پسورد و کلیدها)
+.env
+*.env
+
+# IDEs (تنظیمات نرم‌افزارهایی که باهاشون کد می‌زنی)
+.vscode/
+.idea/
+
+# OS (فایل‌های سیستمی ویندوز و مک)
+.DS_Store
+Thumbs.db

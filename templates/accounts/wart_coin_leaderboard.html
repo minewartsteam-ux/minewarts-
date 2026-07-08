@@ -1,0 +1,1048 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}🏆 رتبه‌بندی وارت کوین - مسابقه بزرگ{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* دکمه سفارشی */
+    .btn2 {
+        background: linear-gradient(135deg, #61cc1e, #1ee9dc);
+        border: none;
+        border-radius: 50px;
+        padding: 12px 40px;
+        color: white;
+        font-weight: bold;
+        font-size: 1.1rem;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-block;
+        cursor: pointer;
+    }
+    .btn2:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 16px rgba(225, 54, 244, 0.548);
+        color: rgb(255, 255, 255);
+        text-decoration: none;
+    }
+    
+    /* کانتینر اصلی */
+    .leaderboard-container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 20px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    /* هدر */
+    .leaderboard-header {
+        text-align: center;
+        margin-bottom: 40px;
+        animation: fadeInDown 0.8s ease-out;
+    }
+    
+    .leaderboard-title {
+        font-size: 3rem;
+        font-weight: bold;
+        background: linear-gradient(135deg, #FFD700, #FFA500, #FF6347);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 10px;
+        text-shadow: 0 4px 20px rgba(255, 215, 0, 0.5);
+    }
+    
+    .leaderboard-subtitle {
+        font-size: 1.3rem;
+        color: var(--text-muted-color);
+        margin-top: 10px;
+    }
+    
+    .leaderboard-message {
+        font-size: 1.1rem;
+        color: #ffd700;
+        background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 165, 0, 0.1));
+        padding: 20px 30px;
+        border-radius: 15px;
+        border: 2px solid rgba(255, 215, 0, 0.3);
+        margin-top: 20px;
+        display: inline-block;
+        backdrop-filter: blur(10px);
+        max-width: 90%;
+    }
+    
+    /* سکو (Podium) - ۳ نفر اول */
+    .podium {
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        gap: 20px;
+        margin: 50px 0;
+        animation: fadeInUp 1s ease-out;
+        flex-wrap: wrap;
+        padding: 0 10px;
+    }
+    
+    .podium-item {
+        text-align: center;
+        position: relative;
+        animation: bounceIn 1.2s ease-out;
+        flex: 0 1 auto;
+        width: 200px;
+        max-width: 100%;
+    }
+    
+    .podium-item.second {
+        animation-delay: 0.2s;
+    }
+    
+    .podium-item.first {
+        animation-delay: 0.4s;
+        order: 2;
+    }
+    
+    .podium-item.third {
+        animation-delay: 0.6s;
+        order: 3;
+    }
+    
+    .podium-box {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 15px;
+        padding: 30px 20px;
+        min-width: 150px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .podium-box:hover {
+        transform: translateY(-10px) scale(1.02);
+    }
+    
+    .podium-box::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.1) 75%);
+        background-size: 20px 20px;
+        opacity: 0.3;
+    }
+    
+    .podium-box.first {
+        background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+        height: 280px;
+        box-shadow: 0 15px 50px rgba(255, 215, 0, 0.5);
+    }
+    
+    .podium-box.second {
+        background: linear-gradient(135deg, #C0C0C0 0%, #A0A0A0 100%);
+        height: 240px;
+        box-shadow: 0 12px 40px rgba(192, 192, 192, 0.4);
+    }
+    
+    .podium-box.third {
+        background: linear-gradient(135deg, #CD7F32 0%, #B87333 100%);
+        height: 200px;
+        box-shadow: 0 10px 35px rgba(205, 127, 50, 0.4);
+    }
+    
+    .podium-crown {
+        font-size: 3rem;
+        margin-bottom: 5px;
+        display: block;
+    }
+    
+    .podium-rank {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: white;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    .podium-username {
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: white;
+        margin-bottom: 10px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        word-break: break-word;
+    }
+    
+    .podium-balance {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: white;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    }
+    
+    .podium-balance .coin-icon {
+        font-size: 1.5rem;
+    }
+    
+    /* جدول رتبه‌بندی */
+    .leaderboard-table {
+        background: var(--card-bg-color);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        margin-top: 40px;
+        animation: fadeInUp 1.2s ease-out;
+        overflow-x: auto;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .leaderboard-table-header {
+        display: grid;
+        grid-template-columns: 80px 1fr 180px 150px;
+        gap: 20px;
+        padding: 20px;
+        background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+        border-radius: 15px;
+        margin-bottom: 20px;
+        color: white;
+        font-weight: bold;
+        font-size: 1.1rem;
+        min-width: 400px;
+    }
+    
+    .leaderboard-row {
+        display: grid;
+        grid-template-columns: 80px 1fr 180px 150px;
+        gap: 20px;
+        padding: 20px;
+        margin-bottom: 15px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+        animation: slideInLeft 0.6s ease-out backwards;
+        align-items: center;
+        min-width: 400px;
+    }
+    
+    .leaderboard-row:nth-child(1) { animation-delay: 0.1s; }
+    .leaderboard-row:nth-child(2) { animation-delay: 0.2s; }
+    .leaderboard-row:nth-child(3) { animation-delay: 0.3s; }
+    .leaderboard-row:nth-child(4) { animation-delay: 0.4s; }
+    .leaderboard-row:nth-child(5) { animation-delay: 0.5s; }
+    .leaderboard-row:nth-child(6) { animation-delay: 0.6s; }
+    .leaderboard-row:nth-child(7) { animation-delay: 0.7s; }
+    .leaderboard-row:nth-child(8) { animation-delay: 0.8s; }
+    .leaderboard-row:nth-child(9) { animation-delay: 0.9s; }
+    .leaderboard-row:nth-child(10) { animation-delay: 1.0s; }
+    
+    .leaderboard-row:hover {
+        transform: translateX(10px);
+        background: rgba(255, 255, 255, 0.1);
+        border-color: var(--primary-color);
+        box-shadow: 0 5px 20px rgba(76, 175, 80, 0.3);
+    }
+    
+    .leaderboard-row.current-user {
+        border-color: #FFD700;
+        background: rgba(255, 215, 0, 0.1);
+        box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+    }
+    
+    .rank-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        font-weight: bold;
+        font-size: 1.2rem;
+        color: white;
+        flex-shrink: 0;
+    }
+    
+    .rank-badge.top-1 {
+        background: linear-gradient(135deg, #FFD700, #FFA500);
+        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.5);
+    }
+    
+    .rank-badge.top-2 {
+        background: linear-gradient(135deg, #C0C0C0, #A0A0A0);
+        box-shadow: 0 4px 15px rgba(192, 192, 192, 0.5);
+    }
+    
+    .rank-badge.top-3 {
+        background: linear-gradient(135deg, #CD7F32, #B87333);
+        box-shadow: 0 4px 15px rgba(205, 127, 50, 0.5);
+    }
+    
+    .rank-badge.other {
+        background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    }
+    
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        min-width: 0;
+    }
+    
+    .user-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: white;
+        box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        flex-shrink: 0;
+    }
+    
+    .user-details {
+        flex: 1;
+        min-width: 0;
+    }
+    
+    .user-name {
+        font-weight: bold;
+        font-size: 1.1rem;
+        color: var(--text-light-color);
+        margin-bottom: 5px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .minecraft-username {
+        font-size: 0.85rem;
+        color: var(--text-muted-color);
+    }
+    
+    .balance-display {
+        text-align: right;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #4CAF50;
+        white-space: nowrap;
+    }
+    
+    .balance-display .coin-icon {
+        font-size: 1.3rem;
+        margin-right: 5px;
+    }
+    
+    /* کارت رتبه کاربر */
+    .user-rank-card {
+        background: linear-gradient(135deg, #752395, #d972d4, #752395);
+        border-radius: 20px;
+        padding: 35px;
+        margin-bottom: 40px;
+        text-align: center;
+        box-shadow: 0 10px 40px rgba(185, 2, 222, 0.3);
+        animation: pulse 2s infinite;
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .user-rank-card::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: conic-gradient(from 0deg, transparent, rgba(255, 255, 255, 0.1), transparent, rgba(255, 255, 255, 0.1), transparent);
+        animation: rotate 4s linear infinite;
+    }
+    
+    @keyframes rotate {
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+    
+    .user-rank-content {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .user-rank-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: white;
+        margin-bottom: 20px;
+    }
+    
+    .user-rank-info {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+    
+    .user-rank-item {
+        text-align: center;
+    }
+    
+    .user-rank-value {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #FFD700;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    .user-rank-label {
+        font-size: 1rem;
+        color: rgba(255, 255, 255, 0.9);
+        margin-top: 5px;
+    }
+    
+    /* حالت خالی */
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--text-muted-color);
+    }
+    
+    .empty-state .empty-icon {
+        font-size: 4rem;
+        margin-bottom: 20px;
+    }
+    
+    .empty-state h3 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+        color: var(--text-light-color);
+    }
+    
+    .empty-state p {
+        font-size: 1.1rem;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+    
+    /* انیمیشن‌ها */
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes bounceIn {
+        0% {
+            opacity: 0;
+            transform: scale(0.3);
+        }
+        50% {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+        70% {
+            transform: scale(0.9);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+    
+    @keyframes slideInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    @keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.02);
+        }
+    }
+    
+    /* ====== ریسپانسیو ====== */
+    
+    /* تبلت و صفحه‌های متوسط */
+    @media (max-width: 992px) {
+        .leaderboard-table-header,
+        .leaderboard-row {
+            grid-template-columns: 60px 1fr 130px 100px;
+            gap: 15px;
+            padding: 15px;
+            font-size: 0.9rem;
+            min-width: 350px;
+        }
+        
+        .podium-box {
+            min-width: 130px;
+        }
+        
+        .podium-item {
+            width: 170px;
+        }
+    }
+    
+    /* موبایل - حالت تبلت کوچک */
+    @media (max-width: 768px) {
+        .leaderboard-container {
+            padding: 15px;
+        }
+        
+        .podium {
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .podium-item {
+            width: 250px;
+            max-width: 100%;
+        }
+        
+        .podium-item.first {
+            order: 1;
+        }
+        
+        .podium-item.second {
+            order: 2;
+        }
+        
+        .podium-item.third {
+            order: 3;
+        }
+        
+        .podium-box {
+            min-width: 200px;
+            padding: 25px 20px;
+        }
+        
+        .podium-box.first {
+            height: 220px;
+        }
+        
+        .podium-box.second {
+            height: 200px;
+        }
+        
+        .podium-box.third {
+            height: 180px;
+        }
+        
+        .leaderboard-table {
+            padding: 20px 15px;
+        }
+        
+        .leaderboard-table-header,
+        .leaderboard-row {
+            grid-template-columns: 50px 1fr 90px 80px;
+            gap: 10px;
+            padding: 12px;
+            font-size: 0.8rem;
+            min-width: 300px;
+        }
+        
+        .leaderboard-title {
+            font-size: 2.2rem;
+        }
+        
+        .leaderboard-subtitle {
+            font-size: 1.1rem;
+        }
+        
+        .balance-display {
+            font-size: 1rem;
+        }
+        
+        .user-rank-value {
+            font-size: 1.8rem;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+        }
+        
+        .rank-badge {
+            width: 40px;
+            height: 40px;
+            font-size: 1rem;
+        }
+        
+        .leaderboard-message {
+            font-size: 0.95rem;
+            padding: 15px 20px;
+            max-width: 95%;
+        }
+        
+        .user-rank-card {
+            padding: 25px 20px;
+        }
+        
+        .user-rank-title {
+            font-size: 1.2rem;
+        }
+    }
+    
+    /* موبایل کوچک */
+    @media (max-width: 480px) {
+        .leaderboard-container {
+            padding: 10px;
+        }
+        
+        .leaderboard-table-header {
+            display: none !important;
+        }
+        
+        .leaderboard-table {
+            padding: 15px 10px;
+            border-radius: 15px;
+            overflow-x: visible;
+        }
+        
+        .leaderboard-row {
+            display: grid;
+            grid-template-columns: 40px 1fr 70px;
+            gap: 10px;
+            padding: 12px;
+            border-radius: 10px;
+            min-width: 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .leaderboard-row .balance-display {
+            grid-column: 3;
+            grid-row: 1 / 2;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        
+        .leaderboard-row .user-info {
+            grid-column: 2;
+            grid-row: 1 / 2;
+            gap: 10px;
+        }
+        
+        .leaderboard-row .rank-badge {
+            grid-column: 1;
+            grid-row: 1 / 2;
+            width: 35px;
+            height: 35px;
+            font-size: 0.85rem;
+        }
+        
+        .leaderboard-row .minecraft-username {
+            display: none !important;
+        }
+        
+        .leaderboard-row .user-name {
+            font-size: 0.9rem;
+        }
+        
+        .leaderboard-row .user-avatar {
+            width: 35px;
+            height: 35px;
+            font-size: 1rem;
+        }
+        
+        .podium-item {
+            width: 100%;
+            max-width: 280px;
+        }
+        
+        .podium-box {
+            min-width: 0;
+            padding: 20px 15px;
+        }
+        
+        .podium-box.first {
+            height: 200px;
+        }
+        
+        .podium-box.second {
+            height: 180px;
+        }
+        
+        .podium-box.third {
+            height: 160px;
+        }
+        
+        .podium-rank {
+            font-size: 2rem;
+        }
+        
+        .podium-username {
+            font-size: 0.95rem;
+        }
+        
+        .podium-balance {
+            font-size: 1.1rem;
+        }
+        
+        .podium-crown {
+            font-size: 2.5rem;
+        }
+        
+        .leaderboard-title {
+            font-size: 1.8rem;
+        }
+        
+        .leaderboard-subtitle {
+            font-size: 0.95rem;
+        }
+        
+        .leaderboard-message {
+            font-size: 0.85rem;
+            padding: 12px 15px;
+        }
+        
+        .user-rank-card {
+            padding: 20px 15px;
+            border-radius: 15px;
+        }
+        
+        .user-rank-title {
+            font-size: 1rem;
+        }
+        
+        .user-rank-value {
+            font-size: 1.5rem;
+        }
+        
+        .user-rank-label {
+            font-size: 0.85rem;
+        }
+        
+        .user-rank-info {
+            gap: 15px;
+        }
+        
+        .btn2 {
+            padding: 10px 25px;
+            font-size: 0.95rem;
+        }
+        
+        .empty-state h3 {
+            font-size: 1.2rem;
+        }
+        
+        .empty-state p {
+            font-size: 0.95rem;
+        }
+        
+        .empty-state .empty-icon {
+            font-size: 3rem;
+        }
+    }
+    
+    /* موبایل خیلی کوچک */
+    @media (max-width: 360px) {
+        .leaderboard-row {
+            grid-template-columns: 35px 1fr 60px;
+            gap: 8px;
+            padding: 10px;
+        }
+        
+        .leaderboard-row .rank-badge {
+            width: 30px;
+            height: 30px;
+            font-size: 0.75rem;
+        }
+        
+        .leaderboard-row .user-avatar {
+            width: 30px;
+            height: 30px;
+            font-size: 0.85rem;
+        }
+        
+        .leaderboard-row .user-name {
+            font-size: 0.8rem;
+        }
+        
+        .leaderboard-row .balance-display {
+            font-size: 0.8rem;
+        }
+        
+        .podium-box {
+            padding: 15px 10px;
+        }
+        
+        .podium-box.first {
+            height: 180px;
+        }
+        
+        .podium-box.second {
+            height: 160px;
+        }
+        
+        .podium-box.third {
+            height: 140px;
+        }
+        
+        .podium-rank {
+            font-size: 1.7rem;
+        }
+        
+        .podium-username {
+            font-size: 0.85rem;
+        }
+        
+        .podium-balance {
+            font-size: 1rem;
+        }
+        
+        .podium-crown {
+            font-size: 2rem;
+        }
+        
+        .leaderboard-title {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="leaderboard-container">
+    <!-- هدر -->
+    <div class="leaderboard-header">
+        <h1 class="leaderboard-title">🏆 مسابقه بزرگ وارت 🏆</h1>
+        <p class="leaderboard-subtitle">پولدارای خفن همه اینجان 💎</p>
+        
+        <div class="leaderboard-message">
+            💰 فعلاً می‌تونی پولاتو جمع کنی تا وقتی مسابقمون شروع شد، نفر اول خودت باشی! 💎
+        </div>
+    </div>
+
+    <!-- کارت رتبه کاربر (اگر لاگین باشد) -->
+    {% if user.is_authenticated and user_rank %}
+    <div class="user-rank-card">
+        <div class="user-rank-content">
+            <h2 class="user-rank-title">🎯 رتبه شما در مسابقه</h2>
+            <div class="user-rank-info">
+                <div class="user-rank-item">
+                    <div class="user-rank-value">#{{ user_rank }}</div>
+                    <div class="user-rank-label">رتبه</div>
+                </div>
+                <div class="user-rank-item">
+                    <div class="user-rank-value">
+                        {% if user_wallet %}
+                            {{ user_wallet.balance|floatformat:2 }}
+                        {% else %}
+                            0.00
+                        {% endif %}
+                    </div>
+                    <div class="user-rank-label">💰 وارت کوین</div>
+                </div>
+                <div class="user-rank-item">
+                    <div class="user-rank-value">{{ leaderboard|length }}</div>
+                    <div class="user-rank-label">👥 شرکت‌کنندگان</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- سکو (۳ نفر اول) -->
+    {% if leaderboard %}
+    {% with top_users=leaderboard|slice:":3" %}
+    <div class="podium">
+        {% for user_data in top_users %}
+        <div class="podium-item {% if forloop.counter == 1 %}first{% elif forloop.counter == 2 %}second{% else %}third{% endif %}">
+            <div class="podium-box {% if forloop.counter == 1 %}first{% elif forloop.counter == 2 %}second{% else %}third{% endif %}">
+                <span class="podium-crown">
+                    {% if forloop.counter == 1 %}👑
+                    {% elif forloop.counter == 2 %}🥈
+                    {% else %}🥉{% endif %}
+                </span>
+                <div class="podium-rank">#{{ forloop.counter }}</div>
+                <div class="podium-username">
+                    {{ user_data.username|truncatechars:15 }}
+                </div>
+                <div class="podium-balance">
+                    <span class="coin-icon">💰</span>
+                    {{ user_data.balance|floatformat:2 }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endwith %}
+    {% endif %}
+
+    <!-- جدول کامل رتبه‌بندی -->
+    <div class="leaderboard-table">
+        {% if leaderboard %}
+        <div class="leaderboard-table-header">
+            <span>🏅 رتبه</span>
+            <span>👤 کاربر</span>
+            <span>🎮 ماینکرفت</span>
+            <span style="text-align: right;">💰 وارت کوین</span>
+        </div>
+        
+        {% for user_data in leaderboard %}
+        <div class="leaderboard-row {% if user_data.user == user %}current-user{% endif %}">
+            <div class="rank-badge {% if forloop.counter == 1 %}top-1{% elif forloop.counter == 2 %}top-2{% elif forloop.counter == 3 %}top-3{% else %}other{% endif %}">
+                #{{ forloop.counter }}
+            </div>
+            
+            <div class="user-info">
+                <div class="user-avatar">
+                    {{ user_data.username|first|upper }}
+                </div>
+                <div class="user-details">
+                    <div class="user-name">
+                        {{ user_data.username }}
+                        {% if user_data.user == user %}
+                            <span style="color: #FFD700; font-size: 0.8rem;">(شما)</span>
+                        {% endif %}
+                    </div>
+                    <div class="minecraft-username">
+                        🎮 {{ user_data.minecraft_username|default:"ثبت نشده" }}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="minecraft-username">
+                {{ user_data.minecraft_username|default:"ثبت نشده" }}
+            </div>
+            
+            <div class="balance-display">
+                <span class="coin-icon">💰</span>
+                {{ user_data.balance|floatformat:2 }}
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">🔄</div>
+            <h3>هنوز کسی در مسابقه شرکت نکرده!</h3>
+            <p>اولین نفری باش که وارت کوین جمع می‌کنه و به جمع شرکت‌کننده‌ها بپیوند!</p>
+            <br>
+            <a href="{% url 'shop:product_list' %}" class="btn2">🚀 شروع به خرید کن</a>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- دکمه اقدام -->
+    <div style="text-align: center; margin-top: 40px;">
+        <a href="{% url 'shop:product_list' %}" class="btn2">🛒 ادامه خرید و افزایش وارت کوین</a>
+        <p style="color: var(--text-muted-color); margin-top: 20px; font-size: 0.9rem;">
+            💡 هر خرید = وارت کوین بیشتر = شانس بیشتر برای برنده شدن در مسابقه بزرگ
+        </p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // انیمیشن اسکرول برای ردیف‌ها
+        const rows = document.querySelectorAll('.leaderboard-row');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateX(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        rows.forEach(row => {
+            row.style.opacity = '0';
+            row.style.transform = 'translateX(-30px)';
+            row.style.transition = 'all 0.6s ease-out';
+            observer.observe(row);
+        });
+        
+        // اسکرول خودکار به رتبه کاربر
+        const currentUserRow = document.querySelector('.leaderboard-row.current-user');
+        if (currentUserRow) {
+            setTimeout(() => {
+                currentUserRow.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+            }, 1500);
+        }
+    });
+    
+    // رفرش خودکار هر ۳۰ ثانیه (فقط اگر لاگین باشد)
+    {% if user.is_authenticated %}
+    let refreshInterval;
+    
+    function startAutoRefresh() {
+        refreshInterval = setInterval(() => {
+            if (document.querySelector('.leaderboard-table')) {
+                fetch(window.location.href, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    
+                    const newTable = doc.querySelector('.leaderboard-table');
+                    const newUserRank = doc.querySelector('.user-rank-card');
+                    
+                    if (newTable && document.querySelector('.leaderboard-table')) {
+                        document.querySelector('.leaderboard-table').innerHTML = newTable.innerHTML;
+                    }
+                    
+                    if (newUserRank && document.querySelector('.user-rank-card')) {
+                        document.querySelector('.user-rank-card').outerHTML = newUserRank.outerHTML;
+                    }
+                })
+                .catch(err => console.log('Auto-refresh error:', err));
+            }
+        }, 30000);
+    }
+    
+    startAutoRefresh();
+    
+    // پاک کردن interval هنگام خروج از صفحه
+    window.addEventListener('beforeunload', function() {
+        if (refreshInterval) {
+            clearInterval(refreshInterval);
+        }
+    });
+    {% endif %}
+</script>
+{% endblock %}

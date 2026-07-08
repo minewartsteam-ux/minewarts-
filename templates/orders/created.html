@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}سفارش شما با موفقیت ثبت شد{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="thank-you-message">
+            <h1>سفارش شما با موفقیت ثبت شد!</h1>
+            <p>شماره سفارش شما: {{ order.id }}</p>
+            <p>به زودی با شما تماس گرفته خواهد شد.</p>
+            <a href="{% url 'shop:product_list' %}" class="btn btn-primary">بازگشت به فروشگاه</a>
+        </div>
+    </div>
+{% endblock %}

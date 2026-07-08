@@ -1,0 +1,270 @@
+
+/* ================================================================
+   🚀 DJANGO ADMIN CUSTOM - ULTRA MODERN
+   ================================================================ */
+
+:root {
+    --admin-primary: #6C63FF;
+    --admin-primary-dark: #5A52D5;
+    --admin-primary-light: #8B83FF;
+    --admin-secondary: #FF6584;
+    --admin-accent: #00D2FF;
+    --admin-success: #00E676;
+    --admin-warning: #FFD740;
+    --admin-danger: #FF1744;
+    
+    --admin-bg: #0A0A0F;
+    --admin-bg-secondary: #14141E;
+    --admin-bg-glass: rgba(255, 255, 255, 0.03);
+    --admin-text: #FFFFFF;
+    --admin-text-secondary: #B0B0C8;
+    --admin-text-muted: #6B6B8A;
+    --admin-border: rgba(255, 255, 255, 0.06);
+    --admin-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    --admin-radius: 16px;
+    --admin-radius-sm: 8px;
+    --admin-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+    background: var(--admin-bg) !important;
+    color: var(--admin-text) !important;
+    font-family: 'Vazirmatn', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    min-height: 100vh;
+    background-image: 
+        radial-gradient(ellipse at 10% 20%, rgba(108, 99, 255, 0.05) 0%, transparent 50%),
+        radial-gradient(ellipse at 90% 80%, rgba(255, 101, 132, 0.05) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(0, 210, 255, 0.03) 0%, transparent 70%) !important;
+}
+
+#header {
+    background: var(--admin-bg-glass) !important;
+    backdrop-filter: blur(20px) !important;
+    border-bottom: 1px solid var(--admin-border) !important;
+    padding: 10px 20px !important;
+}
+
+#header h1 {
+    color: var(--admin-text) !important;
+    font-size: 1.5rem !important;
+}
+
+#header a {
+    color: var(--admin-primary-light) !important;
+}
+
+#header a:hover {
+    color: var(--admin-accent) !important;
+}
+
+.module {
+    background: var(--admin-bg-glass) !important;
+    backdrop-filter: blur(20px) !important;
+    border: 1px solid var(--admin-border) !important;
+    border-radius: var(--admin-radius) !important;
+    box-shadow: var(--admin-shadow) !important;
+    margin-bottom: 20px !important;
+    overflow: hidden !important;
+}
+
+.module h2 {
+    background: linear-gradient(135deg, rgba(108, 99, 255, 0.15), rgba(0, 210, 255, 0.05)) !important;
+    color: var(--admin-text) !important;
+    padding: 14px 20px !important;
+    margin: 0 !important;
+    border-bottom: 1px solid var(--admin-border) !important;
+    font-size: 1.1rem !important;
+    font-weight: 600 !important;
+}
+
+.module h2::before {
+    content: '✦' !important;
+    color: var(--admin-primary) !important;
+    margin-left: 8px !important;
+}
+
+.button,
+input[type="submit"],
+.submit-row input,
+a.button {
+    background: linear-gradient(135deg, var(--admin-primary), var(--admin-primary-dark)) !important;
+    border: none !important;
+    border-radius: 50px !important;
+    padding: 10px 24px !important;
+    color: #fff !important;
+    font-weight: 600 !important;
+    transition: var(--admin-transition) !important;
+    cursor: pointer !important;
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    position: relative !important;
+    overflow: hidden !important;
+    box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3) !important;
+}
+
+.button:hover,
+input[type="submit"]:hover,
+.submit-row input:hover,
+a.button:hover {
+    transform: translateY(-3px) scale(1.02) !important;
+    box-shadow: 0 8px 25px rgba(108, 99, 255, 0.4) !important;
+}
+
+.button.default {
+    background: linear-gradient(135deg, #636363, #484848) !important;
+    box-shadow: none !important;
+}
+
+.success,
+.message-success,
+.messagelist .success,
+.alert-success {
+    background: rgba(0, 230, 118, 0.12) !important;
+    color: #69F0AE !important;
+    border-right: 4px solid #00E676 !important;
+    padding: 16px 20px !important;
+    border-radius: var(--admin-radius-sm) !important;
+    margin-bottom: 16px !important;
+    animation: slideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+.error,
+.message-error,
+.messagelist .error,
+.alert-danger {
+    background: rgba(255, 23, 68, 0.12) !important;
+    color: #FF5252 !important;
+    border-right: 4px solid #FF1744 !important;
+    padding: 16px 20px !important;
+    border-radius: var(--admin-radius-sm) !important;
+    margin-bottom: 16px !important;
+    animation: slideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+@keyframes slideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.96);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.breadcrumbs {
+    background: var(--admin-bg-glass) !important;
+    backdrop-filter: blur(16px) !important;
+    border: 1px solid var(--admin-border) !important;
+    border-radius: var(--admin-radius-sm) !important;
+    padding: 12px 20px !important;
+    margin-bottom: 20px !important;
+}
+
+.breadcrumbs a {
+    color: var(--admin-primary-light) !important;
+    text-decoration: none !important;
+    transition: var(--admin-transition) !important;
+}
+
+.breadcrumbs a:hover {
+    color: var(--admin-accent) !important;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="password"],
+input[type="url"],
+input[type="date"],
+input[type="datetime-local"],
+input[type="search"],
+input[type="tel"],
+textarea,
+select,
+.form-control {
+    background: rgba(0, 0, 0, 0.3) !important;
+    border: 2px solid var(--admin-border) !important;
+    border-radius: var(--admin-radius-sm) !important;
+    padding: 10px 16px !important;
+    color: var(--admin-text) !important;
+    width: 100% !important;
+    font-size: 1rem !important;
+    transition: var(--admin-transition) !important;
+    font-family: 'Vazirmatn', sans-serif !important;
+    box-sizing: border-box !important;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="number"]:focus,
+input[type="password"]:focus,
+input[type="url"]:focus,
+input[type="date"]:focus,
+input[type="datetime-local"]:focus,
+input[type="search"]:focus,
+input[type="tel"]:focus,
+textarea:focus,
+select:focus,
+.form-control:focus {
+    outline: none !important;
+    border-color: var(--admin-primary) !important;
+    box-shadow: 0 0 0 4px rgba(108, 99, 255, 0.15) !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+}
+
+::-webkit-scrollbar {
+    width: 6px !important;
+    height: 6px !important;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--admin-bg) !important;
+    border-radius: 8px !important;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--admin-primary), var(--admin-accent)) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 0 20px rgba(108, 99, 255, 0.2) !important;
+}
+
+@media (max-width: 768px) {
+    #header {
+        padding: 8px 12px !important;
+    }
+    
+    #header h1 {
+        font-size: 1.2rem !important;
+    }
+    
+    .module h2 {
+        font-size: 0.95rem !important;
+        padding: 12px 16px !important;
+    }
+    
+    .button,
+    input[type="submit"],
+    .submit-row input,
+    a.button {
+        padding: 8px 16px !important;
+        font-size: 0.85rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .button,
+    input[type="submit"],
+    .submit-row input,
+    a.button {
+        padding: 6px 12px !important;
+        font-size: 0.8rem !important;
+        width: 100% !important;
+        justify-content: center !important;
+    }
+}
+/* "@ | Out-File -FilePath "static/admin/css/admin_custom.css" -Encoding utf8 */

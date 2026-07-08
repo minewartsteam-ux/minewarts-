@@ -1,0 +1,700 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}پروفایل{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ================================================================
+       🚀 ULTRA MODERN PROFILE PAGE - 2026 EDITION
+       ================================================================ */
+    
+    /* ================================================================
+       WRAPPER
+       ================================================================ */
+    .profile-page-wrapper {
+        background: var(--admin-bg-glass, rgba(255, 255, 255, 0.02));
+        backdrop-filter: blur(24px) saturate(180%);
+        -webkit-backdrop-filter: blur(24px) saturate(180%);
+        border: 1px solid var(--admin-border-glass, rgba(255, 255, 255, 0.06));
+        border-radius: 24px;
+        padding: 48px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        max-width: 720px;
+        margin: 40px auto;
+        position: relative;
+        overflow: hidden;
+        animation: profileFadeIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    
+    .profile-page-wrapper::before {
+        content: '';
+        position: absolute;
+        inset: -1px;
+        border-radius: 24px;
+        padding: 1px;
+        background: conic-gradient(
+            from 0deg at 50% 50%,
+            transparent 0deg,
+            rgba(108, 99, 255, 0.1) 60deg,
+            transparent 120deg,
+            rgba(0, 210, 255, 0.1) 180deg,
+            transparent 240deg,
+            rgba(255, 101, 132, 0.1) 300deg,
+            transparent 360deg
+        );
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+        animation: rotateNeon 20s linear infinite;
+    }
+    
+    .profile-page-wrapper::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(ellipse at 30% 20%, rgba(108, 99, 255, 0.03), transparent 60%);
+        pointer-events: none;
+        animation: breatheGlow 4s ease-in-out infinite;
+    }
+    
+    @keyframes rotateNeon {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    @keyframes breatheGlow {
+        0%, 100% { opacity: 0.5; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.1); }
+    }
+    
+    @keyframes profileFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* ================================================================
+       HEADER
+       ================================================================ */
+    .profile-header {
+        text-align: center;
+        margin-bottom: 32px;
+        padding-bottom: 24px;
+        border-bottom: 2px solid var(--admin-border-glass, rgba(255, 255, 255, 0.06));
+        position: relative;
+        z-index: 1;
+    }
+    
+    .profile-header::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 30%;
+        width: 40%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #6C63FF, #00D2FF, transparent);
+    }
+    
+    .profile-header h1 {
+        font-size: 2.8rem;
+        font-weight: 800;
+        margin-bottom: 8px;
+        background: linear-gradient(135deg, #8B83FF, #00D2FF);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .profile-header p {
+        color: #B0B0C8;
+        font-size: 1.05rem;
+        margin: 0;
+    }
+    
+    /* ================================================================
+       PROFILE INFO
+       ================================================================ */
+    .profile-info {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid var(--admin-border-glass, rgba(255, 255, 255, 0.06));
+        border-radius: 16px;
+        padding: 24px 28px;
+        margin-bottom: 20px;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        z-index: 1;
+    }
+    
+    .profile-info:hover {
+        transform: translateY(-2px);
+        border-color: rgba(108, 99, 255, 0.15);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    }
+    
+    .profile-info-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--admin-border-glass, rgba(255, 255, 255, 0.04));
+        gap: 16px;
+    }
+    
+    .profile-info-item:last-child {
+        border-bottom: none;
+    }
+    
+    .profile-info-label {
+        color: #6B6B8A;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        flex-shrink: 0;
+    }
+    
+    .profile-info-value {
+        color: #E0E0E0;
+        font-size: 1.05rem;
+        font-weight: 500;
+        text-align: left;
+        word-break: break-word;
+    }
+    
+    .profile-info-value .highlight {
+        color: #8B83FF;
+        font-weight: 700;
+    }
+    
+    .profile-info-value .empty {
+        color: #6B6B8A;
+        font-style: italic;
+    }
+    
+    /* ================================================================
+       EDIT FORM
+       ================================================================ */
+    .profile-edit-section {
+        background: rgba(108, 99, 255, 0.04);
+        border: 1px solid rgba(108, 99, 255, 0.1);
+        border-radius: 16px;
+        padding: 28px;
+        margin-bottom: 20px;
+        position: relative;
+        z-index: 1;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    
+    .profile-edit-section:hover {
+        border-color: rgba(108, 99, 255, 0.2);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    }
+    
+    .profile-edit-title {
+        color: #FFFFFF;
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+    
+    .profile-edit-title .title-icon {
+        font-size: 1.4rem;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group label {
+        display: block;
+        color: #B0B0C8;
+        font-weight: 600;
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+    }
+    
+    .form-control {
+        background: rgba(0, 0, 0, 0.3);
+        border: 2px solid var(--admin-border-glass, rgba(255, 255, 255, 0.06));
+        border-radius: 12px;
+        padding: 12px 16px;
+        color: #FFFFFF;
+        width: 100%;
+        font-size: 1rem;
+        box-sizing: border-box;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        font-family: 'Vazirmatn', sans-serif;
+    }
+    
+    .form-control:focus {
+        outline: none;
+        border-color: #6C63FF;
+        box-shadow: 0 0 0 4px rgba(108, 99, 255, 0.12);
+        background: rgba(0, 0, 0, 0.5);
+        transform: scale(1.005);
+    }
+    
+    .form-control::placeholder {
+        color: #6B6B8A;
+    }
+    
+    .help-text {
+        color: #6B6B8A;
+        font-size: 0.85rem;
+        display: block;
+        margin-top: 6px;
+    }
+    
+    /* ================================================================
+       BUTTONS
+       ================================================================ */
+    .btn-save {
+        background: linear-gradient(135deg, #6C63FF, #5A52D5);
+        border: none;
+        border-radius: 50px;
+        padding: 14px 32px;
+        color: white;
+        font-weight: 700;
+        font-size: 1rem;
+        text-decoration: none;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        cursor: pointer;
+        width: 100%;
+        max-width: 300px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(108, 99, 255, 0.3);
+        font-family: 'Vazirmatn', sans-serif;
+    }
+    
+    .btn-save::before {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        border-radius: 50px;
+        background: linear-gradient(135deg, #6C63FF, #00D2FF, #6C63FF);
+        opacity: 0;
+        transition: all 0.4s ease;
+        z-index: -1;
+        filter: blur(8px);
+    }
+    
+    .btn-save:hover::before {
+        opacity: 0.4;
+    }
+    
+    .btn-save:hover {
+        transform: translateY(-3px) scale(1.03);
+        box-shadow: 0 8px 35px rgba(108, 99, 255, 0.4);
+    }
+    
+    .btn-save:active {
+        transform: translateY(0) scale(0.97);
+    }
+    
+    .text-center {
+        text-align: center;
+    }
+    
+    /* ================================================================
+       WART COIN BOX
+       ================================================================ */
+    .wart-coin-box {
+        background: linear-gradient(135deg, rgba(255, 23, 68, 0.08), rgba(108, 99, 255, 0.05));
+        border: 1px solid rgba(255, 23, 68, 0.1);
+        border-radius: 16px;
+        padding: 20px 28px;
+        position: relative;
+        z-index: 1;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        margin-bottom: 20px;
+    }
+    
+    .wart-coin-box:hover {
+        border-color: rgba(255, 23, 68, 0.2);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(255, 23, 68, 0.05);
+    }
+    
+    .wart-coin-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    
+    .wart-coin-label {
+        color: #B0B0C8;
+        font-size: 1rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .wart-coin-label .coin-icon {
+        font-size: 1.4rem;
+    }
+    
+    .wart-coin-value {
+        color: #FF5252;
+        font-size: 1.8rem;
+        font-weight: 800;
+        text-shadow: 0 0 30px rgba(255, 23, 68, 0.2);
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    
+    .wart-coin-value .currency {
+        font-size: 1.2rem;
+        color: #FF8A80;
+        font-weight: 600;
+    }
+    
+    /* ================================================================
+       LOGOUT BUTTON
+       ================================================================ */
+    .profile-actions {
+        text-align: center;
+        margin-top: 30px;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .btn-logout {
+        background: linear-gradient(135deg, #FF1744, #D50000);
+        border: none;
+        border-radius: 50px;
+        padding: 14px 40px;
+        color: white;
+        font-weight: 700;
+        font-size: 1.05rem;
+        text-decoration: none;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 4px 20px rgba(255, 23, 68, 0.3);
+        font-family: 'Vazirmatn', sans-serif;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .btn-logout::before {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        border-radius: 50px;
+        background: linear-gradient(135deg, #FF1744, #FF5252, #FF1744);
+        opacity: 0;
+        transition: all 0.4s ease;
+        z-index: -1;
+        filter: blur(8px);
+    }
+    
+    .btn-logout:hover::before {
+        opacity: 0.4;
+    }
+    
+    .btn-logout:hover {
+        transform: translateY(-3px) scale(1.03);
+        box-shadow: 0 8px 35px rgba(255, 23, 68, 0.4);
+        color: white;
+    }
+    
+    .btn-logout:active {
+        transform: translateY(0) scale(0.97);
+    }
+    
+    /* ================================================================
+       RESPONSIVE
+       ================================================================ */
+    @media (max-width: 992px) {
+        .profile-page-wrapper {
+            padding: 32px 24px;
+            margin: 30px 16px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .profile-page-wrapper {
+            padding: 24px 16px;
+            margin: 20px 12px;
+            border-radius: 20px;
+        }
+        
+        .profile-header h1 {
+            font-size: 2rem;
+        }
+        
+        .profile-info {
+            padding: 18px 16px;
+        }
+        
+        .profile-info-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 4px;
+            padding: 12px 0;
+        }
+        
+        .profile-info-label {
+            font-size: 0.8rem;
+        }
+        
+        .profile-info-value {
+            font-size: 0.95rem;
+        }
+        
+        .profile-edit-section {
+            padding: 20px 16px;
+        }
+        
+        .profile-edit-title {
+            font-size: 1rem;
+        }
+        
+        .btn-save {
+            padding: 12px 24px;
+            font-size: 0.9rem;
+            max-width: 100%;
+        }
+        
+        .btn-logout {
+            padding: 12px 28px;
+            font-size: 0.95rem;
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .wart-coin-box {
+            padding: 16px 20px;
+        }
+        
+        .wart-coin-value {
+            font-size: 1.5rem;
+        }
+        
+        .wart-coin-label {
+            font-size: 0.9rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .profile-page-wrapper {
+            padding: 16px 12px;
+            margin: 12px 8px;
+            border-radius: 16px;
+        }
+        
+        .profile-header h1 {
+            font-size: 1.6rem;
+        }
+        
+        .profile-header p {
+            font-size: 0.9rem;
+        }
+        
+        .profile-info {
+            padding: 14px 12px;
+        }
+        
+        .profile-info-item {
+            padding: 10px 0;
+        }
+        
+        .profile-info-value {
+            font-size: 0.85rem;
+        }
+        
+        .profile-edit-section {
+            padding: 16px 12px;
+        }
+        
+        .form-control {
+            padding: 10px 14px;
+            font-size: 0.9rem;
+        }
+        
+        .btn-save {
+            padding: 10px 20px;
+            font-size: 0.85rem;
+        }
+        
+        .btn-logout {
+            padding: 10px 20px;
+            font-size: 0.85rem;
+        }
+        
+        .wart-coin-box {
+            padding: 14px 16px;
+        }
+        
+        .wart-coin-content {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .wart-coin-value {
+            font-size: 1.3rem;
+        }
+    }
+    
+    /* ================================================================
+       SCROLLBAR
+       ================================================================ */
+    .profile-page-wrapper::-webkit-scrollbar {
+        width: 4px;
+    }
+    
+    .profile-page-wrapper::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    
+    .profile-page-wrapper::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, #6C63FF, #00D2FF);
+        border-radius: 4px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="profile-page-wrapper">
+        <!-- ============================================================
+        HEADER
+        ============================================================ -->
+        <div class="profile-header">
+            <h1>👤 پروفایل</h1>
+            <p>اطلاعات حساب کاربری شما</p>
+        </div>
+        
+        <!-- ============================================================
+        PROFILE INFO
+        ============================================================ -->
+        <div class="profile-info">
+            <div class="profile-info-item">
+                <span class="profile-info-label">نام کاربری</span>
+                <span class="profile-info-value">{{ user.username }}</span>
+            </div>
+            
+            <div class="profile-info-item">
+                <span class="profile-info-label">نام</span>
+                <span class="profile-info-value">{{ user.first_name|default:"<span class='empty'>تنظیم نشده</span>"|safe }}</span>
+            </div>
+            
+            <div class="profile-info-item">
+                <span class="profile-info-label">نام خانوادگی</span>
+                <span class="profile-info-value">{{ user.last_name|default:"<span class='empty'>تنظیم نشده</span>"|safe }}</span>
+            </div>
+            
+            <div class="profile-info-item">
+                <span class="profile-info-label">ایمیل</span>
+                <span class="profile-info-value">{{ user.email|default:"<span class='empty'>تنظیم نشده</span>"|safe }}</span>
+            </div>
+            
+            <div class="profile-info-item">
+                <span class="profile-info-label">تاریخ عضویت</span>
+                <span class="profile-info-value">{{ user.date_joined|date:"Y/m/d" }}</span>
+            </div>
+            
+            <div class="profile-info-item">
+                <span class="profile-info-label">🎮 نام کاربری ماینکرفت</span>
+                <span class="profile-info-value">
+                    {% if profile.minecraft_username %}
+                        <span class="highlight">{{ profile.minecraft_username }}</span>
+                    {% else %}
+                        <span class="empty">تنظیم نشده</span>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+        
+        <!-- ============================================================
+        EDIT FORM
+        ============================================================ -->
+        <div class="profile-edit-section">
+            <div class="profile-edit-title">
+                <span class="title-icon">✏️</span>
+                ویرایش نام کاربری ماینکرفت
+            </div>
+            
+            <form method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="minecraft_username">نام کاربری ماینکرفت</label>
+                    <input 
+                        type="text" 
+                        id="minecraft_username" 
+                        name="minecraft_username" 
+                        value="{{ profile.minecraft_username|default:'' }}"
+                        maxlength="16"
+                        class="form-control"
+                        placeholder="مثال: Steve123"
+                        required
+                    >
+                    <small class="help-text">
+                        ⚡ فقط از حروف انگلیسی، اعداد و _ استفاده کنید (حداکثر 16 کاراکتر)
+                    </small>
+                </div>
+                
+                <div class="text-center">
+                    <button type="submit" class="btn-save">
+                        💾 ذخیره تغییرات
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- ============================================================
+        WART COIN BALANCE
+        ============================================================ -->
+        <div class="wart-coin-box">
+            <div class="wart-coin-content">
+                <span class="wart-coin-label">
+                    <span class="coin-icon">💰</span>
+                    موجودی وارت کوین
+                </span>
+                <span class="wart-coin-value" id="user-balance">
+                    {{ wart_coin_balance|default:0|floatformat:2 }}
+                    <span class="currency">WC</span>
+                </span>
+            </div>
+        </div>
+        
+        <!-- ============================================================
+        LOGOUT
+        ============================================================ -->
+        <div class="profile-actions">
+            <form method="post" action="{% url 'accounts:logout' %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn-logout">
+                    🚪 خروج از حساب
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

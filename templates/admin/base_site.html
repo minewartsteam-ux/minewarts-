@@ -1,0 +1,1260 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Theme Switcher JS -->
+    <script src="{% static 'js/admin_theme_switcher.js' %}" defer></script>
+    
+    <script>
+    (function() {
+        'use strict';
+        
+        // ================================================================
+        // THEME SWITCHER - کاملاً مدرن و ریسپانسیو
+        // ================================================================
+        function addThemeButton() {
+            if (document.getElementById('ADMIN_THEME_BTN')) return;
+            
+            const btnDiv = document.createElement('div');
+            btnDiv.id = 'ADMIN_THEME_BTN';
+            btnDiv.className = 'theme-fab-container';
+            btnDiv.innerHTML = `
+                <button id="theme-btn-main" class="theme-fab-btn">
+                    <i class="fas fa-palette"></i>
+                    <span class="theme-btn-text">تغییر تم</span>
+                    <span class="theme-btn-shortcut">⌘T</span>
+                </button>
+                <div id="theme-menu-main" class="theme-menu-modern">
+                    <div class="theme-menu-header">
+                        <span class="theme-menu-title">🎨 انتخاب تم</span>
+                        <button class="theme-menu-close" id="themeMenuClose"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="theme-menu-grid">
+                        <button class="tbtn" data-t="dark" style="background: linear-gradient(135deg, #0A0A0F, #1A1A2E);">
+                            <span class="theme-preview" style="background: #0A0A0F; border-color: #6C63FF;"></span>
+                            <span class="theme-name">🌙 دارک</span>
+                        </button>
+                        <button class="tbtn" data-t="blue" style="background: linear-gradient(135deg, #667eea, #4facfe);">
+                            <span class="theme-preview" style="background: linear-gradient(135deg, #667eea, #4facfe);"></span>
+                            <span class="theme-name">🌊 آبی</span>
+                        </button>
+                        <button class="tbtn" data-t="green" style="background: linear-gradient(135deg, #11998e, #38ef7d);">
+                            <span class="theme-preview" style="background: linear-gradient(135deg, #11998e, #38ef7d);"></span>
+                            <span class="theme-name">🌿 طبیعت</span>
+                        </button>
+                        <button class="tbtn" data-t="purple" style="background: linear-gradient(135deg, #a18cd1, #fbc2eb);">
+                            <span class="theme-preview" style="background: linear-gradient(135deg, #a18cd1, #fbc2eb);"></span>
+                            <span class="theme-name">💜 بنفش</span>
+                        </button>
+                        <button class="tbtn" data-t="orange" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+                            <span class="theme-preview" style="background: linear-gradient(135deg, #f093fb, #f5576c);"></span>
+                            <span class="theme-name">🌅 غروب</span>
+                        </button>
+                        <button class="tbtn" data-t="rgb" style="background: linear-gradient(135deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);">
+                            <span class="theme-preview" style="background: linear-gradient(135deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);"></span>
+                            <span class="theme-name">🌈 RGB</span>
+                        </button>
+                    </div>
+                    <div class="theme-menu-footer">
+                        <span class="theme-version">v2.0</span>
+                        <span class="theme-active" id="themeActiveLabel">فعال: دارک</span>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(btnDiv);
+            
+            const btn = document.getElementById('theme-btn-main');
+            const menu = document.getElementById('theme-menu-main');
+            const closeBtn = document.getElementById('themeMenuClose');
+            
+            if (btn && menu) {
+                // Toggle menu
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const isOpen = menu.classList.contains('show');
+                    menu.classList.toggle('show');
+                    this.classList.toggle('active');
+                });
+                
+                // Close button
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        menu.classList.remove('show');
+                        btn.classList.remove('active');
+                    });
+                }
+                
+                // Theme options with animation
+                document.querySelectorAll('.tbtn').forEach(opt => {
+                    opt.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const theme = this.dataset.t;
+                        const themeName = this.querySelector('.theme-name')?.textContent || theme;
+                        
+                        // Apply theme
+                        if (window.applyTheme) {
+                            window.applyTheme(theme);
+                        } else {
+                            localStorage.setItem('admin_theme', theme);
+                        }
+                        
+                        // Update active label
+                        const activeLabel = document.getElementById('themeActiveLabel');
+                        if (activeLabel) {
+                            activeLabel.textContent = 'فعال: ' + themeName;
+                        }
+                        
+                        // Remove active class from all
+                        document.querySelectorAll('.tbtn').forEach(t => t.classList.remove('active'));
+                        this.classList.add('active');
+                        
+                        // Close menu with delay
+                        setTimeout(() => {
+                            menu.classList.remove('show');
+                            btn.classList.remove('active');
+                        }, 300);
+                    });
+                    
+                    // Hover effects
+                    opt.addEventListener('mouseenter', function() {
+                        this.style.transform = 'scale(1.05) translateX(-5px)';
+                        this.style.boxShadow = '0 8px 25px rgba(0,0,0,0.3)';
+                    });
+                    
+                    opt.addEventListener('mouseleave', function() {
+                        this.style.transform = 'scale(1) translateX(0)';
+                        this.style.boxShadow = 'none';
+                    });
+                });
+                
+                // Close menu on outside click
+                document.addEventListener('click', function(e) {
+                    if (!btn.contains(e.target) && !menu.contains(e.target)) {
+                        menu.classList.remove('show');
+                        btn.classList.remove('active');
+                    }
+                });
+                
+                // Close on ESC
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && menu.classList.contains('show')) {
+                        menu.classList.remove('show');
+                        btn.classList.remove('active');
+                    }
+                    if ((e.ctrlKey || e.metaKey) && e.key === 't') {
+                        e.preventDefault();
+                        btn.click();
+                    }
+                });
+                
+                // Load saved theme
+                const savedTheme = localStorage.getItem('admin_theme');
+                if (savedTheme) {
+                    const activeBtn = document.querySelector(`.tbtn[data-t="${savedTheme}"]`);
+                    if (activeBtn) {
+                        activeBtn.classList.add('active');
+                        const themeName = activeBtn.querySelector('.theme-name')?.textContent || savedTheme;
+                        const activeLabel = document.getElementById('themeActiveLabel');
+                        if (activeLabel) {
+                            activeLabel.textContent = 'فعال: ' + themeName;
+                        }
+                    }
+                }
+                
+                console.log('✅ Theme button added successfully');
+            }
+        }
+        
+        // Try to add button
+        if (document.body) {
+            addThemeButton();
+        } else {
+            document.addEventListener('DOMContentLoaded', addThemeButton);
+        }
+        setTimeout(addThemeButton, 500);
+    })();
+    </script>
+    
+    <style>
+        /* ================================================================
+           THEME FAB BUTTON - مدرن و ریسپانسیو
+           ================================================================ */
+        .theme-fab-container {
+            position: fixed !important;
+            bottom: 30px !important;
+            left: 30px !important;
+            z-index: 999999 !important;
+        }
+        
+        .theme-fab-btn {
+            background: linear-gradient(135deg, #6C63FF 0%, #00D2FF 100%) !important;
+            border: none !important;
+            border-radius: 50px !important;
+            padding: 14px 24px !important;
+            color: white !important;
+            font-size: 1rem !important;
+            font-weight: 700 !important;
+            cursor: pointer !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            box-shadow: 0 8px 30px rgba(108, 99, 255, 0.4) !important;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+            font-family: 'Vazirmatn', sans-serif !important;
+            position: relative !important;
+            overflow: hidden !important;
+        }
+        
+        .theme-fab-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .theme-fab-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .theme-fab-btn:hover {
+            transform: scale(1.08) !important;
+            box-shadow: 0 12px 45px rgba(108, 99, 255, 0.5) !important;
+        }
+        
+        .theme-fab-btn:active {
+            transform: scale(0.95) !important;
+        }
+        
+        .theme-fab-btn.active {
+            transform: rotate(180deg) !important;
+            box-shadow: 0 12px 45px rgba(108, 99, 255, 0.6) !important;
+        }
+        
+        .theme-btn-shortcut {
+            font-size: 0.6rem !important;
+            background: rgba(255, 255, 255, 0.2) !important;
+            padding: 2px 8px !important;
+            border-radius: 4px !important;
+            font-weight: 600 !important;
+            opacity: 0.8 !important;
+        }
+        
+        /* ================================================================
+           THEME MENU - مدرن با گرید
+           ================================================================ */
+        .theme-menu-modern {
+            position: absolute !important;
+            bottom: calc(100% + 20px) !important;
+            left: 0 !important;
+            background: rgba(20, 20, 30, 0.95) !important;
+            backdrop-filter: blur(30px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            border-radius: 20px !important;
+            padding: 16px !important;
+            min-width: 320px !important;
+            max-width: 400px !important;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6) !important;
+            opacity: 0 !important;
+            transform: translateY(20px) scale(0.95) !important;
+            transform-origin: bottom left !important;
+            pointer-events: none !important;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+        }
+        
+        .theme-menu-modern.show {
+            opacity: 1 !important;
+            transform: translateY(0) scale(1) !important;
+            pointer-events: auto !important;
+        }
+        
+        .theme-menu-header {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            padding-bottom: 12px !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+            margin-bottom: 12px !important;
+        }
+        
+        .theme-menu-title {
+            color: #FFFFFF !important;
+            font-size: 1rem !important;
+            font-weight: 700 !important;
+        }
+        
+        .theme-menu-close {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border: none !important;
+            border-radius: 50% !important;
+            width: 32px !important;
+            height: 32px !important;
+            color: #B0B0C8 !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-size: 0.9rem !important;
+        }
+        
+        .theme-menu-close:hover {
+            background: rgba(255, 23, 68, 0.15) !important;
+            color: #FF5252 !important;
+            transform: rotate(90deg) !important;
+        }
+        
+        .theme-menu-grid {
+            display: grid !important;
+            grid-template-columns: repeat(3, 1fr) !important;
+            gap: 8px !important;
+            margin-bottom: 12px !important;
+        }
+        
+        .tbtn {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            gap: 6px !important;
+            padding: 12px 8px !important;
+            border: 2px solid transparent !important;
+            border-radius: 12px !important;
+            background: rgba(255, 255, 255, 0.03) !important;
+            cursor: pointer !important;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+            font-family: 'Vazirmatn', sans-serif !important;
+            color: #E0E0E0 !important;
+            position: relative !important;
+        }
+        
+        .tbtn:hover {
+            background: rgba(255, 255, 255, 0.06) !important;
+            transform: scale(1.05) translateX(-5px) !important;
+        }
+        
+        .tbtn.active {
+            border-color: #6C63FF !important;
+            background: rgba(108, 99, 255, 0.12) !important;
+            box-shadow: 0 0 30px rgba(108, 99, 255, 0.1) !important;
+        }
+        
+        .tbtn.active::after {
+            content: '✓' !important;
+            position: absolute !important;
+            top: -6px !important;
+            right: -6px !important;
+            background: #6C63FF !important;
+            color: white !important;
+            width: 20px !important;
+            height: 20px !important;
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-size: 0.7rem !important;
+            font-weight: 700 !important;
+        }
+        
+        .theme-preview {
+            width: 40px !important;
+            height: 40px !important;
+            border-radius: 50% !important;
+            border: 2px solid rgba(255, 255, 255, 0.1) !important;
+            transition: all 0.3s ease !important;
+            flex-shrink: 0 !important;
+        }
+        
+        .tbtn:hover .theme-preview {
+            transform: scale(1.1) !important;
+            border-color: rgba(255, 255, 255, 0.3) !important;
+        }
+        
+        .theme-name {
+            font-size: 0.7rem !important;
+            font-weight: 600 !important;
+            color: #B0B0C8 !important;
+            white-space: nowrap !important;
+        }
+        
+        .tbtn.active .theme-name {
+            color: #8B83FF !important;
+        }
+        
+        .theme-menu-footer {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            padding-top: 12px !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+        }
+        
+        .theme-version {
+            font-size: 0.65rem !important;
+            color: #6B6B8A !important;
+            font-weight: 500 !important;
+        }
+        
+        .theme-active {
+            font-size: 0.75rem !important;
+            color: #8B83FF !important;
+            font-weight: 600 !important;
+        }
+        
+        /* ================================================================
+           RESPONSIVE - موبایل
+           ================================================================ */
+        @media (max-width: 768px) {
+            .theme-fab-container {
+                bottom: 20px !important;
+                left: 20px !important;
+            }
+            
+            .theme-fab-btn {
+                padding: 12px 18px !important;
+                font-size: 0.85rem !important;
+                border-radius: 50px !important;
+            }
+            
+            .theme-btn-text {
+                display: inline !important;
+            }
+            
+            .theme-btn-shortcut {
+                display: none !important;
+            }
+            
+            .theme-menu-modern {
+                min-width: 280px !important;
+                max-width: 90vw !important;
+                bottom: calc(100% + 16px) !important;
+                left: 0 !important;
+                padding: 14px !important;
+            }
+            
+            .theme-menu-grid {
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 6px !important;
+            }
+            
+            .tbtn {
+                padding: 10px 6px !important;
+            }
+            
+            .theme-preview {
+                width: 32px !important;
+                height: 32px !important;
+            }
+            
+            .theme-name {
+                font-size: 0.6rem !important;
+            }
+            
+            .theme-menu-title {
+                font-size: 0.9rem !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .theme-fab-container {
+                bottom: 16px !important;
+                left: 16px !important;
+            }
+            
+            .theme-fab-btn {
+                padding: 10px 14px !important;
+                font-size: 0.8rem !important;
+                border-radius: 50% !important;
+                width: 48px !important;
+                height: 48px !important;
+                justify-content: center !important;
+            }
+            
+            .theme-btn-text,
+            .theme-btn-shortcut {
+                display: none !important;
+            }
+            
+            .theme-menu-modern {
+                min-width: 240px !important;
+                max-width: 85vw !important;
+                bottom: calc(100% + 12px) !important;
+                left: -10px !important;
+                padding: 12px !important;
+                border-radius: 16px !important;
+            }
+            
+            .theme-menu-grid {
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 4px !important;
+            }
+            
+            .tbtn {
+                padding: 8px 4px !important;
+            }
+            
+            .theme-preview {
+                width: 28px !important;
+                height: 28px !important;
+            }
+            
+            .theme-name {
+                font-size: 0.55rem !important;
+            }
+            
+            .theme-menu-header {
+                padding-bottom: 8px !important;
+                margin-bottom: 8px !important;
+            }
+            
+            .theme-menu-title {
+                font-size: 0.8rem !important;
+            }
+            
+            .theme-menu-close {
+                width: 28px !important;
+                height: 28px !important;
+                font-size: 0.8rem !important;
+            }
+            
+            .theme-menu-footer {
+                padding-top: 8px !important;
+            }
+            
+            .theme-active {
+                font-size: 0.65rem !important;
+            }
+            
+            .theme-version {
+                font-size: 0.55rem !important;
+            }
+        }
+        
+        /* ================================================================
+           ANIMATIONS
+           ================================================================ */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .theme-menu-modern.show {
+            animation: fadeInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards !important;
+        }
+    </style>
+{% endblock %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/admin_custom.css' %}">
+    
+    <style>
+        /* ================================================================
+           حذف کامل navbar اصلی
+           ================================================================ */
+        #jazzy-navbar,
+        .navbar-brand,
+        .navbar-nav,
+        .main-header:not(.admin-mini-header),
+        header:not(.admin-mini-header):not(.content-header),
+        .main-sidebar,
+        .sidebar,
+        aside.main-sidebar,
+        nav.main-sidebar {
+            display: none !important;
+        }
+        
+        /* ================================================================
+           تنظیم محتوا
+           ================================================================ */
+        .content-wrapper,
+        .wrapper {
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            width: 100% !important;
+            padding-top: 60px !important;
+            background: transparent !important;
+        }
+        
+        body {
+            padding-top: 0 !important;
+        }
+        
+        /* ================================================================
+           Theme Variables - DARK MODE پیش‌فرض
+           ================================================================ */
+        :root {
+            --admin-body-bg: #0A0A0F;
+            --admin-body-overlay: rgba(108, 99, 255, 0.03);
+            --admin-body-color: #FFFFFF;
+            --admin-card-bg: rgba(255, 255, 255, 0.03);
+            --admin-card-border: rgba(255, 255, 255, 0.06);
+            --admin-text-primary: #FFFFFF;
+            --admin-text-secondary: #B0B0C8;
+            --admin-table-bg: rgba(255, 255, 255, 0.02);
+            --admin-table-header-bg: rgba(108, 99, 255, 0.12);
+            --admin-table-header-color: #8B83FF;
+            --admin-table-row-hover: rgba(108, 99, 255, 0.06);
+            --admin-input-bg: rgba(0, 0, 0, 0.3);
+            --admin-input-border: rgba(255, 255, 255, 0.06);
+            --admin-input-color: #FFFFFF;
+            --admin-button-bg: linear-gradient(135deg, #6C63FF, #5A52D5);
+            --admin-header-bg: rgba(10, 10, 15, 0.85);
+            --admin-header-color: #FFFFFF;
+            --admin-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+        
+        /* ================================================================
+           بدنه اصلی - DARK MODE
+           ================================================================ */
+        body {
+            background: var(--admin-body-bg) !important;
+            min-height: 100vh !important;
+            position: relative !important;
+            color: var(--admin-body-color) !important;
+            background-image: 
+                radial-gradient(ellipse at 10% 20%, rgba(108, 99, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(ellipse at 90% 80%, rgba(255, 101, 132, 0.05) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(0, 210, 255, 0.03) 0%, transparent 70%) !important;
+        }
+        
+        /* ================================================================
+           انیمیشن‌ها
+           ================================================================ */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .content-wrapper,
+        .wrapper {
+            animation: fadeInUp 0.6s ease-out !important;
+        }
+        
+        .module,
+        .results {
+            animation: slideIn 0.5s ease-out !important;
+        }
+        
+        .module table tr,
+        .results table tr {
+            animation: fadeInUp 0.4s ease-out backwards;
+        }
+        
+        .module table tr:nth-child(1) { animation-delay: 0.05s; }
+        .module table tr:nth-child(2) { animation-delay: 0.10s; }
+        .module table tr:nth-child(3) { animation-delay: 0.15s; }
+        .module table tr:nth-child(4) { animation-delay: 0.20s; }
+        .module table tr:nth-child(5) { animation-delay: 0.25s; }
+        .module table tr:nth-child(6) { animation-delay: 0.30s; }
+        .module table tr:nth-child(7) { animation-delay: 0.35s; }
+        .module table tr:nth-child(8) { animation-delay: 0.40s; }
+        .module table tr:nth-child(9) { animation-delay: 0.45s; }
+        .module table tr:nth-child(10) { animation-delay: 0.50s; }
+        
+        /* ================================================================
+           Theme Switcher - نمایش در هدر
+           ================================================================ */
+        .theme-switcher,
+        #admin-theme-switcher,
+        .theme-switcher-btn,
+        #theme-switcher-button {
+            display: flex !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            position: relative !important;
+            z-index: 9999 !important;
+        }
+        
+        .theme-switcher {
+            margin-left: 10px !important;
+        }
+        
+        .theme-switcher-btn {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 50px !important;
+            padding: 6px 14px !important;
+            color: var(--admin-header-color, #FFFFFF) !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            font-size: 0.85rem !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+            font-family: 'Vazirmatn', sans-serif !important;
+        }
+        
+        .theme-switcher-btn:hover {
+            background: rgba(255, 255, 255, 0.1) !important;
+            transform: scale(1.05) !important;
+        }
+        
+        .theme-switcher-menu {
+            position: absolute !important;
+            top: calc(100% + 10px) !important;
+            right: 0 !important;
+            background: rgba(20, 20, 30, 0.95) !important;
+            backdrop-filter: blur(20px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 16px !important;
+            padding: 8px !important;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6) !important;
+            min-width: 180px !important;
+            display: none !important;
+            z-index: 10001 !important;
+            animation: fadeInUp 0.3s ease !important;
+        }
+        
+        .theme-switcher-menu.show {
+            display: block !important;
+        }
+        
+        .theme-option {
+            display: flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            width: 100% !important;
+            padding: 10px 12px !important;
+            background: transparent !important;
+            border: none !important;
+            border-radius: 10px !important;
+            color: #E0E0E0 !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            text-align: right !important;
+            font-size: 0.9rem !important;
+            font-family: 'Vazirmatn', sans-serif !important;
+        }
+        
+        .theme-option:hover {
+            background: rgba(108, 99, 255, 0.15) !important;
+            color: #FFFFFF !important;
+            transform: translateX(-5px) !important;
+        }
+        
+        .theme-option.active {
+            background: rgba(108, 99, 255, 0.2) !important;
+            color: #8B83FF !important;
+            font-weight: bold !important;
+        }
+        
+        .theme-icon {
+            font-size: 1.3rem !important;
+        }
+        
+        /* ================================================================
+           کارت‌ها و ماژول‌ها - GLASSMORPHISM
+           ================================================================ */
+        .module,
+        .card,
+        .panel,
+        .box {
+            background: var(--admin-card-bg) !important;
+            backdrop-filter: blur(20px) !important;
+            -webkit-backdrop-filter: blur(20px) !important;
+            border: 1px solid var(--admin-card-border) !important;
+            border-radius: 16px !important;
+            margin-bottom: 20px !important;
+            box-shadow: var(--admin-shadow) !important;
+            overflow: hidden !important;
+            transition: all 0.3s ease !important;
+        }
+        
+        .module::before,
+        .card::before,
+        .panel::before {
+            content: '' !important;
+            position: absolute !important;
+            top: -50% !important;
+            left: -50% !important;
+            width: 200% !important;
+            height: 200% !important;
+            background: conic-gradient(
+                from 0deg at 50% 50%,
+                transparent 0deg,
+                rgba(108, 99, 255, 0.03) 60deg,
+                transparent 120deg,
+                rgba(0, 210, 255, 0.03) 180deg,
+                transparent 240deg,
+                rgba(255, 101, 132, 0.03) 300deg,
+                transparent 360deg
+            ) !important;
+            animation: rotateGlass 20s linear infinite !important;
+            pointer-events: none !important;
+        }
+        
+        @keyframes rotateGlass {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .module:hover,
+        .card:hover,
+        .panel:hover {
+            transform: translateY(-4px) !important;
+            border-color: rgba(108, 99, 255, 0.2) !important;
+            box-shadow: 0 16px 60px rgba(0, 0, 0, 0.5) !important;
+        }
+        
+        .module h2,
+        .card-header,
+        .panel-heading {
+            background: var(--admin-table-header-bg) !important;
+            color: var(--admin-table-header-color) !important;
+            padding: 16px 20px !important;
+            margin: 0 !important;
+            border-bottom: 1px solid var(--admin-card-border) !important;
+            border-radius: 16px 16px 0 0 !important;
+            font-weight: 700 !important;
+            font-size: 1.1rem !important;
+        }
+        
+        .module h2::before {
+            content: '✦' !important;
+            margin-left: 10px !important;
+            color: var(--admin-primary) !important;
+        }
+        
+        /* ================================================================
+           جداول - MODERN
+           ================================================================ */
+        .module table,
+        .results table,
+        .table {
+            background: var(--admin-table-bg) !important;
+            border-radius: 12px !important;
+            overflow: hidden !important;
+            border: 1px solid var(--admin-card-border) !important;
+        }
+        
+        .module table th,
+        .results table th,
+        .table th {
+            background: var(--admin-table-header-bg) !important;
+            color: var(--admin-table-header-color) !important;
+            border: none !important;
+            padding: 12px 16px !important;
+            font-weight: 700 !important;
+            font-size: 0.85rem !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.5px !important;
+        }
+        
+        .module table td,
+        .results table td,
+        .table td {
+            border-color: var(--admin-card-border) !important;
+            color: var(--admin-text-secondary) !important;
+            padding: 12px 16px !important;
+        }
+        
+        .module table tr:hover,
+        .results table tr:hover,
+        .table tr:hover {
+            background: var(--admin-table-row-hover) !important;
+        }
+        
+        /* ================================================================
+           فرم‌ها - DARK MODE
+           ================================================================ */
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        input[type="password"],
+        input[type="url"],
+        input[type="date"],
+        textarea,
+        select {
+            background: var(--admin-input-bg) !important;
+            border: 2px solid var(--admin-input-border) !important;
+            color: var(--admin-input-color) !important;
+            border-radius: 12px !important;
+            padding: 10px 16px !important;
+            transition: all 0.3s ease !important;
+            font-family: 'Vazirmatn', sans-serif !important;
+        }
+        
+        input:focus,
+        textarea:focus,
+        select:focus {
+            border-color: #6C63FF !important;
+            box-shadow: 0 0 0 4px rgba(108, 99, 255, 0.15) !important;
+            outline: none !important;
+        }
+        
+        input::placeholder,
+        textarea::placeholder {
+            color: rgba(255, 255, 255, 0.3) !important;
+        }
+        
+        /* ================================================================
+           دکمه‌ها - با RIPPLE EFFECT
+           ================================================================ */
+        .button,
+        input[type="submit"],
+        .submit-row input,
+        a.button,
+        button {
+            background: var(--admin-button-bg) !important;
+            border: none !important;
+            border-radius: 50px !important;
+            padding: 12px 30px !important;
+            color: white !important;
+            font-weight: 700 !important;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+            position: relative !important;
+            overflow: hidden !important;
+            box-shadow: 0 4px 20px rgba(108, 99, 255, 0.3) !important;
+            cursor: pointer !important;
+            font-family: 'Vazirmatn', sans-serif !important;
+        }
+        
+        .button::before,
+        input[type="submit"]::before,
+        .submit-row input::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .button:hover::before,
+        input[type="submit"]:hover::before,
+        .submit-row input:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .button:hover,
+        input[type="submit"]:hover,
+        .submit-row input:hover,
+        a.button:hover {
+            transform: translateY(-3px) scale(1.03) !important;
+            box-shadow: 0 8px 35px rgba(108, 99, 255, 0.4) !important;
+        }
+        
+        .button:active,
+        input[type="submit"]:active,
+        .submit-row input:active {
+            transform: translateY(-1px) scale(0.98) !important;
+        }
+        
+        /* ================================================================
+           Breadcrumb - DARK
+           ================================================================ */
+        .breadcrumbs {
+            background: var(--admin-card-bg) !important;
+            backdrop-filter: blur(16px) !important;
+            border: 1px solid var(--admin-card-border) !important;
+            border-radius: 12px !important;
+            padding: 12px 20px !important;
+            margin-bottom: 20px !important;
+        }
+        
+        .breadcrumbs a {
+            color: var(--admin-table-header-color) !important;
+            text-decoration: none !important;
+            transition: all 0.3s ease !important;
+        }
+        
+        .breadcrumbs a:hover {
+            color: #6C63FF !important;
+        }
+        
+        /* ================================================================
+           پیام‌ها - با انیمیشن
+           ================================================================ */
+        .success,
+        .message-success,
+        .messagelist .success {
+            background: rgba(0, 230, 118, 0.12) !important;
+            color: #69F0AE !important;
+            border-right: 4px solid #00E676 !important;
+            padding: 16px 20px !important;
+            border-radius: 12px !important;
+            backdrop-filter: blur(10px) !important;
+            animation: slideIn 0.5s ease !important;
+        }
+        
+        .error,
+        .message-error,
+        .messagelist .error {
+            background: rgba(255, 23, 68, 0.12) !important;
+            color: #FF5252 !important;
+            border-right: 4px solid #FF1744 !important;
+            padding: 16px 20px !important;
+            border-radius: 12px !important;
+            backdrop-filter: blur(10px) !important;
+            animation: slideIn 0.5s ease !important;
+        }
+        
+        .warning,
+        .message-warning,
+        .messagelist .warning {
+            background: rgba(255, 215, 64, 0.12) !important;
+            color: #FFD740 !important;
+            border-right: 4px solid #FFD740 !important;
+            padding: 16px 20px !important;
+            border-radius: 12px !important;
+            backdrop-filter: blur(10px) !important;
+            animation: slideIn 0.5s ease !important;
+        }
+        
+        /* ================================================================
+           Paginator - DARK
+           ================================================================ */
+        .paginator {
+            background: var(--admin-card-bg) !important;
+            backdrop-filter: blur(16px) !important;
+            border: 1px solid var(--admin-card-border) !important;
+            border-radius: 12px !important;
+            padding: 12px 20px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 6px !important;
+            flex-wrap: wrap !important;
+        }
+        
+        .paginator a {
+            color: var(--admin-text-secondary) !important;
+            text-decoration: none !important;
+            padding: 6px 14px !important;
+            border-radius: 8px !important;
+            transition: all 0.3s ease !important;
+        }
+        
+        .paginator a:hover {
+            background: rgba(108, 99, 255, 0.15) !important;
+            color: #8B83FF !important;
+        }
+        
+        .paginator .this-page {
+            background: rgba(108, 99, 255, 0.2) !important;
+            color: #8B83FF !important;
+            font-weight: 700 !important;
+            padding: 6px 14px !important;
+            border-radius: 8px !important;
+            border: 1px solid rgba(108, 99, 255, 0.3) !important;
+        }
+        
+        /* ================================================================
+           SCROLLBAR - CUSTOM
+           ================================================================ */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #0A0A0F;
+            border-radius: 8px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #6C63FF, #00D2FF);
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(108, 99, 255, 0.2);
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #5A52D5, #00D2FF);
+        }
+        
+        /* ================================================================
+           SELECTION
+           ================================================================ */
+        ::selection {
+            background: rgba(108, 99, 255, 0.3);
+            color: #FFFFFF;
+        }
+        
+        /* ================================================================
+           RESPONSIVE - COMPLETE
+           ================================================================ */
+        @media (max-width: 992px) {
+            .content-wrapper,
+            .wrapper {
+                padding-top: 56px !important;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .content-wrapper,
+            .wrapper {
+                padding-top: 48px !important;
+            }
+            
+            .module h2 {
+                font-size: 0.95rem !important;
+                padding: 12px 16px !important;
+            }
+            
+            .module table th,
+            .module table td {
+                padding: 8px 12px !important;
+                font-size: 0.8rem !important;
+            }
+            
+            .button,
+            input[type="submit"],
+            .submit-row input,
+            a.button {
+                padding: 10px 20px !important;
+                font-size: 0.85rem !important;
+            }
+            
+            .breadcrumbs {
+                padding: 10px 14px !important;
+                font-size: 0.85rem !important;
+            }
+            
+            .paginator {
+                padding: 10px 14px !important;
+            }
+            
+            .paginator a,
+            .paginator .this-page {
+                padding: 4px 10px !important;
+                font-size: 0.8rem !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .content-wrapper,
+            .wrapper {
+                padding-top: 44px !important;
+            }
+            
+            .module table {
+                display: block !important;
+                overflow-x: auto !important;
+            }
+            
+            .module table th,
+            .module table td {
+                padding: 6px 10px !important;
+                font-size: 0.7rem !important;
+                white-space: nowrap !important;
+            }
+            
+            .button,
+            input[type="submit"],
+            .submit-row input,
+            a.button {
+                padding: 8px 16px !important;
+                font-size: 0.8rem !important;
+                width: 100% !important;
+                justify-content: center !important;
+            }
+            
+            .breadcrumbs {
+                font-size: 0.75rem !important;
+                padding: 8px 12px !important;
+                flex-wrap: wrap !important;
+            }
+            
+            .paginator {
+                padding: 8px 12px !important;
+                gap: 4px !important;
+            }
+            
+            .paginator a,
+            .paginator .this-page {
+                padding: 4px 8px !important;
+                font-size: 0.7rem !important;
+            }
+            
+            input[type="text"],
+            input[type="email"],
+            input[type="number"],
+            input[type="password"],
+            textarea,
+            select {
+                padding: 8px 12px !important;
+                font-size: 0.85rem !important;
+            }
+        }
+        
+        /* ================================================================
+           PRINT
+           ================================================================ */
+        @media print {
+            .main-header,
+            .main-sidebar,
+            .navbar,
+            .theme-fab-container {
+                display: none !important;
+            }
+            
+            .content-wrapper,
+            .wrapper {
+                padding-top: 0 !important;
+            }
+            
+            .module,
+            .card,
+            .panel {
+                background: #fff !important;
+                color: #000 !important;
+                box-shadow: none !important;
+                border: 1px solid #ddd !important;
+            }
+            
+            .module h2,
+            .card-header {
+                background: #f5f5f5 !important;
+                color: #000 !important;
+            }
+            
+            .module table th,
+            .module table td {
+                color: #000 !important;
+            }
+            
+            .module::before,
+            .card::before {
+                display: none !important;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+{% endblock %}
+
+{% block header %}
+    <!-- اضافه کردن header سفارشی -->
+    {% include 'admin/header_custom.html' %}
+{% endblock %}

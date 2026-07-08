@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}ثبت‌نام | Mine Warts{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 520px; margin: 40px auto; padding: 0 16px;">
+    <div class="glass-card" style="padding: 30px 28px;">
+        <div class="text-center mb-4">
+            <h1 style="font-size: clamp(1.5rem, 3vw, 2rem); color: #4CAF50; font-weight: 700;">
+                📝 ثبت‌نام
+            </h1>
+            <p style="color: #9E9E9E; font-size: clamp(0.85rem, 1.4vw, 0.95rem);">
+                برای خرید و استفاده از خدمات، ثبت‌نام کنید
+            </p>
+        </div>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+            
+            <div class="form-group mb-3">
+                <label for="{{ form.username.id_for_label }}" style="color: #E0E0E0; font-weight: 600; font-size: clamp(0.85rem, 1.2vw, 0.95rem); display: block; margin-bottom: 6px;">
+                    👤 نام کاربری
+                </label>
+                {{ form.username }}
+                {% if form.username.help_text %}
+                    <small style="color: #9E9E9E; font-size: 0.75rem;">{{ form.username.help_text }}</small>
+                {% endif %}
+                {% if form.username.errors %}
+                    <div style="color: #f44336; font-size: 0.85rem; margin-top: 4px;">{{ form.username.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="{{ form.email.id_for_label }}" style="color: #E0E0E0; font-weight: 600; font-size: clamp(0.85rem, 1.2vw, 0.95rem); display: block; margin-bottom: 6px;">
+                    📧 ایمیل
+                </label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <div style="color: #f44336; font-size: 0.85rem; margin-top: 4px;">{{ form.email.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="row g-2 mb-3">
+                <div class="col-6">
+                    <label for="{{ form.first_name.id_for_label }}" style="color: #E0E0E0; font-weight: 600; font-size: clamp(0.85rem, 1.2vw, 0.95rem); display: block; margin-bottom: 6px;">
+                        نام
+                    </label>
+                    {{ form.first_name }}
+                    {% if form.first_name.errors %}
+                        <div style="color: #f44336; font-size: 0.85rem; margin-top: 4px;">{{ form.first_name.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-6">
+                    <label for="{{ form.last_name.id_for_label }}" style="color: #E0E0E0; font-weight: 600; font-size: clamp(0.85rem, 1.2vw, 0.95rem); display: block; margin-bottom: 6px;">
+                        نام خانوادگی
+                    </label>
+                    {{ form.last_name }}
+                    {% if form.last_name.errors %}
+                        <div style="color: #f44336; font-size: 0.85rem; margin-top: 4px;">{{ form.last_name.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="{{ form.minecraft_username.id_for_label }}" style="color: #E0E0E0; font-weight: 600; font-size: clamp(0.85rem, 1.2vw, 0.95rem); display: block; margin-bottom: 6px;">
+                    ⛏️ نام کاربری ماینکرفت
+                </label>
+                {{ form.minecraft_username }}
+                {% if form.minecraft_username.help_text %}
+                    <small style="color: #9E9E9E; font-size: 0.75rem;">{{ form.minecraft_username.help_text }}</small>
+                {% endif %}
+                {% if form.minecraft_username.errors %}
+                    <div style="color: #f44336; font-size: 0.85rem; margin-top: 4px;">{{ form.minecraft_username.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="{{ form.password1.id_for_label }}" style="color: #E0E0E0; font-weight: 600; font-size: clamp(0.85rem, 1.2vw, 0.95rem); display: block; margin-bottom: 6px;">
+                    🔒 رمز عبور
+                </label>
+                {{ form.password1 }}
+                {% if form.password1.help_text %}
+                    <small style="color: #9E9E9E; font-size: 0.75rem;">{{ form.password1.help_text }}</small>
+                {% endif %}
+                {% if form.password1.errors %}
+                    <div style="color: #f44336; font-size: 0.85rem; margin-top: 4px;">{{ form.password1.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group mb-4">
+                <label for="{{ form.password2.id_for_label }}" style="color: #E0E0E0; font-weight: 600; font-size: clamp(0.85rem, 1.2vw, 0.95rem); display: block; margin-bottom: 6px;">
+                    🔐 تکرار رمز عبور
+                </label>
+                {{ form.password2 }}
+                {% if form.password2.errors %}
+                    <div style="color: #f44336; font-size: 0.85rem; margin-top: 4px;">{{ form.password2.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100" style="
+                padding: 14px 20px;
+                font-size: clamp(1rem, 1.6vw, 1.1rem);
+                font-weight: 700;
+                border-radius: 12px;
+                background: linear-gradient(135deg, #4CAF50, #388E3C);
+                border: none;
+                color: white;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 20px rgba(76, 175, 80, 0.3);
+            ">
+                ✅ ثبت‌نام
+            </button>
+        </form>
+
+        <div class="text-center mt-4" style="color: #9E9E9E; font-size: clamp(0.85rem, 1.2vw, 0.95rem);">
+            قبلاً ثبت‌نام کرده‌اید؟
+            <a href="{% url 'accounts:login' %}" style="color: #4CAF50; text-decoration: none; font-weight: 600;">
+                وارد شوید
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-group input {
+        width: 100%;
+        padding: 12px 16px;
+        background: rgba(255, 255, 255, 0.06) !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        border-radius: 10px !important;
+        color: #E0E0E0 !important;
+        font-size: clamp(0.9rem, 1.4vw, 1rem) !important;
+        transition: all 0.3s ease !important;
+        font-family: 'Vazirmatn', sans-serif;
+    }
+    .form-group input:focus {
+        background: rgba(255, 255, 255, 0.08) !important;
+        border-color: #4CAF50 !important;
+        box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.15) !important;
+        outline: none;
+    }
+    .form-group input::placeholder {
+        color: #666;
+        opacity: 0.7;
+    }
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(76, 175, 80, 0.4) !important;
+    }
+</style>
+{% endblock %}

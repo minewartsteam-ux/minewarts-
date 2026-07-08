@@ -1,0 +1,794 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}تایید کد | Mine Warts{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 480px; margin: 40px auto; padding: 0 16px;">
+    <div class="verify-card-glass" style="padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1.2rem, 3vw, 2rem); text-align: center;">
+        <!-- ===== ICON ===== -->
+        <div class="verify-icon">✉️</div>
+        
+        <!-- ===== HEADER ===== -->
+        <h1 class="verify-title">کد تایید</h1>
+        <p class="verify-subtitle">کد ۶ رقمی ارسال شده به ایمیل خود را وارد کنید</p>
+        <p class="verify-email">{{ email }}</p>
+
+        <hr class="verify-divider">
+
+        <!-- ===== ERROR ===== -->
+        {% if error %}
+        <div class="verify-error">
+            ❌ {{ error }}
+        </div>
+        {% endif %}
+
+        <!-- ===== FORM ===== -->
+        <form method="post" id="verify-form">
+            {% csrf_token %}
+            
+            <!-- ===== CODE INPUTS ===== -->
+            <div class="code-container" id="code-container">
+                {% for i in "123456" %}
+                <input type="text" 
+                       maxlength="1" 
+                       class="code-digit" 
+                       id="code-{{ forloop.counter }}" 
+                       data-index="{{ forloop.counter0 }}"
+                       inputmode="numeric"
+                       pattern="[0-9]"
+                       autocomplete="off"
+                       required>
+                {% endfor %}
+            </div>
+
+            <input type="hidden" name="code" id="hidden-code">
+
+            <!-- ===== TIMER ===== -->
+            <div class="code-timer">
+                ⏱️ کد تا <strong>۱۵ دقیقه</strong> اعتبار دارد
+            </div>
+
+            <!-- ===== SUBMIT ===== -->
+            <button type="submit" class="verify-btn">
+                ✅ تایید کد
+            </button>
+
+            <!-- ===== RESEND ===== -->
+            <div class="resend-container">
+                <a href="#" id="resend-code" class="resend-link">
+                    🔄 ارسال مجدد کد
+                </a>
+                <span id="resend-timer" class="resend-timer"></span>
+            </div>
+        </form>
+
+        <hr class="verify-divider">
+
+        <!-- ===== BACK ===== -->
+        <div class="verify-back">
+            <a href="{% url 'accounts:register' %}">← بازگشت به ثبت‌نام</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* ================================================================
+       🚀 ULTRA MODERN VERIFY PAGE - 2026 EDITION
+       ================================================================ */
+
+    /* ================================================================
+       CARD - GLASS + NEON
+       ================================================================ */
+    .verify-card-glass {
+        background: var(--bg-glass, rgba(255, 255, 255, 0.02));
+        backdrop-filter: blur(24px) saturate(180%);
+        -webkit-backdrop-filter: blur(24px) saturate(180%);
+        border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.06));
+        border-radius: clamp(1rem, 2vw, 1.5rem);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        position: relative;
+        overflow: hidden;
+        animation: verifyFadeIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    .verify-card-glass::before {
+        content: '';
+        position: absolute;
+        inset: -1px;
+        border-radius: clamp(1rem, 2vw, 1.5rem);
+        padding: 1px;
+        background: conic-gradient(
+            from 0deg at 50% 50%,
+            transparent 0deg,
+            rgba(108, 99, 255, 0.08) 60deg,
+            transparent 120deg,
+            rgba(0, 210, 255, 0.08) 180deg,
+            transparent 240deg,
+            rgba(255, 101, 132, 0.08) 300deg,
+            transparent 360deg
+        );
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+        animation: verifyNeonRotate 20s linear infinite;
+    }
+
+    @keyframes verifyNeonRotate {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    @keyframes verifyFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* ================================================================
+       ICON
+       ================================================================ */
+    .verify-icon {
+        font-size: clamp(3rem, 6vw, 4.5rem);
+        display: block;
+        margin-bottom: clamp(0.5rem, 1vw, 0.8rem);
+        animation: verifyFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes verifyFloat {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+    }
+
+    /* ================================================================
+       TYPOGRAPHY
+       ================================================================ */
+    .verify-title {
+        font-size: clamp(1.4rem, 3vw, 2rem);
+        font-weight: 800;
+        margin-bottom: 0.3rem;
+        background: linear-gradient(135deg, #8B83FF, #00D2FF);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .verify-subtitle {
+        color: var(--text-secondary, #B0B0C8);
+        font-size: clamp(0.85rem, 1.2vw, 0.95rem);
+        margin-bottom: 0.2rem;
+    }
+
+    .verify-email {
+        color: var(--text-muted, #6B6B8A);
+        font-size: clamp(0.8rem, 1vw, 0.85rem);
+        direction: ltr;
+        font-weight: 500;
+    }
+
+    .verify-divider {
+        border: none;
+        border-top: 1px solid var(--border-glass, rgba(255, 255, 255, 0.06));
+        margin: clamp(1rem, 2vw, 1.5rem) 0;
+    }
+
+    /* ================================================================
+       ERROR
+       ================================================================ */
+    .verify-error {
+        background: rgba(255, 23, 68, 0.08);
+        border: 1px solid rgba(255, 23, 68, 0.12);
+        border-radius: clamp(0.5rem, 1vw, 0.8rem);
+        padding: clamp(0.6rem, 1vw, 0.8rem) clamp(0.8rem, 1.2vw, 1rem);
+        margin-bottom: clamp(0.8rem, 1.2vw, 1rem);
+        color: #FF5252;
+        font-size: clamp(0.85rem, 1vw, 0.9rem);
+        animation: errorShake 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes errorShake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-6px); }
+        75% { transform: translateX(6px); }
+    }
+
+    /* ================================================================
+       CODE INPUTS - FIXED
+       ================================================================ */
+    .code-container {
+        display: flex;
+        gap: clamp(0.4rem, 1vw, 0.8rem);
+        justify-content: center;
+        direction: ltr;
+        flex-wrap: wrap;
+        margin-bottom: clamp(0.8rem, 1.2vw, 1rem);
+    }
+
+    .code-digit {
+        width: clamp(44px, 10vw, 56px);
+        height: clamp(50px, 11vw, 64px);
+        text-align: center;
+        font-size: clamp(1.5rem, 3vw, 2rem);
+        font-weight: 700;
+        background: rgba(0, 0, 0, 0.25);
+        border: 2px solid var(--border-glass, rgba(255, 255, 255, 0.06));
+        border-radius: clamp(0.5rem, 1vw, 0.8rem);
+        color: var(--text-primary, #FFFFFF);
+        font-family: 'Vazirmatn', sans-serif;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        caret-color: #6C63FF;
+        outline: none;
+        -moz-appearance: textfield;
+        appearance: textfield;
+    }
+
+    .code-digit::-webkit-outer-spin-button,
+    .code-digit::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .code-digit:focus {
+        border-color: #6C63FF !important;
+        box-shadow: 0 0 0 4px rgba(108, 99, 255, 0.12) !important;
+        background: rgba(108, 99, 255, 0.05) !important;
+        transform: scale(1.04);
+    }
+
+    .code-digit.error {
+        border-color: #FF1744 !important;
+        box-shadow: 0 0 0 4px rgba(255, 23, 68, 0.1) !important;
+        animation: inputShake 0.4s ease;
+    }
+
+    @keyframes inputShake {
+        0%, 100% { transform: translateX(0); }
+        20% { transform: translateX(-6px); }
+        40% { transform: translateX(6px); }
+        60% { transform: translateX(-4px); }
+        80% { transform: translateX(4px); }
+    }
+
+    .code-digit.filled {
+        border-color: rgba(108, 99, 255, 0.3);
+        background: rgba(108, 99, 255, 0.04);
+    }
+
+    /* ================================================================
+       TIMER
+       ================================================================ */
+    .code-timer {
+        color: var(--text-muted, #6B6B8A);
+        font-size: clamp(0.75rem, 1vw, 0.85rem);
+        margin: clamp(0.6rem, 1vw, 0.8rem) 0;
+    }
+
+    .code-timer strong {
+        color: #FFD740;
+    }
+
+    /* ================================================================
+       SUBMIT BUTTON
+       ================================================================ */
+    .verify-btn {
+        width: 100%;
+        max-width: 280px;
+        padding: clamp(0.7rem, 1.2vw, 0.9rem) clamp(1.2rem, 2vw, 1.5rem);
+        font-size: clamp(0.95rem, 1.2vw, 1.05rem);
+        font-weight: 700;
+        border-radius: clamp(0.5rem, 1vw, 0.8rem);
+        background: linear-gradient(135deg, #6C63FF, #5A52D5);
+        border: none;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 4px 25px rgba(108, 99, 255, 0.3);
+        font-family: 'Vazirmatn', sans-serif;
+        position: relative;
+        overflow: hidden;
+        margin: clamp(0.4rem, 0.8vw, 0.6rem) auto;
+        display: block;
+    }
+
+    .verify-btn::before {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        border-radius: clamp(0.5rem, 1vw, 0.8rem);
+        background: linear-gradient(135deg, #6C63FF, #00D2FF, #6C63FF);
+        opacity: 0;
+        transition: all 0.4s ease;
+        z-index: -1;
+        filter: blur(8px);
+    }
+
+    .verify-btn:hover::before {
+        opacity: 0.3;
+    }
+
+    .verify-btn:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 8px 35px rgba(108, 99, 255, 0.4);
+    }
+
+    .verify-btn:active {
+        transform: scale(0.97);
+    }
+
+    .verify-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none !important;
+    }
+
+    /* ================================================================
+       RESEND
+       ================================================================ */
+    .resend-container {
+        margin-top: clamp(0.8rem, 1.2vw, 1rem);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        flex-wrap: wrap;
+    }
+
+    .resend-link {
+        color: #8B83FF;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: clamp(0.85rem, 1vw, 0.95rem);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .resend-link:hover {
+        color: #00D2FF;
+        transform: scale(1.05);
+    }
+
+    .resend-link.disabled {
+        color: var(--text-muted, #6B6B8A) !important;
+        cursor: not-allowed;
+        pointer-events: none;
+        opacity: 0.5;
+    }
+
+    .resend-timer {
+        color: var(--text-muted, #6B6B8A);
+        font-size: clamp(0.8rem, 1vw, 0.85rem);
+        font-weight: 500;
+        min-width: 80px;
+    }
+
+    /* ================================================================
+       BACK LINK
+       ================================================================ */
+    .verify-back {
+        color: var(--text-muted, #6B6B8A);
+        font-size: clamp(0.8rem, 1vw, 0.9rem);
+    }
+
+    .verify-back a {
+        color: var(--text-muted, #6B6B8A);
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .verify-back a:hover {
+        color: #8B83FF;
+    }
+
+    /* ================================================================
+       NOTIFICATION
+       ================================================================ */
+    .verify-notification {
+        animation: verifyFadeIn 0.3s ease;
+    }
+
+    /* ================================================================
+       RESPONSIVE
+       ================================================================ */
+    @media (max-width: 480px) {
+        .code-digit {
+            width: clamp(38px, 9vw, 44px);
+            height: clamp(44px, 10vw, 50px);
+            font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+        }
+
+        .code-container {
+            gap: clamp(0.3rem, 0.8vw, 0.5rem);
+        }
+
+        .verify-btn {
+            max-width: 100%;
+            padding: 0.7rem 1.2rem;
+            font-size: 0.9rem;
+        }
+
+        .verify-title {
+            font-size: 1.3rem;
+        }
+    }
+
+    @media (max-width: 360px) {
+        .code-digit {
+            width: 32px;
+            height: 38px;
+            font-size: 1rem;
+        }
+
+        .code-container {
+            gap: 0.2rem;
+        }
+
+        .verify-card-glass {
+            padding: 1rem 0.8rem;
+        }
+
+        .resend-container {
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .resend-timer {
+            min-width: unset;
+        }
+    }
+
+    /* ================================================================
+       DARK MODE SUPPORT
+       ================================================================ */
+    @media (prefers-color-scheme: light) {
+        .verify-card-glass {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .verify-title {
+            background: linear-gradient(135deg, #5A52D5, #0091EA);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .verify-subtitle {
+            color: rgba(0, 0, 0, 0.6);
+        }
+
+        .verify-email {
+            color: rgba(0, 0, 0, 0.4);
+        }
+
+        .code-digit {
+            background: rgba(0, 0, 0, 0.04);
+            border-color: rgba(0, 0, 0, 0.08);
+            color: rgba(0, 0, 0, 0.85);
+        }
+
+        .code-digit:focus {
+            border-color: #5A52D5 !important;
+            background: rgba(108, 99, 255, 0.04) !important;
+        }
+
+        .code-timer {
+            color: rgba(0, 0, 0, 0.4);
+        }
+
+        .verify-back a {
+            color: rgba(0, 0, 0, 0.4);
+        }
+
+        .verify-back a:hover {
+            color: #5A52D5;
+        }
+
+        .resend-link {
+            color: #5A52D5;
+        }
+
+        .resend-link:hover {
+            color: #0091EA;
+        }
+
+        .verify-error {
+            background: rgba(255, 23, 68, 0.04);
+            border-color: rgba(255, 23, 68, 0.08);
+            color: #D50000;
+        }
+
+        .verify-divider {
+            border-color: rgba(0, 0, 0, 0.06);
+        }
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    'use strict';
+
+    // ============================================================
+    // ELEMENTS
+    // ============================================================
+    const inputs = document.querySelectorAll('.code-digit');
+    const form = document.getElementById('verify-form');
+    const resendBtn = document.getElementById('resend-code');
+    const timerSpan = document.getElementById('resend-timer');
+    const hiddenCode = document.getElementById('hidden-code');
+
+    // ============================================================
+    // AUTO FOCUS FIRST INPUT
+    // ============================================================
+    if (inputs.length > 0) {
+        setTimeout(() => inputs[0].focus(), 150);
+    }
+
+    // ============================================================
+    // FIXED: HANDLE INPUT (با مدیریت بهتر فوکوس)
+    // ============================================================
+    inputs.forEach((input, index) => {
+        input.addEventListener('input', function(e) {
+            // فقط عدد مجاز است
+            this.value = this.value.replace(/\D/g, '');
+            
+            if (this.value.length > 0) {
+                this.classList.add('filled');
+                this.classList.remove('error');
+                
+                // اگر عدد وارد شد، به فیلد بعدی برو
+                if (index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                } else {
+                    // اگر آخرین فیلد بود، کد کامل را بررسی کن
+                    const code = Array.from(inputs).map(inp => inp.value).join('');
+                    if (code.length === 6) {
+                        hiddenCode.value = code;
+                        setTimeout(() => form.submit(), 300);
+                    }
+                }
+            } else {
+                this.classList.remove('filled');
+            }
+        });
+
+        // ============================================================
+        // FIXED: HANDLE KEYDOWN (پشتیبانی کامل از کلیدها)
+        // ============================================================
+        input.addEventListener('keydown', function(e) {
+            const key = e.key;
+
+            // Backspace: اگر خالی بود، به قبلی برو و پاک کن
+            if (key === 'Backspace') {
+                if (this.value === '') {
+                    if (index > 0) {
+                        const prev = inputs[index - 1];
+                        prev.value = '';
+                        prev.classList.remove('filled', 'error');
+                        prev.focus();
+                    }
+                } else {
+                    this.value = '';
+                    this.classList.remove('filled');
+                }
+                e.preventDefault();
+                return;
+            }
+
+            // Delete: محتوای فعلی را پاک کن و به بعدی برو
+            if (key === 'Delete') {
+                if (this.value !== '') {
+                    this.value = '';
+                    this.classList.remove('filled');
+                } else if (index < inputs.length - 1) {
+                    const next = inputs[index + 1];
+                    next.value = '';
+                    next.classList.remove('filled', 'error');
+                    next.focus();
+                }
+                e.preventDefault();
+                return;
+            }
+
+            // جهت‌ها: حرکت بین فیلدها
+            if (key === 'ArrowLeft' && index > 0) {
+                inputs[index - 1].focus();
+                e.preventDefault();
+                return;
+            }
+
+            if (key === 'ArrowRight' && index < inputs.length - 1) {
+                inputs[index + 1].focus();
+                e.preventDefault();
+                return;
+            }
+
+            // فقط اعداد مجاز است
+            if (!/^[0-9]$/.test(key) && key.length === 1) {
+                e.preventDefault();
+                return;
+            }
+
+            // Enter: ارسال فرم
+            if (key === 'Enter') {
+                e.preventDefault();
+                const code = Array.from(inputs).map(inp => inp.value).join('');
+                if (code.length === 6) {
+                    hiddenCode.value = code;
+                    form.submit();
+                } else {
+                    // خطا: همه فیلدها پر نیستند
+                    inputs.forEach(inp => {
+                        if (inp.value === '') inp.classList.add('error');
+                    });
+                    setTimeout(() => {
+                        inputs.forEach(inp => inp.classList.remove('error'));
+                    }, 500);
+                }
+                return;
+            }
+        });
+
+        // ============================================================
+        // FIXED: PASTE (چسباندن کد کامل)
+        // ============================================================
+        input.addEventListener('paste', function(e) {
+            e.preventDefault();
+            const paste = (e.clipboardData || window.clipboardData).getData('text');
+            const digits = paste.replace(/\D/g, '').slice(0, 6);
+
+            if (digits.length > 0) {
+                // فیلدها را پر کن
+                for (let i = 0; i < Math.min(digits.length, inputs.length); i++) {
+                    inputs[i].value = digits[i];
+                    inputs[i].classList.add('filled');
+                    inputs[i].classList.remove('error');
+                }
+                
+                // فوکوس به آخرین فیلد پر شده
+                const lastIndex = Math.min(digits.length, inputs.length) - 1;
+                if (lastIndex >= 0) {
+                    inputs[lastIndex].focus();
+                }
+
+                // اگر ۶ رقم بود، خودکار ارسال کن
+                if (digits.length === inputs.length) {
+                    hiddenCode.value = digits;
+                    setTimeout(() => form.submit(), 300);
+                }
+            }
+        });
+    });
+
+    // ============================================================
+    // FORM SUBMIT (با اعتبارسنجی کامل)
+    // ============================================================
+    form.addEventListener('submit', function(e) {
+        const code = Array.from(inputs).map(inp => inp.value).join('');
+
+        if (code.length !== 6) {
+            e.preventDefault();
+            let firstEmpty = null;
+            inputs.forEach((inp) => {
+                if (inp.value === '') {
+                    inp.classList.add('error');
+                    if (!firstEmpty) firstEmpty = inp;
+                }
+            });
+            if (firstEmpty) {
+                setTimeout(() => firstEmpty.focus(), 100);
+                setTimeout(() => {
+                    inputs.forEach(inp => inp.classList.remove('error'));
+                }, 500);
+            }
+            return;
+        }
+
+        hiddenCode.value = code;
+    });
+
+    // ============================================================
+    // RESEND CODE
+    // ============================================================
+    let timerInterval = null;
+    let secondsLeft = 60;
+    let isDisabled = false;
+
+    resendBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (isDisabled) return;
+
+        isDisabled = true;
+        this.classList.add('disabled');
+        secondsLeft = 60;
+        timerSpan.textContent = `(${secondsLeft} ثانیه)`;
+
+        fetch('{% url "accounts:resend_code" %}', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json',
+            },
+            credentials: 'same-origin',
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification('✅ کد جدید ارسال شد', 'success');
+                inputs.forEach(inp => {
+                    inp.value = '';
+                    inp.classList.remove('filled', 'error');
+                });
+                inputs[0].focus();
+            } else {
+                showNotification('❌ ' + (data.error || 'خطا'), 'error');
+                isDisabled = false;
+                this.classList.remove('disabled');
+                timerSpan.textContent = '';
+            }
+        })
+        .catch(() => {
+            showNotification('❌ خطا در ارتباط با سرور', 'error');
+            isDisabled = false;
+            this.classList.remove('disabled');
+            timerSpan.textContent = '';
+        });
+
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            secondsLeft--;
+            if (secondsLeft <= 0) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+                isDisabled = false;
+                resendBtn.classList.remove('disabled');
+                timerSpan.textContent = '';
+            } else {
+                timerSpan.textContent = `(${secondsLeft} ثانیه)`;
+            }
+        }, 1000);
+    });
+
+    // ============================================================
+    // NOTIFICATION HELPER
+    // ============================================================
+    function showNotification(message, type) {
+        const existing = document.querySelector('.verify-notification');
+        if (existing) existing.remove();
+
+        const msg = document.createElement('div');
+        msg.className = 'verify-notification';
+        const bgColor = type === 'success' ? 'rgba(0, 230, 118, 0.08)' : 'rgba(255, 23, 68, 0.08)';
+        const borderColor = type === 'success' ? 'rgba(0, 230, 118, 0.15)' : 'rgba(255, 23, 68, 0.12)';
+        const textColor = type === 'success' ? '#69F0AE' : '#FF5252';
+
+        msg.style.cssText = `
+            background: ${bgColor};
+            border: 1px solid ${borderColor};
+            border-radius: 10px;
+            padding: 10px 16px;
+            margin: 10px 0;
+            color: ${textColor};
+            font-size: 0.9rem;
+            text-align: center;
+            animation: verifyFadeIn 0.3s ease;
+        `;
+        msg.textContent = message;
+
+        const formEl = document.getElementById('verify-form');
+        formEl.parentNode.insertBefore(msg, formEl);
+
+        setTimeout(() => {
+            msg.style.opacity = '0';
+            msg.style.transition = 'opacity 0.3s ease';
+            setTimeout(() => msg.remove(), 300);
+        }, 5000);
+    }
+});
+</script>
+{% endblock %}

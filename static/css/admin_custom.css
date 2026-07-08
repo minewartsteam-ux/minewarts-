@@ -1,0 +1,845 @@
+/* ================================================================
+   🚀 ULTRA MODERN ADMIN PANEL - 2026 EDITION
+   طراحی نئومورفیسم + گلس مورفیسم + میکرو اینتراکشن
+   ================================================================ */
+
+/* ================================================================
+   حذف navbar و sidebar اصلی
+   ================================================================ */
+   .main-header:not(.admin-mini-header),
+   .navbar:not(.admin-mini-header),
+   #jazzy-navbar,
+   header:not(.content-header):not(.admin-mini-header),
+   .main-sidebar,
+   .sidebar,
+   aside.main-sidebar,
+   nav.main-sidebar {
+       display: none !important;
+   }
+   
+   /* ================================================================
+      Theme Switcher - نمایش دکمه
+      ================================================================ */
+   .theme-switcher,
+   #admin-theme-switcher,
+   .theme-switcher-btn,
+   #theme-switcher-button {
+       display: flex !important;
+       visibility: visible !important;
+       opacity: 1 !important;
+       position: relative !important;
+       z-index: 9999 !important;
+   }
+   
+   /* ================================================================
+      تنظیمات پایه
+      ================================================================ */
+   :root {
+       --admin-primary: #6C63FF;
+       --admin-primary-dark: #5A52D5;
+       --admin-primary-light: #8B83FF;
+       --admin-secondary: #FF6584;
+       --admin-accent: #00D2FF;
+       --admin-success: #00E676;
+       --admin-warning: #FFD740;
+       --admin-danger: #FF1744;
+       
+       --admin-bg-primary: #0A0A0F;
+       --admin-bg-secondary: #14141E;
+       --admin-bg-card: rgba(255, 255, 255, 0.03);
+       --admin-bg-glass: rgba(255, 255, 255, 0.05);
+       
+       --admin-text-primary: #FFFFFF;
+       --admin-text-secondary: #B0B0C8;
+       --admin-text-muted: #6B6B8A;
+       
+       --admin-border-glass: rgba(255, 255, 255, 0.06);
+       --admin-shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.4);
+       --admin-shadow-neon: 0 0 30px rgba(108, 99, 255, 0.15);
+       
+       --admin-radius-sm: 8px;
+       --admin-radius-md: 16px;
+       --admin-radius-lg: 24px;
+       --admin-radius-xl: 32px;
+       --admin-radius-full: 9999px;
+       
+       --admin-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+       --admin-transition-slow: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+       --admin-transition-bounce: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+   }
+   
+   /* ================================================================
+      بدنه اصلی
+      ================================================================ */
+   body {
+       padding-top: 0 !important;
+       background: var(--admin-bg-primary) !important;
+       color: var(--admin-text-primary) !important;
+       font-family: 'Vazirmatn', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+       min-height: 100vh;
+       background-image: 
+           radial-gradient(ellipse at 10% 20%, rgba(108, 99, 255, 0.05) 0%, transparent 50%),
+           radial-gradient(ellipse at 90% 80%, rgba(255, 101, 132, 0.05) 0%, transparent 50%),
+           radial-gradient(ellipse at 50% 50%, rgba(0, 210, 255, 0.03) 0%, transparent 70%);
+   }
+   
+   /* ================================================================
+      محتوای اصلی
+      ================================================================ */
+   .content-wrapper,
+   .wrapper {
+       margin-left: 0 !important;
+       margin-right: 0 !important;
+       width: 100% !important;
+       padding-top: 60px !important;
+       background: transparent !important;
+   }
+   
+   .content {
+       padding: 20px !important;
+       max-width: 1440px !important;
+       margin: 0 auto !important;
+   }
+   
+   /* ================================================================
+      GLASS CARD - کارت‌های شیشه‌ای
+      ================================================================ */
+   .module,
+   .card,
+   .panel,
+   .box {
+       background: var(--admin-bg-glass) !important;
+       backdrop-filter: blur(20px) saturate(180%) !important;
+       -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+       border: 1px solid var(--admin-border-glass) !important;
+       border-radius: var(--admin-radius-lg) !important;
+       box-shadow: var(--admin-shadow-glass) !important;
+       margin-bottom: 24px !important;
+       overflow: hidden !important;
+       transition: var(--admin-transition) !important;
+       position: relative !important;
+   }
+   
+   .module::before,
+   .card::before,
+   .panel::before,
+   .box::before {
+       content: '' !important;
+       position: absolute !important;
+       top: -50% !important;
+       left: -50% !important;
+       width: 200% !important;
+       height: 200% !important;
+       background: conic-gradient(
+           from 0deg at 50% 50%,
+           transparent 0deg,
+           rgba(108, 99, 255, 0.03) 60deg,
+           transparent 120deg,
+           rgba(0, 210, 255, 0.03) 180deg,
+           transparent 240deg,
+           rgba(255, 101, 132, 0.03) 300deg,
+           transparent 360deg
+       ) !important;
+       animation: adminRotateGlass 20s linear infinite !important;
+       pointer-events: none !important;
+   }
+   
+   @keyframes adminRotateGlass {
+       0% { transform: rotate(0deg); }
+       100% { transform: rotate(360deg); }
+   }
+   
+   .module:hover,
+   .card:hover,
+   .panel:hover,
+   .box:hover {
+       transform: translateY(-4px) !important;
+       box-shadow: 0 16px 60px rgba(0, 0, 0, 0.5) !important;
+       border-color: rgba(108, 99, 255, 0.2) !important;
+   }
+   
+   /* ================================================================
+      هدر ماژول‌ها
+      ================================================================ */
+   .module h2,
+   .card-header,
+   .panel-heading,
+   .box-header {
+       background: linear-gradient(135deg, rgba(108, 99, 255, 0.15), rgba(0, 210, 255, 0.05)) !important;
+       color: var(--admin-text-primary) !important;
+       padding: 16px 24px !important;
+       margin: 0 !important;
+       border-bottom: 1px solid var(--admin-border-glass) !important;
+       border-radius: var(--admin-radius-lg) var(--admin-radius-lg) 0 0 !important;
+       font-weight: 700 !important;
+       font-size: 1.1rem !important;
+       letter-spacing: 0.3px !important;
+       display: flex !important;
+       align-items: center !important;
+       gap: 12px !important;
+   }
+   
+   .module h2::before,
+   .card-header::before,
+   .panel-heading::before {
+       content: '✦' !important;
+       color: var(--admin-primary) !important;
+       font-size: 1.2rem !important;
+   }
+   
+   /* ================================================================
+      جداول - ULTRA MODERN
+      ================================================================ */
+   .module table,
+   .results table,
+   .table,
+   table {
+       width: 100% !important;
+       background: transparent !important;
+       border-radius: var(--admin-radius-md) !important;
+       overflow: hidden !important;
+       border-collapse: separate !important;
+       border-spacing: 0 !important;
+   }
+   
+   .module table thead,
+   .results table thead,
+   .table thead {
+       background: linear-gradient(135deg, rgba(108, 99, 255, 0.12), rgba(0, 210, 255, 0.06)) !important;
+   }
+   
+   .module table th,
+   .results table th,
+   .table th {
+       background: transparent !important;
+       color: var(--admin-primary-light) !important;
+       border: none !important;
+       padding: 14px 20px !important;
+       font-weight: 700 !important;
+       font-size: 0.85rem !important;
+       text-transform: uppercase !important;
+       letter-spacing: 0.5px !important;
+       text-align: right !important;
+       border-bottom: 2px solid rgba(108, 99, 255, 0.2) !important;
+   }
+   
+   .module table td,
+   .results table td,
+   .table td {
+       border: none !important;
+       border-bottom: 1px solid var(--admin-border-glass) !important;
+       color: var(--admin-text-secondary) !important;
+       padding: 14px 20px !important;
+       vertical-align: middle !important;
+       transition: var(--admin-transition) !important;
+   }
+   
+   .module table tr,
+   .results table tr,
+   .table tr {
+       transition: var(--admin-transition) !important;
+   }
+   
+   .module table tr:hover,
+   .results table tr:hover,
+   .table tr:hover {
+       background: rgba(108, 99, 255, 0.06) !important;
+       transform: scale(1.002) !important;
+   }
+   
+   .module table tr:last-child td,
+   .results table tr:last-child td,
+   .table tr:last-child td {
+       border-bottom: none !important;
+   }
+   
+   /* ================================================================
+      دکمه‌ها - با انیمیشن موج
+      ================================================================ */
+   .button,
+   input[type="submit"],
+   .submit-row input,
+   a.button,
+   .btn,
+   .btn-primary,
+   .btn-success,
+   .btn-danger,
+   .btn-warning,
+   .btn-info {
+       background: linear-gradient(135deg, var(--admin-primary), var(--admin-primary-dark)) !important;
+       border: none !important;
+       border-radius: var(--admin-radius-full) !important;
+       padding: 12px 32px !important;
+       color: #fff !important;
+       font-weight: 700 !important;
+       font-size: 0.95rem !important;
+       transition: var(--admin-transition-bounce) !important;
+       cursor: pointer !important;
+       text-decoration: none !important;
+       display: inline-flex !important;
+       align-items: center !important;
+       gap: 8px !important;
+       position: relative !important;
+       overflow: hidden !important;
+       box-shadow: var(--admin-shadow-neon) !important;
+       letter-spacing: 0.3px !important;
+   }
+   
+   /* انیمیشن موج (Ripple Effect) */
+   .button::after,
+   input[type="submit"]::after,
+   .submit-row input::after,
+   a.button::after,
+   .btn::after {
+       content: '' !important;
+       position: absolute !important;
+       top: 50% !important;
+       left: 50% !important;
+       width: 0 !important;
+       height: 0 !important;
+       border-radius: 50% !important;
+       background: rgba(255, 255, 255, 0.3) !important;
+       transform: translate(-50%, -50%) !important;
+       transition: width 0.6s, height 0.6s !important;
+   }
+   
+   .button:hover::after,
+   input[type="submit"]:hover::after,
+   .submit-row input:hover::after,
+   a.button:hover::after,
+   .btn:hover::after {
+       width: 300px !important;
+       height: 300px !important;
+   }
+   
+   .button:hover,
+   input[type="submit"]:hover,
+   .submit-row input:hover,
+   a.button:hover,
+   .btn:hover {
+       transform: translateY(-3px) scale(1.03) !important;
+       box-shadow: 0 8px 35px rgba(108, 99, 255, 0.4) !important;
+       background: linear-gradient(135deg, var(--admin-primary-light), var(--admin-primary)) !important;
+       color: #fff !important;
+   }
+   
+   .button:active,
+   input[type="submit"]:active,
+   .submit-row input:active,
+   a.button:active,
+   .btn:active {
+       transform: translateY(-1px) scale(0.98) !important;
+   }
+   
+   /* دکمه‌های ثانویه */
+   .button.default,
+   .btn-secondary {
+       background: linear-gradient(135deg, #636363, #484848) !important;
+       box-shadow: none !important;
+   }
+   
+   .button.default:hover,
+   .btn-secondary:hover {
+       background: linear-gradient(135deg, #787878, #636363) !important;
+       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
+   }
+   
+   /* دکمه سبز (تأیید) */
+   .btn-success,
+   .button.success {
+       background: linear-gradient(135deg, #00E676, #00C853) !important;
+   }
+   
+   .btn-success:hover,
+   .button.success:hover {
+       background: linear-gradient(135deg, #69F0AE, #00E676) !important;
+   }
+   
+   /* دکمه قرمز (حذف) */
+   .btn-danger,
+   .button.danger {
+       background: linear-gradient(135deg, #FF1744, #D50000) !important;
+   }
+   
+   .btn-danger:hover,
+   .button.danger:hover {
+       background: linear-gradient(135deg, #FF5252, #FF1744) !important;
+   }
+   
+   /* دکمه زرد (هشدار) */
+   .btn-warning,
+   .button.warning {
+       background: linear-gradient(135deg, #FFD740, #FFC107) !important;
+       color: #1a1a1a !important;
+   }
+   
+   .btn-warning:hover,
+   .button.warning:hover {
+       background: linear-gradient(135deg, #FFE57F, #FFD740) !important;
+   }
+   
+   /* ================================================================
+      فرم‌ها - MODERN
+      ================================================================ */
+   input[type="text"],
+   input[type="email"],
+   input[type="number"],
+   input[type="password"],
+   input[type="url"],
+   input[type="date"],
+   input[type="datetime-local"],
+   input[type="search"],
+   input[type="tel"],
+   textarea,
+   select,
+   .form-control {
+       background: rgba(0, 0, 0, 0.3) !important;
+       border: 2px solid var(--admin-border-glass) !important;
+       border-radius: var(--admin-radius-md) !important;
+       padding: 12px 18px !important;
+       color: var(--admin-text-primary) !important;
+       width: 100% !important;
+       font-size: 1rem !important;
+       transition: var(--admin-transition) !important;
+       font-family: 'Vazirmatn', sans-serif !important;
+       box-sizing: border-box !important;
+   }
+   
+   input[type="text"]:focus,
+   input[type="email"]:focus,
+   input[type="number"]:focus,
+   input[type="password"]:focus,
+   input[type="url"]:focus,
+   input[type="date"]:focus,
+   input[type="datetime-local"]:focus,
+   input[type="search"]:focus,
+   input[type="tel"]:focus,
+   textarea:focus,
+   select:focus,
+   .form-control:focus {
+       outline: none !important;
+       border-color: var(--admin-primary) !important;
+       box-shadow: 0 0 0 4px rgba(108, 99, 255, 0.15), var(--admin-shadow-glass) !important;
+       background: rgba(0, 0, 0, 0.5) !important;
+   }
+   
+   input::placeholder,
+   textarea::placeholder {
+       color: var(--admin-text-muted) !important;
+       opacity: 0.7 !important;
+   }
+   
+   /* ================================================================
+      Checkbox & Radio - Modern
+      ================================================================ */
+   input[type="checkbox"],
+   input[type="radio"] {
+       width: 20px !important;
+       height: 20px !important;
+       accent-color: var(--admin-primary) !important;
+       cursor: pointer !important;
+       border-radius: 6px !important;
+       transition: var(--admin-transition) !important;
+   }
+   
+   input[type="checkbox"]:checked,
+   input[type="radio"]:checked {
+       transform: scale(1.1) !important;
+   }
+   
+   /* ================================================================
+      Select - Custom
+      ================================================================ */
+   select {
+       background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236C63FF' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 8l4 4 4-4'/%3e%3c/svg%3e") !important;
+       background-position: left 12px center !important;
+       background-repeat: no-repeat !important;
+       background-size: 18px !important;
+       padding-left: 40px !important;
+       appearance: none !important;
+       -webkit-appearance: none !important;
+       cursor: pointer !important;
+   }
+   
+   select option {
+       background: var(--admin-bg-secondary) !important;
+       color: var(--admin-text-primary) !important;
+       padding: 8px !important;
+   }
+   
+   /* ================================================================
+      پیام‌ها - با انیمیشن
+      ================================================================ */
+   .success,
+   .message-success,
+   .messagelist .success,
+   .alert-success {
+       background: rgba(0, 230, 118, 0.12) !important;
+       color: #69F0AE !important;
+       border-right: 4px solid #00E676 !important;
+       padding: 16px 20px !important;
+       border-radius: var(--admin-radius-md) !important;
+       margin-bottom: 16px !important;
+       animation: adminSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+       backdrop-filter: blur(10px) !important;
+   }
+   
+   .error,
+   .message-error,
+   .messagelist .error,
+   .alert-danger {
+       background: rgba(255, 23, 68, 0.12) !important;
+       color: #FF5252 !important;
+       border-right: 4px solid #FF1744 !important;
+       padding: 16px 20px !important;
+       border-radius: var(--admin-radius-md) !important;
+       margin-bottom: 16px !important;
+       animation: adminSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+       backdrop-filter: blur(10px) !important;
+   }
+   
+   .warning,
+   .message-warning,
+   .messagelist .warning,
+   .alert-warning {
+       background: rgba(255, 215, 64, 0.12) !important;
+       color: #FFD740 !important;
+       border-right: 4px solid #FFD740 !important;
+       padding: 16px 20px !important;
+       border-radius: var(--admin-radius-md) !important;
+       margin-bottom: 16px !important;
+       animation: adminSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+       backdrop-filter: blur(10px) !important;
+   }
+   
+   .info,
+   .message-info,
+   .alert-info {
+       background: rgba(0, 210, 255, 0.12) !important;
+       color: #4DD0E1 !important;
+       border-right: 4px solid #00D2FF !important;
+       padding: 16px 20px !important;
+       border-radius: var(--admin-radius-md) !important;
+       margin-bottom: 16px !important;
+       animation: adminSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+       backdrop-filter: blur(10px) !important;
+   }
+   
+   @keyframes adminSlideIn {
+       0% {
+           opacity: 0;
+           transform: translateY(-20px) scale(0.96);
+       }
+       100% {
+           opacity: 1;
+           transform: translateY(0) scale(1);
+       }
+   }
+   
+   /* ================================================================
+      Breadcrumb - مدرن
+      ================================================================ */
+   .breadcrumbs {
+       background: var(--admin-bg-glass) !important;
+       backdrop-filter: blur(16px) !important;
+       -webkit-backdrop-filter: blur(16px) !important;
+       border: 1px solid var(--admin-border-glass) !important;
+       border-radius: var(--admin-radius-md) !important;
+       padding: 12px 20px !important;
+       margin-bottom: 24px !important;
+       display: flex !important;
+       align-items: center !important;
+       gap: 8px !important;
+       flex-wrap: wrap !important;
+   }
+   
+   .breadcrumbs a {
+       color: var(--admin-primary-light) !important;
+       text-decoration: none !important;
+       transition: var(--admin-transition) !important;
+       font-weight: 500 !important;
+   }
+   
+   .breadcrumbs a:hover {
+       color: var(--admin-accent) !important;
+       transform: translateX(-4px) !important;
+   }
+   
+   .breadcrumbs::before {
+       content: '🏠' !important;
+       margin-left: 8px !important;
+       font-size: 1.1rem !important;
+   }
+   
+   /* ================================================================
+      Pagination - مدرن
+      ================================================================ */
+   .paginator {
+       background: var(--admin-bg-glass) !important;
+       backdrop-filter: blur(16px) !important;
+       -webkit-backdrop-filter: blur(16px) !important;
+       border: 1px solid var(--admin-border-glass) !important;
+       border-radius: var(--admin-radius-md) !important;
+       padding: 12px 20px !important;
+       display: flex !important;
+       align-items: center !important;
+       justify-content: center !important;
+       gap: 6px !important;
+       flex-wrap: wrap !important;
+   }
+   
+   .paginator a {
+       color: var(--admin-text-secondary) !important;
+       text-decoration: none !important;
+       padding: 6px 14px !important;
+       border-radius: var(--admin-radius-sm) !important;
+       transition: var(--admin-transition) !important;
+       font-weight: 500 !important;
+   }
+   
+   .paginator a:hover {
+       background: rgba(108, 99, 255, 0.15) !important;
+       color: var(--admin-primary-light) !important;
+       transform: translateY(-2px) !important;
+   }
+   
+   .paginator .this-page {
+       background: rgba(108, 99, 255, 0.2) !important;
+       color: var(--admin-primary-light) !important;
+       font-weight: 700 !important;
+       padding: 6px 14px !important;
+       border-radius: var(--admin-radius-sm) !important;
+       border: 1px solid rgba(108, 99, 255, 0.3) !important;
+   }
+   
+   .paginator .ellipsis {
+       color: var(--admin-text-muted) !important;
+       padding: 6px 8px !important;
+   }
+   
+   /* ================================================================
+      Tooltips & Help
+      ================================================================ */
+   .help,
+   .help-text,
+   .field-help {
+       color: var(--admin-text-muted) !important;
+       font-size: 0.85rem !important;
+       margin-top: 4px !important;
+       display: block !important;
+   }
+   
+   /* ================================================================
+      Labels & Badges
+      ================================================================ */
+   .badge,
+   .label,
+   .tag {
+       display: inline-block !important;
+       padding: 4px 14px !important;
+       border-radius: var(--admin-radius-full) !important;
+       font-size: 0.75rem !important;
+       font-weight: 700 !important;
+       letter-spacing: 0.3px !important;
+       background: rgba(108, 99, 255, 0.15) !important;
+       color: var(--admin-primary-light) !important;
+       border: 1px solid rgba(108, 99, 255, 0.2) !important;
+   }
+   
+   .badge-success {
+       background: rgba(0, 230, 118, 0.15) !important;
+       color: #69F0AE !important;
+       border-color: rgba(0, 230, 118, 0.2) !important;
+   }
+   
+   .badge-danger {
+       background: rgba(255, 23, 68, 0.15) !important;
+       color: #FF5252 !important;
+       border-color: rgba(255, 23, 68, 0.2) !important;
+   }
+   
+   .badge-warning {
+       background: rgba(255, 215, 64, 0.15) !important;
+       color: #FFD740 !important;
+       border-color: rgba(255, 215, 64, 0.2) !important;
+   }
+   
+   /* ================================================================
+      Responsive
+      ================================================================ */
+   @media (max-width: 768px) {
+       .module {
+           border-radius: var(--admin-radius-md) !important;
+       }
+       
+       .module h2,
+       .card-header {
+           padding: 12px 16px !important;
+           font-size: 0.95rem !important;
+       }
+       
+       .module table th,
+       .module table td {
+           padding: 10px 12px !important;
+           font-size: 0.85rem !important;
+       }
+       
+       .button,
+       input[type="submit"],
+       .submit-row input,
+       a.button,
+       .btn {
+           padding: 10px 20px !important;
+           font-size: 0.85rem !important;
+       }
+       
+       .breadcrumbs {
+           padding: 10px 14px !important;
+           font-size: 0.85rem !important;
+       }
+       
+       .content {
+           padding: 12px !important;
+       }
+       
+       input[type="text"],
+       input[type="email"],
+       input[type="number"],
+       input[type="password"],
+       textarea,
+       select {
+           padding: 10px 14px !important;
+           font-size: 0.9rem !important;
+       }
+   }
+   
+   @media (max-width: 480px) {
+       .module table {
+           display: block !important;
+           overflow-x: auto !important;
+       }
+       
+       .module table th,
+       .module table td {
+           padding: 8px 10px !important;
+           font-size: 0.75rem !important;
+           white-space: nowrap !important;
+       }
+       
+       .button,
+       input[type="submit"],
+       .btn {
+           padding: 8px 16px !important;
+           font-size: 0.8rem !important;
+           width: 100% !important;
+           justify-content: center !important;
+       }
+       
+       .breadcrumbs {
+           font-size: 0.75rem !important;
+           padding: 8px 12px !important;
+           flex-wrap: wrap !important;
+       }
+       
+       .content {
+           padding: 8px !important;
+       }
+       
+       .paginator {
+           padding: 8px 12px !important;
+           gap: 4px !important;
+       }
+       
+       .paginator a,
+       .paginator .this-page {
+           padding: 4px 10px !important;
+           font-size: 0.75rem !important;
+       }
+   }
+   
+   /* ================================================================
+      Scrollbar - Modern
+      ================================================================ */
+   ::-webkit-scrollbar {
+       width: 6px !important;
+       height: 6px !important;
+   }
+   
+   ::-webkit-scrollbar-track {
+       background: var(--admin-bg-primary) !important;
+       border-radius: 8px !important;
+   }
+   
+   ::-webkit-scrollbar-thumb {
+       background: linear-gradient(180deg, var(--admin-primary), var(--admin-accent)) !important;
+       border-radius: 8px !important;
+       box-shadow: 0 0 20px rgba(108, 99, 255, 0.2) !important;
+   }
+   
+   ::-webkit-scrollbar-thumb:hover {
+       background: linear-gradient(180deg, var(--admin-primary-dark), var(--admin-accent)) !important;
+   }
+   
+   /* ================================================================
+      Selection
+      ================================================================ */
+   ::selection {
+       background: rgba(108, 99, 255, 0.3) !important;
+       color: #fff !important;
+   }
+   
+   /* ================================================================
+      Animations
+      ================================================================ */
+   @keyframes adminFadeIn {
+       from {
+           opacity: 0;
+           transform: translateY(20px);
+       }
+       to {
+           opacity: 1;
+           transform: translateY(0);
+       }
+   }
+   
+   .module,
+   .card,
+   .panel {
+       animation: adminFadeIn 0.6s ease forwards !important;
+   }
+   
+   /* ================================================================
+      Print
+      ================================================================ */
+   @media print {
+       .main-header,
+       .main-sidebar,
+       .navbar {
+           display: none !important;
+       }
+       
+       .content-wrapper,
+       .wrapper {
+           padding-top: 0 !important;
+       }
+       
+       .module,
+       .card,
+       .panel {
+           background: #fff !important;
+           color: #000 !important;
+           box-shadow: none !important;
+           border: 1px solid #ddd !important;
+       }
+       
+       .module h2,
+       .card-header {
+           background: #f5f5f5 !important;
+           color: #000 !important;
+       }
+       
+       .module table th,
+       .module table td {
+           color: #000 !important;
+       }
+   }

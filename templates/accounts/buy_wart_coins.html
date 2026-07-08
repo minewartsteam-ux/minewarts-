@@ -1,0 +1,904 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}خرید وارت کوین - {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- ============================================================
+            MAIN CARD - ULTRA MODERN GLASS
+            ============================================================ -->
+            <div class="buy-card-glass">
+                <div class="buy-card-body">
+
+                    <!-- ============================================================
+                    HEADER
+                    ============================================================ -->
+                    <div class="buy-header">
+                        <div class="buy-header-icon">💰</div>
+                        <h1 class="buy-header-title">خرید وارت کوین</h1>
+                        <p class="buy-header-subtitle">با بهترین قیمت، وارت کوین خریداری کنید</p>
+                    </div>
+
+                    <!-- ============================================================
+                    PRICE & BALANCE
+                    ============================================================ -->
+                    <div class="buy-stats-grid">
+                        <!-- Price -->
+                        <div class="buy-stat-card buy-stat-price">
+                            <div class="buy-stat-icon">💎</div>
+                            <div class="buy-stat-label">قیمت پایه</div>
+                            <div class="buy-stat-value">
+                                {{ settings.base_price_per_coin|floatformat:0 }}
+                                <span class="buy-stat-unit">تومان</span>
+                            </div>
+                            <div class="buy-stat-sub">هر وارت کوین</div>
+                        </div>
+
+                        <!-- Balance -->
+                        <div class="buy-stat-card buy-stat-balance">
+                            <div class="buy-stat-icon">👛</div>
+                            <div class="buy-stat-label">موجودی شما</div>
+                            <div class="buy-stat-value" id="user-balance">
+                                <span class="buy-stat-loading">در حال بارگذاری…</span>
+                            </div>
+                            <div class="buy-stat-sub">وارت کوین</div>
+                        </div>
+                    </div>
+
+                    <!-- ============================================================
+                    DISCOUNTS
+                    ============================================================ -->
+                    {% if discounts %}
+                    <div class="buy-discounts-box">
+                        <div class="buy-discounts-header">
+                            <span class="buy-discounts-icon">🎁</span>
+                            <h4 class="buy-discounts-title">تخفیف ویژه</h4>
+                            <span class="buy-discounts-badge">هرچی بیشتر، ارزون‌تر</span>
+                        </div>
+
+                        <div class="buy-discounts-table-wrap">
+                            <table class="buy-discounts-table">
+                                <thead>
+                                    <tr>
+                                        <th>حداقل خرید</th>
+                                        <th>قیمت هر واحد</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for discount in discounts %}
+                                    <tr>
+                                        <td><strong>{{ discount.min_amount }} WC</strong></td>
+                                        <td>
+                                            <span class="buy-discount-price">
+                                                {{ discount.price_per_coin|floatformat:0 }} تومان
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="buy-discounts-footnote">
+                            <span>💡</span>
+                            <small>هرچی بیشتر بخری، ارزون‌تر حساب میشه</small>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- ============================================================
+                    FORM
+                    ============================================================ -->
+                    <form method="POST" id="buy-form" class="buy-form">
+                        {% csrf_token %}
+
+                        <div class="buy-form-group">
+                            <label class="buy-form-label">
+                                <span>📊</span>
+                                مقدار وارت کوین
+                            </label>
+                            <div class="buy-input-wrap">
+                                <input type="number" id="coin_amount" name="coin_amount"
+                                    class="buy-form-input"
+                                    min="1" step="1" required
+                                    placeholder="مثلاً 100"
+                                    autofocus
+                                >
+                                <span class="buy-input-unit">WC</span>
+                            </div>
+                            <small class="buy-form-help">حداقل مقدار خرید: 1 وارت کوین</small>
+                        </div>
+
+                        <!-- ============================================================
+                        PRICE PREVIEW
+                        ============================================================ -->
+                        <div id="price-preview" class="buy-price-preview" style="display: none;">
+                            <div class="buy-price-row">
+                                <div class="buy-price-col">
+                                    <div class="buy-price-label">قیمت هر واحد</div>
+                                    <strong id="price-per-coin" class="buy-price-per">—</strong>
+                                </div>
+                                <div class="buy-price-col buy-price-total-col">
+                                    <div class="buy-price-label">قیمت کل</div>
+                                    <strong id="total-price" class="buy-price-total">—</strong>
+                                </div>
+                            </div>
+
+                            <div id="discount-badge" class="buy-discount-badge" style="display: none;">
+                                🎁 شامل تخفیف ویژه شدید
+                            </div>
+                        </div>
+
+                        <!-- ============================================================
+                        SUBMIT BUTTON
+                        ============================================================ -->
+                        <button class="buy-submit-btn" type="submit">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 1v22M4 9l8-8 8 8M4 15l8 8 8-8"/>
+                            </svg>
+                            پرداخت و خرید
+                        </button>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* ================================================================
+       🚀 ULTRA MODERN BUY PAGE - 2026 EDITION
+       ================================================================ */
+
+    /* ================================================================
+       MAIN CARD - GLASS + NEON
+       ================================================================ */
+    .buy-card-glass {
+        background: var(--admin-bg-glass, rgba(255, 255, 255, 0.02));
+        backdrop-filter: blur(24px) saturate(180%);
+        -webkit-backdrop-filter: blur(24px) saturate(180%);
+        border: 1px solid var(--admin-border-glass, rgba(255, 255, 255, 0.06));
+        border-radius: 24px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        overflow: hidden;
+        animation: buyFadeIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        position: relative;
+    }
+
+    .buy-card-glass::before {
+        content: '';
+        position: absolute;
+        inset: -1px;
+        border-radius: 24px;
+        padding: 1px;
+        background: conic-gradient(
+            from 0deg at 50% 50%,
+            transparent 0deg,
+            rgba(108, 99, 255, 0.1) 60deg,
+            transparent 120deg,
+            rgba(0, 210, 255, 0.1) 180deg,
+            transparent 240deg,
+            rgba(255, 101, 132, 0.1) 300deg,
+            transparent 360deg
+        );
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+        animation: rotateNeon 20s linear infinite;
+    }
+
+    .buy-card-glass::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(ellipse at 30% 20%, rgba(108, 99, 255, 0.03), transparent 60%);
+        pointer-events: none;
+        animation: breatheGlow 4s ease-in-out infinite;
+    }
+
+    @keyframes rotateNeon {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    @keyframes breatheGlow {
+        0%, 100% { opacity: 0.5; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.1); }
+    }
+
+    @keyframes buyFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .buy-card-body {
+        padding: 48px;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* ================================================================
+       HEADER
+       ================================================================ */
+    .buy-header {
+        text-align: center;
+        margin-bottom: 36px;
+        padding-bottom: 24px;
+        border-bottom: 2px solid var(--admin-border-glass, rgba(255, 255, 255, 0.06));
+        position: relative;
+    }
+
+    .buy-header::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 30%;
+        width: 40%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #6C63FF, #00D2FF, transparent);
+    }
+
+    .buy-header-icon {
+        font-size: 3.5rem;
+        display: block;
+        margin-bottom: 8px;
+        animation: floatIcon 3s ease-in-out infinite;
+    }
+
+    @keyframes floatIcon {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+
+    .buy-header-title {
+        font-size: 2.6rem;
+        font-weight: 800;
+        margin: 0 0 4px 0;
+        background: linear-gradient(135deg, #8B83FF, #00D2FF);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .buy-header-subtitle {
+        color: #B0B0C8;
+        font-size: 1rem;
+        margin: 0;
+        font-weight: 400;
+    }
+
+    /* ================================================================
+       STATS GRID
+       ================================================================ */
+    .buy-stats-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .buy-stat-card {
+        padding: 20px 24px;
+        border-radius: 16px;
+        text-align: center;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: 1px solid transparent;
+    }
+
+    .buy-stat-card:hover {
+        transform: translateY(-4px) scale(1.01);
+    }
+
+    .buy-stat-price {
+        background: rgba(108, 99, 255, 0.06);
+        border-color: rgba(108, 99, 255, 0.1);
+    }
+
+    .buy-stat-price:hover {
+        border-color: rgba(108, 99, 255, 0.25);
+        box-shadow: 0 8px 30px rgba(108, 99, 255, 0.05);
+    }
+
+    .buy-stat-balance {
+        background: rgba(0, 210, 255, 0.05);
+        border-color: rgba(0, 210, 255, 0.08);
+    }
+
+    .buy-stat-balance:hover {
+        border-color: rgba(0, 210, 255, 0.2);
+        box-shadow: 0 8px 30px rgba(0, 210, 255, 0.05);
+    }
+
+    .buy-stat-icon {
+        font-size: 1.6rem;
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    .buy-stat-label {
+        color: #6B6B8A;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .buy-stat-value {
+        font-size: 1.8rem;
+        font-weight: 800;
+        margin: 4px 0 2px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        flex-wrap: wrap;
+    }
+
+    .buy-stat-price .buy-stat-value {
+        color: #8B83FF;
+    }
+
+    .buy-stat-balance .buy-stat-value {
+        color: #4DD0E1;
+    }
+
+    .buy-stat-unit {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #6B6B8A;
+    }
+
+    .buy-stat-sub {
+        font-size: 0.75rem;
+        color: #6B6B8A;
+        font-weight: 500;
+    }
+
+    .buy-stat-loading {
+        font-size: 0.9rem;
+        font-weight: 400;
+        color: #6B6B8A;
+        animation: pulseText 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulseText {
+        0%, 100% { opacity: 0.5; }
+        50% { opacity: 1; }
+    }
+
+    /* ================================================================
+       DISCOUNTS BOX
+       ================================================================ */
+    .buy-discounts-box {
+        background: rgba(255, 215, 64, 0.04);
+        border: 1px solid rgba(255, 215, 64, 0.08);
+        border-radius: 16px;
+        padding: 20px 24px;
+        margin-bottom: 24px;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .buy-discounts-box:hover {
+        border-color: rgba(255, 215, 64, 0.15);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(255, 215, 64, 0.03);
+    }
+
+    .buy-discounts-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+    }
+
+    .buy-discounts-icon {
+        font-size: 1.6rem;
+    }
+
+    .buy-discounts-title {
+        color: #FFD740;
+        font-weight: 700;
+        margin: 0;
+        font-size: 1.1rem;
+    }
+
+    .buy-discounts-badge {
+        background: linear-gradient(135deg, #FFD740, #FFC107);
+        color: #1a1a1a;
+        padding: 2px 14px;
+        border-radius: 50px;
+        font-size: 0.65rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+
+    .buy-discounts-table-wrap {
+        overflow-x: auto;
+        margin-bottom: 12px;
+    }
+
+    .buy-discounts-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 4px;
+        color: #B0B0C8;
+    }
+
+    .buy-discounts-table thead {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+    }
+
+    .buy-discounts-table th {
+        padding: 10px 16px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #6B6B8A;
+        border: none;
+        text-align: center;
+    }
+
+    .buy-discounts-table td {
+        padding: 10px 16px;
+        background: rgba(255, 255, 255, 0.02);
+        border: none;
+        text-align: center;
+        font-weight: 500;
+    }
+
+    .buy-discounts-table tr:hover td {
+        background: rgba(255, 215, 64, 0.04);
+    }
+
+    .buy-discount-price {
+        color: #FFD740;
+        font-weight: 700;
+    }
+
+    .buy-discounts-footnote {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #6B6B8A;
+        font-size: 0.85rem;
+    }
+
+    /* ================================================================
+       FORM
+       ================================================================ */
+    .buy-form {
+        margin-top: 4px;
+    }
+
+    .buy-form-group {
+        margin-bottom: 20px;
+    }
+
+    .buy-form-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #B0B0C8;
+        font-weight: 700;
+        font-size: 0.95rem;
+        margin-bottom: 8px;
+    }
+
+    .buy-input-wrap {
+        position: relative;
+    }
+
+    .buy-form-input {
+        width: 100%;
+        background: rgba(0, 0, 0, 0.25);
+        border: 2px solid var(--admin-border-glass, rgba(255, 255, 255, 0.06));
+        border-radius: 16px;
+        color: #FFFFFF;
+        padding: 14px 70px 14px 18px;
+        font-size: 1.1rem;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        font-family: 'Vazirmatn', sans-serif;
+        box-sizing: border-box;
+    }
+
+    .buy-form-input:focus {
+        outline: none;
+        border-color: #6C63FF;
+        box-shadow: 0 0 0 4px rgba(108, 99, 255, 0.1);
+        background: rgba(0, 0, 0, 0.4);
+        transform: scale(1.005);
+    }
+
+    .buy-form-input::placeholder {
+        color: #6B6B8A;
+    }
+
+    .buy-input-unit {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6B6B8A;
+        font-weight: 700;
+        font-size: 0.9rem;
+        pointer-events: none;
+    }
+
+    .buy-form-help {
+        display: block;
+        margin-top: 6px;
+        color: #6B6B8A;
+        font-size: 0.85rem;
+    }
+
+    /* ================================================================
+       PRICE PREVIEW
+       ================================================================ */
+    .buy-price-preview {
+        padding: 20px 24px;
+        background: rgba(108, 99, 255, 0.05);
+        border: 1px solid rgba(108, 99, 255, 0.08);
+        border-radius: 16px;
+        margin-bottom: 24px;
+        animation: buySlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        transition: all 0.3s ease;
+    }
+
+    @keyframes buySlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px) scale(0.97);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    .buy-price-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    .buy-price-col {
+        text-align: center;
+    }
+
+    .buy-price-total-col {
+        text-align: left;
+    }
+
+    .buy-price-label {
+        color: #6B6B8A;
+        font-size: 0.8rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .buy-price-per {
+        color: #B0B0C8;
+        font-size: 1.1rem;
+        font-weight: 700;
+        display: block;
+        margin-top: 2px;
+    }
+
+    .buy-price-total {
+        color: #8B83FF;
+        font-size: 1.6rem;
+        font-weight: 800;
+        display: block;
+        margin-top: 2px;
+    }
+
+    .buy-discount-badge {
+        margin-top: 14px;
+        padding-top: 14px;
+        border-top: 1px solid var(--admin-border-glass, rgba(255, 255, 255, 0.04));
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: linear-gradient(135deg, rgba(255, 215, 64, 0.12), rgba(255, 193, 7, 0.05));
+        padding: 8px 20px;
+        border-radius: 50px;
+        color: #FFD740;
+        font-weight: 600;
+        font-size: 0.9rem;
+        border: 1px solid rgba(255, 215, 64, 0.1);
+    }
+
+    /* ================================================================
+       SUBMIT BUTTON
+       ================================================================ */
+    .buy-submit-btn {
+        background: linear-gradient(135deg, #6C63FF, #5A52D5);
+        color: #fff;
+        border: none;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        padding: 16px 32px;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 4px 25px rgba(108, 99, 255, 0.25);
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        font-family: 'Vazirmatn', sans-serif;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .buy-submit-btn::before {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        border-radius: 50px;
+        background: linear-gradient(135deg, #6C63FF, #00D2FF, #6C63FF);
+        opacity: 0;
+        transition: all 0.4s ease;
+        z-index: -1;
+        filter: blur(8px);
+    }
+
+    .buy-submit-btn:hover::before {
+        opacity: 0.4;
+    }
+
+    .buy-submit-btn:hover {
+        transform: translateY(-4px) scale(1.02);
+        box-shadow: 0 8px 40px rgba(108, 99, 255, 0.35);
+        background: linear-gradient(135deg, #8B83FF, #6C63FF);
+    }
+
+    .buy-submit-btn:active {
+        transform: translateY(0) scale(0.97);
+    }
+
+    .buy-submit-btn svg {
+        flex-shrink: 0;
+    }
+
+    /* ================================================================
+       RESPONSIVE
+       ================================================================ */
+    @media (max-width: 992px) {
+        .buy-card-body {
+            padding: 32px 24px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .buy-card-body {
+            padding: 24px 16px;
+        }
+
+        .buy-header-title {
+            font-size: 2rem;
+        }
+
+        .buy-header-icon {
+            font-size: 2.8rem;
+        }
+
+        .buy-stats-grid {
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .buy-stat-value {
+            font-size: 1.5rem;
+        }
+
+        .buy-discounts-box {
+            padding: 16px 18px;
+        }
+
+        .buy-discounts-header {
+            flex-wrap: wrap;
+        }
+
+        .buy-price-row {
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+
+        .buy-price-total-col {
+            text-align: center;
+        }
+
+        .buy-price-total {
+            font-size: 1.3rem;
+        }
+
+        .buy-submit-btn {
+            font-size: 1rem;
+            padding: 14px 24px;
+        }
+
+        .buy-form-input {
+            padding: 12px 60px 12px 14px;
+            font-size: 1rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .buy-card-body {
+            padding: 16px 12px;
+        }
+
+        .buy-header-title {
+            font-size: 1.6rem;
+        }
+
+        .buy-header-icon {
+            font-size: 2.2rem;
+        }
+
+        .buy-header-subtitle {
+            font-size: 0.85rem;
+        }
+
+        .buy-stat-card {
+            padding: 14px 16px;
+        }
+
+        .buy-stat-value {
+            font-size: 1.2rem;
+        }
+
+        .buy-discounts-table th,
+        .buy-discounts-table td {
+            padding: 8px 12px;
+            font-size: 0.8rem;
+        }
+
+        .buy-form-label {
+            font-size: 0.85rem;
+        }
+
+        .buy-form-input {
+            padding: 10px 50px 10px 12px;
+            font-size: 0.9rem;
+            border-radius: 12px;
+        }
+
+        .buy-input-unit {
+            font-size: 0.8rem;
+            left: 12px;
+        }
+
+        .buy-price-preview {
+            padding: 14px 16px;
+        }
+
+        .buy-price-per {
+            font-size: 0.95rem;
+        }
+
+        .buy-price-total {
+            font-size: 1.1rem;
+        }
+
+        .buy-discount-badge {
+            font-size: 0.8rem;
+            padding: 6px 14px;
+        }
+
+        .buy-submit-btn {
+            font-size: 0.9rem;
+            padding: 12px 20px;
+            gap: 8px;
+        }
+
+        .buy-submit-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+    }
+
+    /* ================================================================
+       SCROLLBAR
+       ================================================================ */
+    .buy-card-body::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .buy-card-body::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .buy-card-body::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, #6C63FF, #00D2FF);
+        border-radius: 4px;
+    }
+</style>
+
+<script>
+    // ================================================================
+    // FETCH BALANCE
+    // ================================================================
+    fetch('{% url "accounts:wart_coin_balance_api" %}')
+    .then(r => r.json())
+    .then(d => {
+        document.getElementById('user-balance').textContent =
+            (d.formatted_balance || d.balance) + ' WC';
+    })
+    .catch(() => {
+        document.getElementById('user-balance').textContent = '❌ خطا در بارگذاری';
+    });
+
+    // ================================================================
+    // PRICE PREVIEW ON INPUT
+    // ================================================================
+    const coinInput = document.getElementById('coin_amount');
+    const preview = document.getElementById('price-preview');
+    const pricePer = document.getElementById('price-per-coin');
+    const totalPrice = document.getElementById('total-price');
+    const discountBadge = document.getElementById('discount-badge');
+
+    coinInput.addEventListener('input', function() {
+        const amount = parseInt(this.value);
+        if (!amount || amount < 1) {
+            preview.style.display = 'none';
+            return;
+        }
+
+        const fd = new FormData();
+        fd.append('coin_amount', amount);
+        fd.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+        fetch('{% url "accounts:wart_coin_price_api" %}', {
+            method: 'POST',
+            body: fd
+        })
+        .then(r => r.json())
+        .then(d => {
+            pricePer.textContent = d.price_per_coin.toLocaleString('fa-IR') + ' تومان';
+            totalPrice.textContent = d.formatted_total_price + ' تومان';
+            preview.style.display = 'block';
+
+            // Show discount badge if discounted
+            if (d.price_per_coin < {{ settings.base_price_per_coin }}) {
+                discountBadge.style.display = 'inline-flex';
+            } else {
+                discountBadge.style.display = 'none';
+            }
+        })
+        .catch(() => {
+            preview.style.display = 'none';
+        });
+    });
+
+    // ================================================================
+    // AUTO FOCUS ON MOBILE
+    // ================================================================
+    if (window.innerWidth < 768) {
+        coinInput.focus();
+    }
+</script>
+{% endblock %}
